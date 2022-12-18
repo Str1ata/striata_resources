@@ -10,7 +10,7 @@ Config.Language = "pt-BR" -- altere a linguagem aqui! Linguagens disponiveis: (e
 --################################################--
 Config.resources = {  -- Defina true para ativar um resuorce e false para desativar.
 
-	["striata_time&weather"]			= false,
+	["striata_time-weather"]			= false,
 	["striata_admprision"]				= false,
 	["striata_robberies"]				= false,
 	["striata_doors"]					= false,
