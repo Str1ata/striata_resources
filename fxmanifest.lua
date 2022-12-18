@@ -1,4 +1,4 @@
-client_script "@vrp_anim/client.lua" fx_version 'cerulean'
+fx_version 'cerulean'
 game 'gta5'
 
 author 'Striata <striatashop@hotmail.com>'
