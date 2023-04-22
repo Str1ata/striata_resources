@@ -3,6 +3,8 @@ Config.scriptsConfig = {}
 
 Config.token = ""  -- Coloque Sua Licença
 
+Config.framework = "auto"  -- auto, vrp, esx, qbcore
+
 Config.Language = "pt-BR" -- altere a linguagem aqui! Linguagens disponiveis: (en-US | pt-BR)
 
 --################################################--
@@ -18,6 +20,7 @@ Config.resources = {  -- Defina true para ativar um resuorce e false para desati
 	["striata_group-manager"]			= false,
 	["striata_notify"]					= false,
 	["striata_survival"]				= false,
+	["striata_production"]				= false,
 
 }
 
