@@ -1,6 +1,8 @@
+FunctionsVersion = 1.0  --! por favor não altere aqui! | please do not change here!
 Functions = {}
 Events = {}
 
+--todo: Configure as funções do seu de servidor aqui! | Configure your server functions here!
 Functions.vRP = {
     client = {
         getSharedObject = function()
@@ -13,9 +15,8 @@ Functions.vRP = {
             }
         end,
 
-        exports = function(...)
-            local args = {...}
-            return exports[args[1]][args[2]](args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10])
+        exports = function(script,functionName,...)
+            return exports[script][functionName](...)
         end,
 
         getOutfit = function()
@@ -40,6 +41,26 @@ Functions.vRP = {
 
         playSoundByGame = function(dict,name)
             PlaySoundFrontend(-1,dict,name,false)
+        end,
+
+        getNearestVehicles = function(radius)
+            return vRP.getNearestVehicles(radius)
+        end,
+
+        getNearestVehicle = function(radius)
+            return vRP.getNearestVehicle(radius)
+        end,
+        
+        getNearestPlayer = function(radius)
+            return vRP.getNearestPlayer(radius)
+        end,
+
+        killGod = function()
+            return vRP.killGod()
+        end,
+    
+        setHealth = function(health)
+            return vRP.setHealth(health)
         end
     },
 
@@ -71,6 +92,10 @@ Functions.vRP = {
 
         getUsers = function()
             return vRP.getUsers()
+        end,
+
+        getUsersByPermission = function(perm)
+            return vRP.getUsersByPermission(perm)
         end,
 
         hasPermission = function(user_id, perm)
@@ -197,13 +222,11 @@ Functions.vRP = {
                     ["@user_id"] = user_id,
                 })
                 identity = playerInfos[1]
-                print(json.encode(identity))
                 info["name"] = identity.name
                 info["lastName"] = identity.firstname
                 info["age"] = identity.age
                 info["document"] = identity.registration
                 info["phone"] = identity.phone
-                print(json.encode(info))
                 return info
             end
         end,
@@ -226,6 +249,10 @@ Functions.vRP = {
         setThirst = function(user_id,amount)
             vRP.setThirst(parseInt(user_id),amount)
         end,
+        
+        CreateUseableItens = function()
+            local survivalConfig, survivalLangs = exports['striata_resources']:striata_survival_config()
+        end
     }
     
 }
@@ -245,9 +272,8 @@ Functions.ESX = {
             return exports['es_extended']:getSharedObject()
         end,
         
-        exports = function(...)
-            local args = {...}
-            return exports[args[1]][args[2]](args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10])
+        exports = function(script,functionName,...)
+            return exports[script][functionName](...)
         end,
 
         textInput = function(text, input)
@@ -387,6 +413,86 @@ Functions.ESX = {
 
         playSoundByGame = function(dict,name)
             PlaySoundFrontend(-1,dict,name,false)
+        end,
+
+        getNearestVehicles = function(radius)
+            local vehicles = {}
+            local px,py,pz = table.unpack(GetEntityCoords(PlayerPedId()))
+        
+            local vehs = {}
+            local it,veh = FindFirstVehicle()
+            if veh then
+                table.insert(vehs,veh)
+            end
+            local ok
+            repeat
+                ok,veh = FindNextVehicle(it)
+                if ok and veh then
+                    table.insert(vehs,veh)
+                end
+            until not ok
+            EndFindVehicle(it)
+        
+            for n,veh in pairs(vehs) do
+                local x,y,z = table.unpack(GetEntityCoords(veh))
+                local distance = Vdist(x,y,z,px,py,pz)
+                if distance <= radius then
+                    vehicles[veh] = distance
+                end
+            end
+            return vehicles
+        end,
+
+        getNearestVehicle = function(radius)
+            local vehicle
+            local vehicles = Functions["client"].getNearestVehicles(radius)
+            local min = radius+0.0001
+            for veh,dist in pairs(vehicles) do 
+                if dist < min then
+                    min = dist
+                    vehicle = veh
+                end
+            end
+            return vehicle
+        end,
+        
+        getNearestPlayers = function(radius)
+            local allPlayers = QBCore.Functions.GetPeds()
+            local players = {}
+            for n,player in pairs(allPlayers) do
+                local coords = GetEntityCoords(PlayerPedId())
+                local pedCoords = GetEntityCoords(player)
+                local distance = #(pedCoords - coords)
+                players[GetPlayerServerId(player)] = distance
+            end
+            return players
+        end,
+
+        getNearestPlayer = function(radius)
+            local player, distance = ESX.Game.GetClosestPlayer()
+            if distance <= radius then
+                return GetPlayerServerId(player)
+            end
+            return false
+        end,
+
+        killGod = function()
+            TransitionFromBlurred(1000)
+            nocauteado = false
+            local ped = PlayerPedId()
+            if GetEntityHealth(ped) < 101 or IsEntityDead(ped) then
+                local x,y,z = table.unpack(GetEntityCoords(ped))
+                NetworkResurrectLocalPlayer(x,y,z,true,true,false)
+            end
+            ClearPedBloodDamage(ped)
+            SetEntityInvincible(ped,false)
+            SetEntityHealth(ped,120)
+            ClearPedTasks(ped)
+            ClearPedSecondaryTask(ped)
+        end,
+    
+        setHealth = function(health)
+            return SetEntityHealth(PlayerPedId(),tonumber(health))
         end
     },
 
@@ -395,17 +501,22 @@ Functions.ESX = {
             return exports['es_extended']:getSharedObject()
         end,
 
-        exports = function(...)
-            local args = {...}
-            return exports[args[1]][args[2]](args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10])
+        exports = function(script,functionName,...)
+            return exports[script][functionName](...)
         end,
 
         getUserId = function(source)
-            return ESX.GetPlayerFromId(source).identifier
+            local player = ESX.GetPlayerFromId(source)
+            if player then
+                return player.identifier
+            end
         end,
 
         getUserSource = function(user_id)
-            return ESX.GetPlayerFromIdentifier(user_id).playerId
+            local player = ESX.GetPlayerFromIdentifier(user_id)
+            if player then
+                return player.playerId
+            end
         end,
 
         getUsers = function()
@@ -416,61 +527,131 @@ Functions.ESX = {
             return users
         end,
 
+        getUsersByPermission = function(perm)
+            local users = {}
+            for k,v in pairs(GetPlayers()) do
+                local user_id = Functions["server"].getUserId(tonumber(v))
+                if Functions["server"].hasPermission(user_id,perm) then
+                    table.insert(users,user_id)
+                end
+            end
+            return users
+        end,
+
         hasPermission = function(user_id,perm)
-            if ESX.GetPlayerFromId(ESX.GetPlayerFromIdentifier(user_id).playerId).job.name == perm or ESX.GetPlayerFromId(ESX.GetPlayerFromIdentifier(user_id).playerId).group == perm then
-                return true
+            local player = ESX.GetPlayerFromIdentifier(user_id)
+            if player then
+                if ESX.GetPlayerFromId(player.playerId).job.name == perm or ESX.GetPlayerFromId(player.playerId).group == perm then
+                    return true
+                else
+                    return false
+                end
             else
                 return false
             end
         end,
 
         getUserGroups = function(user_id)
-            return ESX.GetPlayerFromId(ESX.GetPlayerFromIdentifier(user_id).playerId).job
+            local player = ESX.GetPlayerFromIdentifier(user_id)
+            if player then
+                return ESX.GetPlayerFromId(player.playerId).job
+            end
         end,
         
         addUserGroup = function(user_id,group)
-            return ESX.GetPlayerFromIdentifier(user_id).setJob(group,1)
+            local player = ESX.GetPlayerFromIdentifier(user_id)
+            if player then
+                return player.setJob(group,1)
+            end
         end,
 
         removeUserGroup = function(user_id,group)
-            local xplayer = ESX.GetPlayerFromIdentifier(user_id)
-            if xplayer then
-                return xplayer.setJob("unemployed", 0)
+            local player = ESX.GetPlayerFromIdentifier(user_id)
+            if player then
+                return player.setJob("unemployed", 0)
             else
                 return MySQL.Sync.fetchAll('UPDATE users SET job = ?, job_grade = ? WHERE identifier = ?', {job, 0, user_id})
             end
         end,
 
         giveBankMoney = function(user_id, amount)
-            return ESX.GetPlayerFromIdentifier(user_id).addMoney(amount)
+            local player = ESX.GetPlayerFromIdentifier(user_id)
+            if player then
+                return player.addMoney(amount)
+            else
+                local userInfo = MySQL.Sync.fetchAll("SELECT accounts FROM users WHERE identifier = @identifier", {
+                    ["@identifier"] = user_id,
+                })
+                userAccounts = json.decode(userInfo[1].accounts)
+
+                userAccounts.bank = userAccounts.bank + amount
+                return MySQL.Sync.fetchAll("UPDATE users SET accounts = @accounts WHERE identifier = @identifier", {
+                    ["@identifier"] = user_id,
+                    ["@accounts"] = json.encode(userAccounts),
+                })
+            end
         end,
 
         removeBankMoney = function(user_id, amount)
-            return ESX.GetPlayerFromIdentifier(user_id).removeAccountMoney('bank', amount)
+            local player = ESX.GetPlayerFromIdentifier(user_id)
+            if player then
+                return player.removeAccountMoney('bank', amount)
+            else
+                local userInfo = MySQL.Sync.fetchAll("SELECT accounts FROM users WHERE identifier = @identifier", {
+                    ["@identifier"] = user_id,
+                })
+                userAccounts = json.decode(userInfo[1].accounts)
+
+                userAccounts.bank = userAccounts.bank - amount
+                return MySQL.Sync.fetchAll("UPDATE users SET accounts = @accounts WHERE identifier = @identifier", {
+                    ["@identifier"] = user_id,
+                    ["@accounts"] = json.encode(userAccounts),
+                })
+            end
         end,
 
         getInventoryItemAmount = function(user_id,item)
-            if ESX.GetPlayerFromIdentifier(user_id).getInventoryItem(item) then
-                return (ESX.GetPlayerFromIdentifier(user_id).getInventoryItem(item).count)
-            else
-                return 0
+            local player = ESX.GetPlayerFromIdentifier(user_id)
+            if player then
+                if player.getInventoryItem(item) then
+                    return player.getInventoryItem(item).count
+                else
+                    return 0
+                end
             end
         end,
 
         giveInventoryItem = function(user_id,item,amount)
-            return ESX.GetPlayerFromIdentifier(user_id).addInventoryItem(item,amount)
+            local player = ESX.GetPlayerFromIdentifier(user_id)
+            if player then
+                return player.addInventoryItem(item,amount)
+            end
         end,
 
         removeInventoryItem = function(user_id,item,amount)
-            return ESX.GetPlayerFromIdentifier(user_id).removeInventoryItem(item,amount)
+            local player = ESX.GetPlayerFromIdentifier(user_id)
+            if player then
+                if player.getInventoryItem(item).count >= amount then
+                    player.removeInventoryItem(item,amount)
+                    return true
+                else
+                    return false
+                end
+            end
         end,
 
         getInventoryWeight = function(user_id)
-            return ESX.GetPlayerFromIdentifier(user_id).weight
+            local player = ESX.GetPlayerFromIdentifier(user_id)
+            if player then
+                return player.weight
+            end
         end,
 
         getInventoryMaxWeight = function(user_id)
-            return ESX.GetPlayerFromIdentifier(user_id).maxWeight
+            local player = ESX.GetPlayerFromIdentifier(user_id)
+            if player then
+                return player.maxWeight
+            end
         end,
 
         getItemWeight = function(item)
@@ -517,7 +698,7 @@ Functions.ESX = {
             local event = AddEventHandler(eventCallBackName,function(cb)
                 plate = cb
             end)
-            TriggerClientEvent("striata_resources:duplicityClientVersion",ESX.GetPlayerFromIdentifier(user_id).playerId,eventCallBackName,"exports",{'esx_vehicleshop',"GeneratePlate"})
+            TriggerClientEvent("striata_resources:duplicityClientVersion",ESX.GetPlayerFromIdentifier(user_id).playerId,eventCallBackName,"exports",'esx_vehicleshop',"GeneratePlate")
         
             
             while plate == "" do
@@ -587,7 +768,7 @@ Functions.ESX = {
                 savedOutfit = savedOutfit[1].txt
                 savedOutfit = json.decode(savedOutfit)
                 savedOutfit.modelhash = nil
-                TriggerClientEvent("striata_resources:duplicityClientVersion",source,false,"setOutfit",{savedOutfit})
+                TriggerClientEvent("striata_resources:duplicityClientVersion",source,false,"setOutfit",savedOutfit)
 
                 return MySQL.Sync.fetchAll("DELETE FROM striatadb WHERE user_id = @user_id AND db = @db", {
                     ["@user_id"] = Functions["server"].getUserId(source),
@@ -605,6 +786,11 @@ Functions.ESX = {
         end,
 
         setArrestPoliceTime = function(user_id,time)
+            local player = ESX.GetPlayerFromIdentifier(user_id)
+            if player then
+                TriggerClientEvent("esx_jail:unjailPlayer",player.playerId)
+            end
+
             return MySQL.Sync.fetchAll("UPDATE users SET jail_time = @jail_time WHERE identifier = @identifier", {
                 ["@identifier"] = user_id,
                 ["@jail_time"] = time,
@@ -634,12 +820,12 @@ Functions.ESX = {
                 local playerInfos = MySQL.Sync.fetchAll("SELECT * FROM users WHERE identifier = @identifier", {
                     ["@identifier"] = user_id,
                 })
-                player = json.decode(playerInfos[1])
+                player = playerInfos[1]
                 info["name"] = player.firstname
                 info["lastName"] = player.lastname
                 info["age"] = player.dateofbirth
                 info["document"] = user_id
-                info["phone"] = player.phone_number
+                info["phone"] = "000-000"
                 return info
             end
         end,
@@ -663,6 +849,39 @@ Functions.ESX = {
                 TriggerClientEvent('esx_status:set', player.playerId, 'thirst', amount*10000)
             end
         end,
+
+        CreateUseableItens = function()
+            local survivalConfig, survivalLangs = exports['striata_resources']:striata_survival_config()
+
+            ESX.RegisterUsableItem(survivalLangs.itens.itemMedBag, function(source)
+                TriggerEvent("striata:survival:medBag",source)
+            end)
+
+            ESX.RegisterUsableItem(survivalLangs.itens.itemTweezers, function(source)
+                TriggerEvent("striata:survival:useTweezers",source)
+            end)
+
+            ESX.RegisterUsableItem(survivalLangs.itens.itemSutureKit, function(source)
+                TriggerEvent("striata:survival:useSutureKit",source)
+            end)
+
+            ESX.RegisterUsableItem(survivalLangs.itens.itemBurnCream, function(source)
+                TriggerEvent("striata:survival:useBurnCream",source)
+            end)
+
+            ESX.RegisterUsableItem(survivalLangs.itens.itemDefib, function(source)
+                TriggerEvent("striata:survival:useDefib",source)
+            end)
+
+            ESX.RegisterUsableItem(survivalLangs.itens.itemStretcher, function(source)
+                TriggerEvent("striata:survival:useStretcher",source)
+            end)
+
+            ESX.RegisterUsableItem(survivalLangs.itens.itemShroud, function(source)
+                TriggerEvent("striata:survival:shroud",source)
+            end)
+
+        end
     }
 }
 Events.ESX = {
@@ -680,9 +899,8 @@ Functions.QBCore = {
             return exports['qb-core']:GetCoreObject()
         end,
 
-        exports = function(...)
-            local args = {...}
-            return exports[args[1]][args[2]](args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10])
+        exports = function(script,functionName,...)
+            return exports[script][functionName](...)
         end,
 
         textInput = function(text, input)
@@ -697,8 +915,12 @@ Functions.QBCore = {
                         isRequired = true,
                     },    
                 }    
-            })    
-            return keyboard.cb
+            })
+            if keyboard then
+                return keyboard.cb
+            else
+                return ""
+            end
         end,    
         
         getOutfit = function()
@@ -829,6 +1051,86 @@ Functions.QBCore = {
 
         playSoundByGame = function(dict,name)
             PlaySoundFrontend(-1,dict,name,false)
+        end,
+
+        getNearestVehicles = function(radius)
+            local vehicles = {}
+            local px,py,pz = table.unpack(GetEntityCoords(PlayerPedId()))
+        
+            local vehs = {}
+            local it,veh = FindFirstVehicle()
+            if veh then
+                table.insert(vehs,veh)
+            end
+            local ok
+            repeat
+                ok,veh = FindNextVehicle(it)
+                if ok and veh then
+                    table.insert(vehs,veh)
+                end
+            until not ok
+            EndFindVehicle(it)
+        
+            for n,veh in pairs(vehs) do
+                local x,y,z = table.unpack(GetEntityCoords(veh))
+                local distance = Vdist(x,y,z,px,py,pz)
+                if distance <= radius then
+                    vehicles[veh] = distance
+                end
+            end
+            return vehicles
+        end,
+
+        getNearestVehicle = function(radius)
+            local vehicle
+            local vehicles = Functions["client"].getNearestVehicles(radius)
+            local min = radius+0.0001
+            for veh,dist in pairs(vehicles) do 
+                if dist < min then
+                    min = dist
+                    vehicle = veh
+                end
+            end
+            return vehicle
+        end,
+        
+        getNearestPlayers = function(radius)
+            local allPlayers = QBCore.Functions.GetPeds()
+            local players = {}
+            for n,player in pairs(allPlayers) do
+                local coords = GetEntityCoords(PlayerPedId())
+                local pedCoords = GetEntityCoords(player)
+                local distance = #(pedCoords - coords)
+                players[GetPlayerServerId(player)] = distance
+            end
+            return players
+        end,
+
+        getNearestPlayer = function(radius)
+            local player, distance = QBCore.Functions.GetClosestPlayer()
+            if distance <= radius then
+                return GetPlayerServerId(player)
+            end
+            return false
+        end,
+
+        killGod = function()
+            TransitionFromBlurred(1000)
+            nocauteado = false
+            local ped = PlayerPedId()
+            if GetEntityHealth(ped) < 101 or IsEntityDead(ped) then
+                local x,y,z = table.unpack(GetEntityCoords(ped))
+                NetworkResurrectLocalPlayer(x,y,z,true,true,false)
+            end
+            ClearPedBloodDamage(ped)
+            SetEntityInvincible(ped,false)
+            SetEntityHealth(ped,120)
+            ClearPedTasks(ped)
+            ClearPedSecondaryTask(ped)
+        end,
+    
+        setHealth = function(health)
+            return SetEntityHealth(PlayerPedId(),tonumber(health))
         end
     },
 
@@ -838,9 +1140,8 @@ Functions.QBCore = {
             return exports['qb-core']:GetCoreObject()
         end,
 
-        exports = function(...)
-            local args = {...}
-            return exports[args[1]][args[2]](args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10])
+        exports = function(script,functionName,...)
+            return exports[script][functionName](...)
         end,
 
         getUserId = function(source)
@@ -861,6 +1162,17 @@ Functions.QBCore = {
             local users = {}
             for k,v in pairs(QBCore.Functions.GetPlayers()) do
                 users[(QBCore.Functions.GetPlayer(v)).PlayerData.citizenid] = v
+            end
+            return users
+        end,
+
+        getUsersByPermission = function(perm)
+            local users = {}
+            for k,v in pairs(GetPlayers()) do
+                local user_id = Functions["server"].getUserId(tonumber(v))
+                if Functions["server"].hasPermission(user_id,perm) then
+                    table.insert(users,user_id)
+                end
             end
             return users
         end,
@@ -924,7 +1236,7 @@ Functions.QBCore = {
         giveBankMoney = function(user_id, amount)
             local player = QBCore.Functions.GetPlayerByCitizenId(user_id)
             if player then
-                return player.Functions.AddMoney('bank', amount, "Bank depost")
+                return player.Functions.AddMoney('bank', tonumber(amount), "Bank depost")
             else
                 return false
             end
@@ -951,7 +1263,8 @@ Functions.QBCore = {
         getInventoryItemAmount = function(user_id,item)
             local player = QBCore.Functions.GetPlayerByCitizenId(user_id)
             if player then
-                local itemInfo player.Functions.GetItemByName(item)
+                local itemInfo = player.Functions.GetItemByName(item)
+                print(item,json.encode(itemInfo))
                 local itemAmount = 0
                 if itemInfo then
                     itemAmount = itemInfo.amount
@@ -1004,7 +1317,7 @@ Functions.QBCore = {
             if item == "" then
                 return ""
             end
-            return QBCore.Shared.Items[item].name
+            return QBCore.Shared.Items[item].label
         end,
 
         getItemIndex = function(item)
@@ -1085,7 +1398,7 @@ Functions.QBCore = {
                 savedOutfit = savedOutfit[1].txt
                 savedOutfit = json.decode(savedOutfit)
                 savedOutfit.modelhash = nil
-                TriggerClientEvent("striata_resources:duplicityClientVersion",source,false,"setOutfit",{savedOutfit})
+                TriggerClientEvent("striata_resources:duplicityClientVersion",source,false,"setOutfit",savedOutfit)
 
                 return MySQL.Sync.fetchAll("DELETE FROM striatadb WHERE user_id = @user_id AND db = @db", {
                     ["@user_id"] = Functions["server"].getUserId(source),
@@ -1109,6 +1422,12 @@ Functions.QBCore = {
             local player = QBCore.Functions.GetPlayerByCitizenId(user_id)
             if player then
                 player.Functions.SetMetaData('injail', time)
+
+                local _hasRecord = false
+                if time > 0 then
+                    _hasRecord = true
+                end
+                player.Functions.SetMetaData('criminalrecord', {hasRecord = _hasRecord})
             else
                 local infosDB = MySQL.Sync.fetchAll("SELECT metadata FROM players WHERE citizenid = @citizenid", {
                     ["@citizenid"] = user_id,
@@ -1212,6 +1531,58 @@ Functions.QBCore = {
                 TriggerClientEvent('hud:client:UpdateNeeds', player.PlayerData.source, player.PlayerData.metadata.hunger, amount)
             end
         end,
+
+        CreateUseableItens = function()
+            local survivalConfig, survivalLangs = exports['striata_resources']:striata_survival_config()
+            QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemMedBag, function(source, item)
+                local Player = QBCore.Functions.GetPlayer(source)
+                if Player.Functions.GetItemByName(item.name) ~= nil then
+                    TriggerEvent("striata:survival:medBag",source)
+                end
+            end)
+
+            QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemTweezers, function(source, item)
+                local Player = QBCore.Functions.GetPlayer(source)
+                if Player.Functions.GetItemByName(item.name) ~= nil then
+                    TriggerEvent("striata:survival:useTweezers",source)
+                end
+            end)
+            
+            QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemSutureKit, function(source, item)
+                local Player = QBCore.Functions.GetPlayer(source)
+                if Player.Functions.GetItemByName(item.name) ~= nil then
+                    TriggerEvent("striata:survival:useSutureKit",source)
+                end
+            end)
+
+            QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemBurnCream, function(source, item)
+                local Player = QBCore.Functions.GetPlayer(source)
+                if Player.Functions.GetItemByName(item.name) ~= nil then
+                    TriggerEvent("striata:survival:useBurnCream",source)
+                end
+            end)
+
+            QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemDefib, function(source, item)
+                local Player = QBCore.Functions.GetPlayer(source)
+                if Player.Functions.GetItemByName(item.name) ~= nil then
+                    TriggerEvent("striata:survival:useDefib",source)
+                end
+            end)
+
+            QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemStretcher, function(source, item)
+                local Player = QBCore.Functions.GetPlayer(source)
+                if Player.Functions.GetItemByName(item.name) ~= nil then
+                    TriggerEvent("striata:survival:useStretcher",source)
+                end
+            end)
+
+            QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemShroud, function(source, item)
+                local Player = QBCore.Functions.GetPlayer(source)
+                if Player.Functions.GetItemByName(item.name) ~= nil then
+                    TriggerEvent("striata:survival:shroud",source)
+                end
+            end)
+        end
     }
 }
 Events.QBCore = {
