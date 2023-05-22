@@ -1,4 +1,4 @@
-FunctionsVersion = 1.0  --! por favor não altere aqui! | please do not change here!
+FunctionsVersion = 1.1  --! por favor não altere aqui! | please do not change here!
 Functions = {}
 Events = {}
 
@@ -61,6 +61,29 @@ Functions.vRP = {
     
         setHealth = function(health)
             return vRP.setHealth(health)
+        end,
+
+        addBlip = function(x,y,z,idtype,idcolor,text,scale,route)
+            local blip = AddBlipForCoord(x,y,z)
+            SetBlipSprite(blip,idtype)
+            SetBlipAsShortRange(blip,true)
+            SetBlipColour(blip,idcolor)
+            SetBlipScale(blip,scale)
+
+            if route then
+                SetBlipRoute(blip,true)
+            end
+
+            if text then
+                BeginTextCommandSetBlipName("STRING")
+                AddTextComponentString(text)
+                EndTextCommandSetBlipName(blip)
+            end
+            return blip
+        end,
+
+        removeBlip = function(blipId)
+            RemoveBlip(id)
         end
     },
 
@@ -124,8 +147,20 @@ Functions.vRP = {
             end
         end,
 
+        request = function(source, text, time)      
+            return vRP.request(source, text, time)
+        end,
+
         textInput = function(source,text, input)
             return vRP.prompt(source,text, input)
+        end,
+
+        giveHandMoney = function(user_id, amount)
+            return vRP.giveMoney(user_id,amount)
+        end,
+
+        removeHandMoney = function(user_id, amount)
+            return vRP.tryPayment(user_id,amount)
         end,
 
         giveBankMoney = function(user_id, amount)
@@ -274,6 +309,52 @@ Functions.ESX = {
         
         exports = function(script,functionName,...)
             return exports[script][functionName](...)
+        end,
+
+        request = function(text, time)
+            local currentTime = os.time()
+            local Elements = {
+                {
+                    icon = "",
+                    title = text,
+                    unselectable = true
+                },
+                {
+                    icon = "fas fa-check",
+                    title = "Sim",
+                    value = "yes"
+                },
+                {
+                    icon = "fa-solid fa-xmark",
+                    title = "Não",
+                    value = "no"
+                }
+            }
+        
+            local resp = ""
+            exports["esx_context"]:Open("right", Elements, function(menu, element)
+        
+                if element.value == "yes" then
+                    exports["esx_context"]:Close()
+                    resp = true
+                end
+                if element.value == "no" then
+                    exports["esx_context"]:Close()
+                    resp = false
+                end
+            end)
+
+            local currentTime2 = os.time()
+            repeat
+                Wait(50)
+
+                currentTime2 = os.time()
+                if (currentTime + time) - os.time() then
+                    exports["esx_context"]:Close()
+                end
+            until(resp ~= "" or ((currentTime + time) - currentTime2) <= 0)
+
+            return resp
         end,
 
         textInput = function(text, input)
@@ -493,6 +574,29 @@ Functions.ESX = {
     
         setHealth = function(health)
             return SetEntityHealth(PlayerPedId(),tonumber(health))
+        end,
+
+        addBlip = function(x,y,z,idtype,idcolor,text,scale,route)
+            local blip = AddBlipForCoord(x,y,z)
+            SetBlipSprite(blip,idtype)
+            SetBlipAsShortRange(blip,true)
+            SetBlipColour(blip,idcolor)
+            SetBlipScale(blip,scale)
+
+            if route then
+                SetBlipRoute(blip,true)
+            end
+
+            if text then
+                BeginTextCommandSetBlipName("STRING")
+                AddTextComponentString(text)
+                EndTextCommandSetBlipName(blip)
+            end
+            return blip
+        end,
+
+        removeBlip = function(blipId)
+            RemoveBlip(id)
         end
     },
 
@@ -573,11 +677,47 @@ Functions.ESX = {
                 return MySQL.Sync.fetchAll('UPDATE users SET job = ?, job_grade = ? WHERE identifier = ?', {job, 0, user_id})
             end
         end,
+        
+        giveHandMoney = function(user_id, amount)
+            local player = ESX.GetPlayerFromIdentifier(user_id)
+            if player then
+                return player.addAccountMoney("money",amount)
+            else
+                local userInfo = MySQL.Sync.fetchAll("SELECT accounts FROM users WHERE identifier = @identifier", {
+                    ["@identifier"] = user_id,
+                })
+                userAccounts = json.decode(userInfo[1].accounts)
+
+                userAccounts.money = userAccounts.money + amount
+                return MySQL.Sync.fetchAll("UPDATE users SET accounts = @accounts WHERE identifier = @identifier", {
+                    ["@identifier"] = user_id,
+                    ["@accounts"] = json.encode(userAccounts),
+                })
+            end
+        end,
+
+        removeHandMoney = function(user_id, amount)
+            local player = ESX.GetPlayerFromIdentifier(user_id)
+            if player then
+                return player.removeAccountMoney('money', amount)
+            else
+                local userInfo = MySQL.Sync.fetchAll("SELECT accounts FROM users WHERE identifier = @identifier", {
+                    ["@identifier"] = user_id,
+                })
+                userAccounts = json.decode(userInfo[1].accounts)
+
+                userAccounts.money = userAccounts.money - amount
+                return MySQL.Sync.fetchAll("UPDATE users SET accounts = @accounts WHERE identifier = @identifier", {
+                    ["@identifier"] = user_id,
+                    ["@accounts"] = json.encode(userAccounts),
+                })
+            end
+        end,
 
         giveBankMoney = function(user_id, amount)
             local player = ESX.GetPlayerFromIdentifier(user_id)
             if player then
-                return player.addMoney(amount)
+                return player.addAccountMoney("bank",amount)
             else
                 local userInfo = MySQL.Sync.fetchAll("SELECT accounts FROM users WHERE identifier = @identifier", {
                     ["@identifier"] = user_id,
@@ -903,6 +1043,25 @@ Functions.QBCore = {
             return exports[script][functionName](...)
         end,
 
+        request = function(text, time)
+            local dialog = exports['qb-input']:ShowInput({
+                header = "Confirmação",
+                submitText = "Confirmar",
+                inputs = {
+                    {
+                        text = text,
+                        name = "requestConfirmation",
+                        type = "checkbox",
+                        options = {
+                            { value = "confirmed", text = "Sim", checked = true },
+                        }
+                    },
+                },
+            })
+        
+            return dialog.confirmed
+        end,
+
         textInput = function(text, input)
             local keyboard = exports['qb-input']:ShowInput({
                 header = text,
@@ -1131,6 +1290,29 @@ Functions.QBCore = {
     
         setHealth = function(health)
             return SetEntityHealth(PlayerPedId(),tonumber(health))
+        end,
+
+        addBlip = function(x,y,z,idtype,idcolor,text,scale,route)
+            local blip = AddBlipForCoord(x,y,z)
+            SetBlipSprite(blip,idtype)
+            SetBlipAsShortRange(blip,true)
+            SetBlipColour(blip,idcolor)
+            SetBlipScale(blip,scale)
+
+            if route then
+                SetBlipRoute(blip,true)
+            end
+
+            if text then
+                BeginTextCommandSetBlipName("STRING")
+                AddTextComponentString(text)
+                EndTextCommandSetBlipName(blip)
+            end
+            return blip
+        end,
+
+        removeBlip = function(blipId)
+            RemoveBlip(id)
         end
     },
 
@@ -1230,6 +1412,33 @@ Functions.QBCore = {
                 job.grade.name = nil
                 job.grade.level = 0
                 return MySQL.Sync.fetchAll('UPDATE players SET job = ? WHERE citizenid = ?', { json.encode(job), user_id })
+            end
+        end,
+
+        giveHandMoney = function(user_id, amount)
+            local player = QBCore.Functions.GetPlayerByCitizenId(user_id)
+            if player then
+                return player.Functions.AddMoney('cash', tonumber(amount))
+            else
+                return false
+            end
+        end,
+
+        removeHandMoney = function(user_id, amount)
+            local player = QBCore.Functions.GetPlayerByCitizenId(user_id)
+            if player then
+                return player.Functions.RemoveMoney('cash', amount)
+            else
+                local data = MySQL.Sync.fetchAll('SELECT money FROM players WHERE citizenid = ?', { user_id })
+                local playerMoney = json.decode(data[1].money)
+                local cashCount = tonumber(playerMoney.cash) - tonumber(amount)
+                if cashCount > 0  then
+                    local newPlayerMoney = json.encode({cash = cashCount, crypto = tonumber(playerMoney.crypto), bank = tonumber(playerMoney.bank)})
+                    MySQL.Sync.fetchAll('UPDATE players SET money = ? WHERE citizenid = ?', {newPlayerMoney, user_id})
+                    return true
+                else
+                    return false
+                end
             end
         end,
 
