@@ -21,6 +21,7 @@ Config.resources = {  -- Defina true para ativar um resuorce e false para desati
 	["striata_notify"]					= false,
 	["striata_survival"]				= false,
 	["striata_production"]				= false,
+	["striata_races"]					= false,
 
 }
 

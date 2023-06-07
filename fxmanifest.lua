@@ -3,7 +3,7 @@ game 'gta5'
 
 author 'Striata <striatashop@hotmail.com>'
 description 'striata resources (Striata shop)'
-version '1.7'
+version '1.8'
 
 lua54 'yes'
 
