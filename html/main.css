@@ -1,3 +1,6 @@
+/* ---------------------------------------------------------------------------- */
+/* Fontes */
+/* ---------------------------------------------------------------------------- */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap');
 
 /* ---------------------------------------------------------------------------- */
@@ -847,4 +850,484 @@ html,body {
 
 	background-color: rgb(255, 71, 71);
 	height: 0%;
+}
+
+/* ---------------------------------------------------------------------------- */
+/* Races */
+/* ---------------------------------------------------------------------------- */
+
+.runnersJoin {
+    width: 10%;
+    /* border-radius: 1.0vw; */
+    margin-bottom: 1vw;
+    overflow: hidden;
+
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+
+    position: fixed;
+    bottom: 0%;
+    left: 45%;
+}
+
+.timeCount{
+	background-image: linear-gradient(to bottom right, rgb(11, 39, 117), rgb(57, 184, 216) );
+    width: 1.2%;
+    height: 2.1%;
+
+    border-radius: 50%;
+    border: 0.1vw solid white;
+    color: rgb(255,255,255);
+    text-shadow: 0.104vw 0 0 rgb(0,0,0), -0.104vw 0 0 rgb(0,0,0), 0 0.104vw 0 rgb(0,0,0), 0 -0.104vw 0 rgb(0,0,0), 0.052vw 0.052vw rgb(0,0,0), -0.052vw -0.052vw 0 rgb(0,0,0), 0.052vw -0.052vw 0 rgb(0,0,0), -0.052vw 0.052vw 0 rgb(0,0,0);
+
+	position: fixed;
+    bottom: var(--runners);
+	left: 49.5%;
+}
+
+.timeCount span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;  
+    line-height: normal;
+    font-family: 'Arial', cursive;
+    font-weight: bold;
+    font-size: 0.7vw;
+}
+
+.runner {
+	background: rgba( 255, 255, 255, 0.25 );
+	box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.37);
+    border-top: 0.1vw solid rgba(255,255,255,0.3);
+    border-bottom: 0.1vw rgba(255,255,255,0.3);
+    color: rgb(255,255,255);
+  	font-family: 'Arial', cursive;
+    font-weight: bold;
+    font-size: 0.7vw;
+    text-shadow: 0.104vw 0 0 rgb(0,0,0), -0.104vw 0 0 rgb(0,0,0), 0 0.104vw 0 rgb(0,0,0), 0 -0.104vw 0 rgb(0,0,0), 0.052vw 0.052vw rgb(0,0,0), -0.052vw -0.052vw 0 rgb(0,0,0), 0.052vw -0.052vw 0 rgb(0,0,0), -0.052vw 0.052vw 0 rgb(0,0,0);
+	list-style: none;
+	user-select: none;
+	white-space: nowrap;
+}
+
+.startPosition {
+  width: 15%;
+  position: fixed;
+  left: 85%;
+  text-align: center;
+  color: rgb(255,255,255);
+  background-image: linear-gradient(to bottom right, rgb(11, 39, 117), rgb(57, 184, 216) );
+}
+
+.raceStatusContainer {
+    font-family: 'Arial', cursive;
+    color: rgb(255,255,255);
+    text-shadow: 0.104vw 0 0 rgb(0,0,0), -0.104vw 0 0 rgb(0,0,0), 0 0.104vw 0 rgb(0,0,0), 0 -0.104vw 0 rgb(0,0,0), 0.052vw 0.052vw rgb(0,0,0), -0.052vw -0.052vw 0 rgb(0,0,0), 0.052vw -0.052vw 0 rgb(0,0,0), -0.052vw 0.052vw 0 rgb(0,0,0);
+    font-size: 0.7vw;
+  
+}
+
+.primaryFont {
+    font-size: 0.7vw;
+	font-weight: normal;
+}
+
+.runnersFont {
+    font-size: 0.7vw;
+	font-weight: normal;
+	list-style: none;
+	user-select: none;
+	white-space: nowrap;
+}
+
+.checkPoints .primaryFont{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 95%;  
+}
+
+.laps .primaryFont{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 95%;  
+}
+
+.raceTime .primaryFont{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 95%;  
+}
+
+.raceTimeLeft .primaryFont{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 95%;  
+}
+
+.laps {
+    width: 10%;
+    height: 2.0%;
+  
+    position: fixed;
+    bottom: 50%;
+    left: 2.5%;
+  
+    background: rgba( 255, 255, 255, 0.35 );
+	box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.37);
+}
+
+.raceTime {
+    width: 10%;
+    height: 2.0%;
+  
+    position: fixed;
+    bottom: 47.5%;
+    left: 2.5%;
+  
+    background: rgba( 255, 255, 255, 0.35 );
+	box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.37);
+}
+
+.raceTimeLeft {
+    width: 10%;
+    height: 2.0%;
+  
+    position: fixed;
+    bottom: 45%;
+    left: 2.5%;
+  
+    background: rgba( 255, 255, 255, 0.35 );
+	box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.37);
+}
+
+.checkPoints {
+    width: 10%;
+    height: 2.0%;
+  
+    position: fixed;
+    bottom: 42.5%;
+    left: 2.5%;
+  
+    background: rgba( 255, 255, 255, 0.35 );
+	box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.37);
+}
+
+.runners {
+    width: 15%;
+  
+    position: fixed;
+    bottom: 50%;
+    left: 84.5%;
+  
+    background: rgba( 255, 255, 255, 0.35 );
+	box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.37);
+}
+
+.runners .runner-status span{
+    width: 2.5%;
+    background: rgba( 255, 255, 255, 0.5 );
+}
+
+#runnerI {
+    background-image: linear-gradient(to bottom right, rgb(11, 39, 117), rgb(57, 184, 216) );
+}
+
+.runnerPosition {
+    width: 15%;
+    position: fixed;
+    left: 97%;
+    text-align: center;
+    color: rgb(255,255,255);
+    background-image: linear-gradient(to bottom right, rgb(11, 39, 117), rgb(57, 184, 216) );
+}
+
+.raceStatusContainer span #text {
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    position: left;
+    justify-content: left;
+    align-items: left;
+
+    line-height: normal;
+    font-family: 'Arial', cursive;
+    font-weight: bold;
+    user-select: none;
+	white-space: nowrap;
+
+    /* background-color: red; */
+}
+
+.raceStatusContainer span #content {
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    position: right;
+    justify-content: right;
+    align-items: right;
+
+    line-height: normal;
+    font-family: 'Arial', cursive;
+    font-weight: bold;
+    user-select: none;
+	white-space: nowrap;
+
+    /* background-color: green; */
+}
+
+.raceRankContainer #mode1 #raceRequestAccept{
+	font-family: 'Arial', cursive;
+    color: rgb(0,255,0);
+    text-shadow: 0.104vw 0 0 rgb(0,0,0), -0.104vw 0 0 rgb(0,0,0), 0 0.104vw 0 rgb(0,0,0), 0 -0.104vw 0 rgb(0,0,0), 0.052vw 0.052vw rgb(0,0,0), -0.052vw -0.052vw 0 rgb(0,0,0), 0.052vw -0.052vw 0 rgb(0,0,0), -0.052vw 0.052vw 0 rgb(0,0,0);
+    font-size: 0.7vw;
+}
+
+.raceRankContainer #mode1 #raceRequestRefuse{
+    font-family: 'Arial', cursive;
+    color: rgb(255, 0, 0);
+    text-shadow: 0.104vw 0 0 rgb(0,0,0), -0.104vw 0 0 rgb(0,0,0), 0 0.104vw 0 rgb(0,0,0), 0 -0.104vw 0 rgb(0,0,0), 0.052vw 0.052vw rgb(0,0,0), -0.052vw -0.052vw 0 rgb(0,0,0), 0.052vw -0.052vw 0 rgb(0,0,0), -0.052vw 0.052vw 0 rgb(0,0,0);
+    font-size: 0.7vw;
+}
+
+.raceRankContainer {
+	width: 15%;
+    position: fixed;
+    bottom: 50%;
+    left: 2.5%;
+
+	background: rgba( 255, 255, 255, 0.35 );
+	box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.37);
+
+	color: rgb(255, 255, 255);
+	font-family: 'Arial', cursive;
+	text-shadow: 0.104vw 0 0 rgb(0,0,0), -0.104vw 0 0 rgb(0,0,0), 0 0.104vw 0 rgb(0,0,0), 0 -0.104vw 0 rgb(0,0,0), 0.052vw 0.052vw rgb(0,0,0), -0.052vw -0.052vw 0 rgb(0,0,0), 0.052vw -0.052vw 0 rgb(0,0,0), -0.052vw 0.052vw 0 rgb(0,0,0);
+    font-size: 0.7vw;
+}
+
+.raceRankContainer2 {
+	width: 80%;
+	height: 80%;
+    position: fixed;
+    bottom: 10%;
+    left: 10%;
+
+	background: rgba( 255, 255, 255, 0.35 );
+	box-shadow: 0 8px 32px 0 rgba(255, 255, 255, 0.37);
+
+	color: rgb(255, 255, 255);
+	font-family: 'Arial', cursive;
+	text-shadow: 0.104vw 0 0 rgb(0,0,0), -0.104vw 0 0 rgb(0,0,0), 0 0.104vw 0 rgb(0,0,0), 0 -0.104vw 0 rgb(0,0,0), 0.052vw 0.052vw rgb(0,0,0), -0.052vw -0.052vw 0 rgb(0,0,0), 0.052vw -0.052vw 0 rgb(0,0,0), -0.052vw 0.052vw 0 rgb(0,0,0);
+    font-size: 0.7vw;
+}
+
+.positions {
+  display: flex;
+  width: 2.5%;
+  height: 5%;
+}
+
+.status {
+  display: flex;
+  width: 2.5%;
+  height: 5%;
+}
+
+.topMensage {
+  position: absolute;
+  background-image: linear-gradient(to bottom right, rgb(11, 39, 117), rgb(57, 184, 216) );
+  width: 95%;
+  height: 5%;
+  left: 5%;
+  display: flex;
+}
+
+.topMensage #name, .topMensage #vehicle, .topMensage #class, .topMensage #time {
+    flex-basis: 25%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.runnersRank {
+	height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+	border: solid rgb(88, 88, 88);
+	border-width: 0.1vw 0.0vw 0.1vw 0.0vw;
+}
+
+.bottomMensage {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0%;
+	top: 5%;
+  	display: flex;
+	flex-direction: column;
+}
+
+.runnersRank {
+	width: 100%;
+	height: 5%;
+}
+
+.bottomMensage #position {
+    flex-basis: 1.8%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+	border: solid rgb(88, 88, 88);
+	border-width: 0.0vw 0.1vw 0.0vw 0.1vw;
+}
+.bottomMensage #status {
+    flex-basis: 3.3%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.bottomMensage #name, .bottomMensage #vehicle, .bottomMensage #class, .bottomMensage #time {
+	background-color: white;
+    flex-basis: 25%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.topMensage {
+  position: absolute;
+  background-image: linear-gradient(to bottom right, rgb(11, 39, 117), rgb(57, 184, 216) );
+  width: 95%;
+  height: 5%;
+  left: 5%;
+  display: flex;
+}
+
+.topMensage #name, .topMensage #vehicle, .topMensage #class, .topMensage #time {
+    flex-basis: 25%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.runnersRank {
+	width: 100%;
+	height: 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+	border: solid rgb(88, 88, 88);
+	border-width: 0.1vw 0.0vw 0.1vw 0.0vw;
+}
+
+.runnersRank b{
+	width: 100%;
+	height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+	border: solid rgb(20, 22, 85);
+	border-width: 0.1vw 0.0vw 0.1vw 0.0vw;
+
+	color: rgb(255, 255, 255);
+	font-family: 'Arial', cursive;
+	text-shadow: 0.104vw 0 0 rgb(20, 22, 85), -0.104vw 0 0 rgb(20, 22, 85), 0 0.104vw 0 rgb(20, 22, 85), 0 -0.104vw 0 rgb(20, 22, 85), 0.052vw 0.052vw rgb(20, 22, 85), -0.052vw -0.052vw 0 rgb(20, 22, 85), 0.052vw -0.052vw 0 rgb(20, 22, 85), -0.052vw 0.052vw 0 rgb(2, 4, 37);
+    font-size: 0.85vw;
+}
+
+.runnersRank img{
+	width: 80%;
+	height: 80%;
+}
+
+.bottomMensage {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0%;
+	top: 5%;
+  	display: flex;
+	flex-direction: column;
+}
+
+.bottomMensage #position {
+    flex-basis: 1.8%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+	border: solid rgb(88, 88, 88);
+	border-width: 0.0vw 0.1vw 0.0vw 0.1vw;
+}
+.bottomMensage #status {
+    flex-basis: 3.3%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.bottomMensage #name, .bottomMensage #vehicle, .bottomMensage #class, .bottomMensage #time {
+	background-color: white;
+    flex-basis: 25%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.racesRankInteraction {
+	display: flex;
+	justify-content: space-around;
+	margin-top: 52.7%;
+}
+
+.racesRankInteraction button {
+	background-image: linear-gradient(to bottom right, rgb(11, 39, 117), rgb(57, 184, 216));
+	border: solid rgb(88, 88, 88);
+	border-radius: 1.7vw;
+	border-width: 0.13vw;
+	padding: 0.521% 1.042%;
+
+	cursor: pointer;
+
+	color: rgb(255, 255, 255);
+	font-family: 'Arial', cursive;
+	text-shadow: 0.104vw 0 0 rgb(0,0,0), -0.104vw 0 0 rgb(0,0,0), 0 0.104vw 0 rgb(0,0,0), 0 -0.104vw 0 rgb(0,0,0), 0.052vw 0.052vw rgb(0,0,0), -0.052vw -0.052vw 0 rgb(0,0,0), 0.052vw -0.052vw 0 rgb(0,0,0), -0.052vw 0.052vw 0 rgb(0,0,0);
+    font-size: 0.7vw;
+
+	transition: background-color 0.3s;
+}
+
+.racesRankInteraction button:hover {
+	background-color: rgb(57, 184, 216);
 }

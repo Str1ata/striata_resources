@@ -3,7 +3,7 @@ game 'gta5'
 
 author 'Striata <striatashop@hotmail.com>'
 description 'striata resources (Striata shop)'
-version '1.8'
+version '1.81'
 
 lua54 'yes'
 
@@ -29,7 +29,7 @@ server_scripts {
 ui_page 'html/index.html'
 
 files {
-	"html/**",
+	"html/**"
 }      
 
 escrow_ignore {

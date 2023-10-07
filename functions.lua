@@ -1,4 +1,4 @@
-FunctionsVersion = 1.1  --! por favor não altere aqui! | please do not change here!
+FunctionsVersion = 1.2  --! por favor não altere aqui! | please do not change here!
 Functions = {}
 Events = {}
 
@@ -286,7 +286,9 @@ Functions.vRP = {
         end,
         
         CreateUseableItens = function()
-            local survivalConfig, survivalLangs = exports['striata_resources']:striata_survival_config()
+            if Config.resources["striata_survival"] then
+                local survivalConfig, survivalLangs = exports['striata_resources']:striata_survival_config()
+            end
         end
     }
     
@@ -991,35 +993,37 @@ Functions.ESX = {
         end,
 
         CreateUseableItens = function()
-            local survivalConfig, survivalLangs = exports['striata_resources']:striata_survival_config()
+            if Config.resources["striata_survival"] then
+                local survivalConfig, survivalLangs = exports['striata_resources']:striata_survival_config()
 
-            ESX.RegisterUsableItem(survivalLangs.itens.itemMedBag, function(source)
-                TriggerEvent("striata:survival:medBag",source)
-            end)
+                ESX.RegisterUsableItem(survivalLangs.itens.itemMedBag, function(source)
+                    TriggerEvent("striata:survival:medBag",source)
+                end)
 
-            ESX.RegisterUsableItem(survivalLangs.itens.itemTweezers, function(source)
-                TriggerEvent("striata:survival:useTweezers",source)
-            end)
+                ESX.RegisterUsableItem(survivalLangs.itens.itemTweezers, function(source)
+                    TriggerEvent("striata:survival:useTweezers",source)
+                end)
 
-            ESX.RegisterUsableItem(survivalLangs.itens.itemSutureKit, function(source)
-                TriggerEvent("striata:survival:useSutureKit",source)
-            end)
+                ESX.RegisterUsableItem(survivalLangs.itens.itemSutureKit, function(source)
+                    TriggerEvent("striata:survival:useSutureKit",source)
+                end)
 
-            ESX.RegisterUsableItem(survivalLangs.itens.itemBurnCream, function(source)
-                TriggerEvent("striata:survival:useBurnCream",source)
-            end)
+                ESX.RegisterUsableItem(survivalLangs.itens.itemBurnCream, function(source)
+                    TriggerEvent("striata:survival:useBurnCream",source)
+                end)
 
-            ESX.RegisterUsableItem(survivalLangs.itens.itemDefib, function(source)
-                TriggerEvent("striata:survival:useDefib",source)
-            end)
+                ESX.RegisterUsableItem(survivalLangs.itens.itemDefib, function(source)
+                    TriggerEvent("striata:survival:useDefib",source)
+                end)
 
-            ESX.RegisterUsableItem(survivalLangs.itens.itemStretcher, function(source)
-                TriggerEvent("striata:survival:useStretcher",source)
-            end)
+                ESX.RegisterUsableItem(survivalLangs.itens.itemStretcher, function(source)
+                    TriggerEvent("striata:survival:useStretcher",source)
+                end)
 
-            ESX.RegisterUsableItem(survivalLangs.itens.itemShroud, function(source)
-                TriggerEvent("striata:survival:shroud",source)
-            end)
+                ESX.RegisterUsableItem(survivalLangs.itens.itemShroud, function(source)
+                    TriggerEvent("striata:survival:shroud",source)
+                end)
+            end
 
         end
     }
@@ -1742,55 +1746,57 @@ Functions.QBCore = {
         end,
 
         CreateUseableItens = function()
-            local survivalConfig, survivalLangs = exports['striata_resources']:striata_survival_config()
-            QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemMedBag, function(source, item)
-                local Player = QBCore.Functions.GetPlayer(source)
-                if Player.Functions.GetItemByName(item.name) ~= nil then
-                    TriggerEvent("striata:survival:medBag",source)
-                end
-            end)
+            if Config.resources["striata_survival"] then
+                local survivalConfig, survivalLangs = exports['striata_resources']:striata_survival_config()
+                QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemMedBag, function(source, item)
+                    local Player = QBCore.Functions.GetPlayer(source)
+                    if Player.Functions.GetItemByName(item.name) ~= nil then
+                        TriggerEvent("striata:survival:medBag",source)
+                    end
+                end)
 
-            QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemTweezers, function(source, item)
-                local Player = QBCore.Functions.GetPlayer(source)
-                if Player.Functions.GetItemByName(item.name) ~= nil then
-                    TriggerEvent("striata:survival:useTweezers",source)
-                end
-            end)
-            
-            QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemSutureKit, function(source, item)
-                local Player = QBCore.Functions.GetPlayer(source)
-                if Player.Functions.GetItemByName(item.name) ~= nil then
-                    TriggerEvent("striata:survival:useSutureKit",source)
-                end
-            end)
+                QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemTweezers, function(source, item)
+                    local Player = QBCore.Functions.GetPlayer(source)
+                    if Player.Functions.GetItemByName(item.name) ~= nil then
+                        TriggerEvent("striata:survival:useTweezers",source)
+                    end
+                end)
+                
+                QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemSutureKit, function(source, item)
+                    local Player = QBCore.Functions.GetPlayer(source)
+                    if Player.Functions.GetItemByName(item.name) ~= nil then
+                        TriggerEvent("striata:survival:useSutureKit",source)
+                    end
+                end)
 
-            QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemBurnCream, function(source, item)
-                local Player = QBCore.Functions.GetPlayer(source)
-                if Player.Functions.GetItemByName(item.name) ~= nil then
-                    TriggerEvent("striata:survival:useBurnCream",source)
-                end
-            end)
+                QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemBurnCream, function(source, item)
+                    local Player = QBCore.Functions.GetPlayer(source)
+                    if Player.Functions.GetItemByName(item.name) ~= nil then
+                        TriggerEvent("striata:survival:useBurnCream",source)
+                    end
+                end)
 
-            QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemDefib, function(source, item)
-                local Player = QBCore.Functions.GetPlayer(source)
-                if Player.Functions.GetItemByName(item.name) ~= nil then
-                    TriggerEvent("striata:survival:useDefib",source)
-                end
-            end)
+                QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemDefib, function(source, item)
+                    local Player = QBCore.Functions.GetPlayer(source)
+                    if Player.Functions.GetItemByName(item.name) ~= nil then
+                        TriggerEvent("striata:survival:useDefib",source)
+                    end
+                end)
 
-            QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemStretcher, function(source, item)
-                local Player = QBCore.Functions.GetPlayer(source)
-                if Player.Functions.GetItemByName(item.name) ~= nil then
-                    TriggerEvent("striata:survival:useStretcher",source)
-                end
-            end)
+                QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemStretcher, function(source, item)
+                    local Player = QBCore.Functions.GetPlayer(source)
+                    if Player.Functions.GetItemByName(item.name) ~= nil then
+                        TriggerEvent("striata:survival:useStretcher",source)
+                    end
+                end)
 
-            QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemShroud, function(source, item)
-                local Player = QBCore.Functions.GetPlayer(source)
-                if Player.Functions.GetItemByName(item.name) ~= nil then
-                    TriggerEvent("striata:survival:shroud",source)
-                end
-            end)
+                QBCore.Functions.CreateUseableItem(survivalLangs.itens.itemShroud, function(source, item)
+                    local Player = QBCore.Functions.GetPlayer(source)
+                    if Player.Functions.GetItemByName(item.name) ~= nil then
+                        TriggerEvent("striata:survival:shroud",source)
+                    end
+                end)
+            end
         end
     }
 }
