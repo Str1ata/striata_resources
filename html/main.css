@@ -16,6 +16,7 @@ body {
 	right: 1%;
 	top: 3%;
 	transform: skew(0.5turn, -2.5deg);
+	z-index: 10;
 }
 
 .notify {
@@ -928,7 +929,6 @@ html,body {
     color: rgb(255,255,255);
     text-shadow: 0.104vw 0 0 rgb(0,0,0), -0.104vw 0 0 rgb(0,0,0), 0 0.104vw 0 rgb(0,0,0), 0 -0.104vw 0 rgb(0,0,0), 0.052vw 0.052vw rgb(0,0,0), -0.052vw -0.052vw 0 rgb(0,0,0), 0.052vw -0.052vw 0 rgb(0,0,0), -0.052vw 0.052vw 0 rgb(0,0,0);
     font-size: 0.7vw;
-  
 }
 
 .primaryFont {
@@ -1330,4 +1330,466 @@ html,body {
 
 .racesRankInteraction button:hover {
 	background-color: rgb(57, 184, 216);
+}
+
+/* ---------------------------------------------------------------------------- */
+/* Level */
+/* ---------------------------------------------------------------------------- */
+
+#nuiLevel .containerLevel {
+    overflow: visible;
+    position: absolute;
+    bottom: 30%;
+    left: 30%;
+
+    width: 40%;
+    height: 45%;
+    margin: auto;
+
+    border: solid black;
+    box-shadow: 0 0 0.3vw rgb(255, 255, 255);
+    border-radius: 0.0vw 2.0vw 0vw 2.0vw;
+    border-width: 2.5%;
+    /* background-color: rgb(0, 195, 255); */
+    background-image: url("https://oyster.ignimgs.com/mediawiki/apis.ign.com/grand-theft-auto-5/2/2a/GTAO_070623.jpg?");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    text-align: center;
+    color: rgb(255, 255, 255);
+    font-family: 'Arial', cursive;
+    text-shadow: 0.104vw 0 0 rgb(0, 0, 0), -0.104vw 0 0 rgb(0, 0, 0), 0 0.104vw 0 rgb(0, 0, 0), 0 -0.104vw 0 rgb(0, 0, 0), 0.052vw 0.052vw rgb(0, 0, 0), -0.052vw -0.052vw 0 rgb(0, 0, 0), 0.052vw -0.052vw 0 rgb(0, 0, 0), -0.052vw 0.052vw 0 rgb(0, 0, 0);
+    font-size: 0.7vw;
+}
+
+#nuiLevel .boxesLevelItem,
+#nuiLevel .boxesLevelVehicle {
+    position: absolute;
+    left: 4.5%;
+    background-color: #505050a6;
+    width: 90%;
+    height: 40%;
+    box-shadow: 0 0 0.3vw rgb(255, 255, 255);
+    border: solid black;
+    border-width: 2.5%;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    gap: 0.5%;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+    pointer-events: all;
+}
+
+#nuiLevel .boxesLevelItem {
+    bottom: 53.0%;
+    border-radius: 2.0vw 0.0vw 0vw 0vw;
+}
+
+#nuiLevel .boxesLevelVehicle {
+    bottom: 4.5%;
+    border-radius: 0vw 0vw 2.0vw 0.0vw;
+}
+
+#nuiLevel .containerLevel .itensText,
+#nuiLevel .containerLevel .VehiclesText {
+    position: absolute;
+    left: 30%;
+    bottom: 90.0%;
+    z-index: 1;
+}
+
+#nuiLevel .containerLevel .levelButton {
+    position: absolute;
+    left: 4.5%;
+    width: 90.6%;
+    height: 5%;
+    bottom: 47.2%;
+    z-index: 1;
+    background-color: #05a000d5;
+    border: solid black;
+    box-shadow: 0 0 0.3vw rgb(255, 255, 255);
+    border-radius: 0.0vw 2.0vw 0.0vw 2.0vw;
+    border-width: 2.5%;
+
+    text-align: center;
+    color: rgb(255, 255, 255);
+    font-family: 'Arial', cursive;
+    text-shadow: 0.104vw 0 0 rgb(0, 0, 0), -0.104vw 0 0 rgb(0, 0, 0), 0 0.104vw 0 rgb(0, 0, 0), 0 -0.104vw 0 rgb(0, 0, 0), 0.052vw 0.052vw rgb(0, 0, 0), -0.052vw -0.052vw 0 rgb(0, 0, 0), 0.052vw -0.052vw 0 rgb(0, 0, 0), -0.052vw 0.052vw 0 rgb(0, 0, 0);
+    font-size: 0.6vw;
+}
+
+#nuiLevel .containerLevel .levelButton:hover {
+    background-color: #07da00d5;
+	cursor: pointer;
+    border-radius: 2.0vw 0.0vw 2.0vw 0.0vw;
+}
+
+#nuiLevel .containerLevel .photo {
+    width: 100%;
+    height: 70%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#nuiLevel .containerLevel .infoBox {
+    width: 100%;
+    height: 27.5%;
+    background-color: #ffffffad;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    font-family: 'Arial', cursive;
+    text-shadow: 0.104vw 0 0 rgb(0, 0, 0), -0.104vw 0 0 rgb(0, 0, 0), 0 0.104vw 0 rgb(0, 0, 0), 0 -0.104vw 0 rgb(0, 0, 0), 0.052vw 0.052vw rgb(0, 0, 0), -0.052vw -0.052vw 0 rgb(0, 0, 0), 0.052vw -0.052vw 0 rgb(0, 0, 0), -0.052vw 0.052vw 0 rgb(0, 0, 0);
+    font-size: 0.7vw;
+}
+
+#nuiLevel .containerLevel .box {
+    min-width: 15%;
+    height: 70%;
+    margin: 0.7% 0% 0% 0%;
+    white-space: nowrap;
+    border: solid rgb(175, 10, 10);
+    box-shadow: 0 0 0.35vw rgb(175, 10, 10);
+    background-color: #505050cb;
+    border-width: 2.5%;
+    display: inline-block;
+}
+
+#nuiLevel .checkbox-label {
+    position: absolute;
+    display: inline-block;
+    width: 3%;
+    height: 8%;
+    border: 0.15vw solid #ffffff;
+    box-shadow: 0 0 0.15vw rgb(0, 0, 0);
+    border-radius: 50%;
+    cursor: pointer;
+	transform: translate(15%, 15%);
+}
+
+#nuiLevel .item-checkbox, .vehicle-checkbox {
+    position: absolute;
+    left: -9999px;
+}
+
+#nuiLevel .item-checkbox:checked +.checkbox-label::before,
+#nuiLevel .vehicle-checkbox:checked +.checkbox-label::before {
+    content: '\2713';
+    display: block;
+    text-align: center;
+    line-height: 20px;
+    color: rgb(30, 255, 0);
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#nuiLevel .item-checkbox:checked + .checkbox-label,
+#nuiLevel .vehicle-checkbox:checked + .checkbox-label {
+    border-color: #07da00;
+}
+
+#nuiLevel .containerLevel *::-webkit-scrollbar {
+    width: 2.5vw;
+    height: 0.5vw;
+}
+
+#nuiLevel .containerLevel *::-webkit-scrollbar-thumb {
+    background-color: #ffffff;
+    border-radius: 2.0vw;
+    border: solid black;
+}
+
+#nuiLevel .containerLevel *::-webkit-scrollbar-button,
+#nuiLevel .containerLevel *::-webkit-scrollbar-corner { 
+	background: transparent;
+}
+
+#nuiLevelWhitelist .backScreen {
+    overflow: visible;
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+	top: 0%;
+	left: 0%;
+
+	/* background-color: black; */
+	background-image: url("https://media.discordapp.net/attachments/753086574710882457/1164253434107658270/gta-v-night-los-santos.jpg");
+
+	background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+	z-index: 5;
+}
+
+
+#nuiLevelWhitelist .socialButton {
+	z-index: 6;
+	cursor: pointer;
+}
+
+#nuiLevelWhitelist .socialButton:hover::before {
+    content: attr(title);
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    /* background-color: rgba(255, 255, 255, 0.9); */
+    padding: 2px 5px;
+    border-radius: 3px;
+    white-space: nowrap;
+
+	font-family: 'Arial', cursive;
+    color: rgb(255,255,255);
+    text-shadow: 0.104vw 0 0 rgb(0,0,0), -0.104vw 0 0 rgb(0,0,0), 0 0.104vw 0 rgb(0,0,0), 0 -0.104vw 0 rgb(0,0,0), 0.052vw 0.052vw rgb(0,0,0), -0.052vw -0.052vw 0 rgb(0,0,0), 0.052vw -0.052vw 0 rgb(0,0,0), -0.052vw 0.052vw 0 rgb(0,0,0);
+    font-size: 0.7vw;
+}
+
+#nuiLevelWhitelist #socialButton1 {
+	position: absolute;
+	width: 2.5%;
+    height: 4%;
+	top: 60%;
+	left: 26%;
+	background-color: rgba(255, 255, 255, 0.500);
+	border-radius: 1vw;
+}
+
+#nuiLevelWhitelist #socialButton2 {
+	position: absolute;
+	width: 2.5%;
+    height: 4%;
+	top: 50%;
+	left: 26%;
+	background-color: rgba(255, 255, 255, 0.500);
+	border-radius: 1vw;
+}
+
+#nuiLevelWhitelist #socialButton3 {
+	position: absolute;
+	width: 2.5%;
+    height: 4%;
+	top: 40%;
+	left: 26%;
+	background-color: rgba(255, 255, 255, 0.500);
+	border-radius: 1vw;
+}
+
+#nuiLevelWhitelist #socialButton4 {
+	position: absolute;
+	width: 2.5%;
+    height: 4%;
+	top: 40%;
+	left: 71%;
+	background-color: rgba(255, 255, 255, 0.500);
+	border-radius: 1vw;
+}
+
+#nuiLevelWhitelist #socialButton5 {
+	position: absolute;
+	width: 2.5%;
+    height: 4%;
+	top: 50%;
+	left: 71%;
+	background-color: rgba(255, 255, 255, 0.500);
+	border-radius: 1vw;
+}
+
+#nuiLevelWhitelist #socialButton6 {
+	position: absolute;
+	width: 2.5%;
+    height: 4%;
+	top: 60%;
+	left: 71%;
+	background-color: rgba(255, 255, 255, 0.500);
+	border-radius: 1vw;
+}
+
+#nuiLevelWhitelist .socialButton img{
+	width: 100%;
+	height: 100%;
+	border-radius: 1vw;
+	background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#nuiLevelWhitelist .backScreen .mensage,
+#nuiLevelWhitelist .backScreen .textBox {
+	position: absolute;
+	width: 40%;
+    height: 20%;
+	top: 40%;
+	left: 30%;
+	
+	background-color: rgba(255, 255, 255, 0.238);
+	border-radius: 2.0vw 2.0vw 0.0vw 0.0vw;
+    border: solid white;
+	box-shadow: 0 0 0.5vw white;
+
+	display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    font-family: 'Arial', cursive;
+    text-shadow: 0.104vw 0 0 rgb(0, 0, 0), -0.104vw 0 0 rgb(0, 0, 0), 0 0.104vw 0 rgb(0, 0, 0), 0 -0.104vw 0 rgb(0, 0, 0), 0.052vw 0.052vw rgb(0, 0, 0), -0.052vw -0.052vw 0 rgb(0, 0, 0), 0.052vw -0.052vw 0 rgb(0, 0, 0), -0.052vw 0.052vw 0 rgb(0, 0, 0);
+    font-size: 1.3vw;
+}
+
+#nuiLevelWhitelist .backScreen button {
+	position: absolute;
+	width: 40.3%;
+    height: 4%;
+	top: 61.5%;
+	left: 30.05%;
+
+	z-index: 1;
+    background-color: #05a000d5;
+    border: solid white;
+    box-shadow: 0 0 0.5vw white;
+    border-radius: 0.0vw 0.0vw 2.0vw 2.0vw;
+    border-width: 2.5%;
+
+	display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    font-family: 'Arial', cursive;
+    text-shadow: 0.104vw 0 0 rgb(0, 0, 0), -0.104vw 0 0 rgb(0, 0, 0), 0 0.104vw 0 rgb(0, 0, 0), 0 -0.104vw 0 rgb(0, 0, 0), 0.052vw 0.052vw rgb(0, 0, 0), -0.052vw -0.052vw 0 rgb(0, 0, 0), 0.052vw -0.052vw 0 rgb(0, 0, 0), -0.052vw 0.052vw 0 rgb(0, 0, 0);
+    font-size: 1.0vw;
+}
+
+#nuiLevelWhitelist .backScreen button:hover {
+    background-color: #07da00d5;
+	box-shadow: 0 0 0.5vw #07da00d5;
+	cursor: pointer;
+}
+
+#nuiLevelWhitelist .backScreen .whitelistWaitButton:hover {
+	cursor: wait;
+}
+
+#nuiLevelWhitelist .backScreen .whitelistReprove:hover {
+	cursor: not-allowed;
+}
+
+#nuiLevelWhitelist .backScreen .quizBox {
+	position: absolute;
+	width: 40%;
+    height: 20%;
+	top: 40%;
+	left: 30%;
+	
+	background-color: rgba(255, 255, 255, 0.238);
+	border-radius: 2.0vw 2.0vw 0.0vw 0.0vw;
+    border: solid white;
+	box-shadow: 0 0 0.5vw white;
+
+    color: rgb(255, 255, 255);
+    font-family: 'Arial', cursive;
+    text-shadow: 0.104vw 0 0 rgb(0, 0, 0), -0.104vw 0 0 rgb(0, 0, 0), 0 0.104vw 0 rgb(0, 0, 0), 0 -0.104vw 0 rgb(0, 0, 0), 0.052vw 0.052vw rgb(0, 0, 0), -0.052vw -0.052vw 0 rgb(0, 0, 0), 0.052vw -0.052vw 0 rgb(0, 0, 0), -0.052vw 0.052vw 0 rgb(0, 0, 0);
+    font-size: 1.0vw;
+
+	display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap: 2.5%;
+
+	overflow: auto;
+}
+
+#nuiLevelWhitelist .backScreen .questionText {
+    border: solid white;
+    border-width: 0.2vw 0.0vw 0.0vw 0.0vw;
+    
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+	padding: 1% 0% 0% 0%;
+}
+
+#nuiLevelWhitelist .backScreen .questionText:first-child {
+    border: none;
+}
+
+#nuiLevelWhitelist .backScreen .questionBox {
+	display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+
+	font-size: 0.7vw;
+	padding: 0% 0% 0% 2%;
+}
+
+#nuiLevelWhitelist .backScreen .questionBox:last-child {
+	padding: 0% 0% 1% 2%;
+}
+
+#nuiLevelWhitelist .question-checkbox {
+    position: absolute;
+    left: -9999px;
+}
+
+#nuiLevelWhitelist .question-checkbox {
+    display: none;
+}
+
+#nuiLevelWhitelist .checkbox-label {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+#nuiLevelWhitelist .checkbox-label::before {
+    content: '';
+    display: inline-block;
+    width: 1.0vw;
+    height: 1.0vw;
+    background-color: #fff;
+    border: 0.15vw solid #000;
+    border-radius: 0.208vw;
+    margin-right: 0.52vw;
+}
+
+#nuiLevelWhitelist .question-checkbox:checked + .checkbox-label::before {
+    content: '\2713';
+    font-size: 0.83vw;
+    color: #1eff00;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+#nuiLevelWhitelist *::-webkit-scrollbar {
+    width: 0.8vw;
+    border-radius: 2.0vw;
+}
+
+#nuiLevelWhitelist *::-webkit-scrollbar-thumb {
+    background-color: #ffffff;
+    border-radius: 2.0vw;
+    border: solid black;
+}
+
+#nuiLevelWhitelist *::-webkit-scrollbar-button,
+#nuiLevelWhitelist *::-webkit-scrollbar-corner { 
+	background: transparent;
 }
