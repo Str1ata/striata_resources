@@ -1,6 +1,23 @@
-FunctionsVersion = 1.2  --! por favor não altere aqui! | please do not change here!
+FunctionsVersion = 1.3  --! por favor não altere aqui! | please do not change here!
 Functions = {}
 Events = {}
+
+--todo: Configure alguns eventos para que funcione com o seu servidor aqui! | Set up some events to make it work with your server here!!
+if not IsDuplicityVersion() then  --? client
+    RegisterNetEvent("striata:truck:truckSpawned")
+    AddEventHandler("striata:truck:truckSpawned",function(entity,plate,netId,locked)
+        --! Coloque aqui eventos ou exports no lado do client para garagens com função de desligamento de veiculos. | Enter client-side events or exports here for garages with a vehicle shutdown function.
+        TriggerServerEvent("striata:truck:truckSpawned",plate,netId,locked)
+        
+        TriggerServerEvent("registerVehicleInRegister",netId)
+    end)
+else  --? Server
+    --! Coloque aqui eventos ou exports no lado do servidor para garagens com função de desligamento de veiculos. | Place server-side events or exports here for garages with vehicle shutdown function.
+    RegisterNetEvent("striata:truck:truckSpawned")
+    AddEventHandler("striata:truck:truckSpawned",function(plate,netId,locked)
+        --exports["nation-garages"]:toggleVehicleEngine(netId)
+    end)
+end
 
 --todo: Configure as funções do seu de servidor aqui! | Configure your server functions here!
 Functions.vRP = {
@@ -289,6 +306,22 @@ Functions.vRP = {
             if Config.resources["striata_survival"] then
                 local survivalConfig, survivalLangs = exports['striata_resources']:striata_survival_config()
             end
+        end,
+
+        checkHomeAcess = function(source,user_id,homeName)
+            local table = vRP.query("homes/get_homeuserid",{ user_id = user_id })
+            local table =  MySQL.Sync.fetchAll("SELECT * FROM vrp_homes_permissions WHERE user_id = @user_id", {
+                ["@user_id"] = user_id,
+            })
+			if table and #table > 0 then
+				for v in ipairs(table) do 
+					if table[v].home == homeName then
+						return true
+					end
+				end
+			end
+			TriggerClientEvent("Notify",source,Config["notifysTypes"].denied,"Você não tem acesso à essa residência.",4500)
+			return false
         end
     }
     
@@ -300,7 +333,6 @@ Events.vRP = {
     server = {
         playerSpawn = "vRP:playerSpawn"
     }
-
 }
 
 Functions.ESX = {

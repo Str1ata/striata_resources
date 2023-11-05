@@ -1,0 +1,44 @@
+{
+    "token": "",  // Coloque Sua Licença
+
+    "framework": "auto",  // auto, vrp, esx, qbcore
+
+    "Language": "pt-BR", // altere a linguagem aqui! Linguagens disponiveis: (en-US | pt-BR)
+
+    "resources": {  // Defina true para ativar um script e false para desativar.
+
+        "striata_time-weather": false,
+        "striata_admprision": false,
+        "striata_robberies": false,
+        "striata_doors": false,
+        "striata_level": false,
+        "striata_group-manager": false,
+        "striata_notify": false,
+        "striata_survival": false,
+        "striata_production": false,
+        "striata_races": false
+    },
+
+    "orderedResources": {  // Defina true para ativar um script encomendado e false para desativar.
+        "striata_truck": false
+    },
+
+    "otherResources": {  // Defina true para ativar um outro script e false para desativar.
+        "striata_saleofdrugs": false,
+        "striata_mediaplayer": false,
+        "striata_farms": false,
+        "striata_radars": false,
+        "striata_domination": false,
+        "striata_tombtheft": false,
+        "striata_npcskillsystem": false,
+        "striata_npcslife": false,
+        "striata_dismantling": false
+    },
+
+    "notifysTypes": {  // Defina os tipos de notificações do seu servidor.
+        "success": "sucesso",
+        "denied": "negado",
+        "warning": "aviso",
+        "important": "importante"
+    }
+}

@@ -807,6 +807,19 @@ html,body {
 	height: 12%;
 }
 
+.productionButtons #ofuscate{
+	position: absolute;
+	text-align: center;
+	align-items: center;
+	top: 10.0%;
+    left: 102.5%;
+    width: 5.0%;
+	height: 10.0%;
+	background-color: rgb(61, 116, 148);
+	border: solid rgb(165, 163, 163);
+	border-width: 0.5em 0.5em 0.5em 0.0em;
+}
+
 .productionButtons #button11 .quantityFuel{
 	background-color: #4e4e4e;
 	position: relative;
