@@ -12,7 +12,7 @@
         "striata_survival": true,
         "striata_production": true,
         "striata_races": true,
-        "striata_fuel": true
+        "striata_advancedfuel": true
     },
     "orderedResources": {
         "striata_truck": true
