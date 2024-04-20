@@ -12,7 +12,7 @@
         "striata_time-weather": true,
         "striata_level": true
     },
-    "token": "striata157%",
+    "token": "",
     "resourcesConfigPermission": "owner.permissao",
     "orderedResources": {
         "striata_truck": true
