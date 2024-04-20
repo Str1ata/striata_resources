@@ -1,31 +1,29 @@
 {
+    "token": "",
+    "framework": "auto",
+    "Language": "pt-BR",
+    "resourcesConfigPermission": "owner.permissao",
     "resources": {
-        "striata_robberies": false,
-        "striata_group-manager": false,
+        "striata_time-weather": true,
         "striata_admprision": true,
-        "striata_fuel": true,
-        "striata_races": true,
         "striata_doors": true,
-        "striata_production": true,
+        "striata_level": true,
         "striata_notify": true,
         "striata_survival": true,
-        "striata_time-weather": true,
-        "striata_level": true
+        "striata_production": true,
+        "striata_races": true,
+        "striata_fuel": true
     },
-    "token": "",
-    "resourcesConfigPermission": "owner.permissao",
     "orderedResources": {
         "striata_truck": true
     },
     "notifysTypes": {
-        "denied": "negado",
         "success": "sucesso",
+        "denied": "negado",
         "warning": "aviso",
         "important": "importante"
     },
     "otherResources": {
         "striata_radars": false
-    },
-    "framework": "auto",
-    "Language": "pt-BR"
+    }
 }
