@@ -4,26 +4,26 @@
     "Language": "pt-BR",
     "resourcesConfigPermission": "owner.permissao",
     "resources": {
-        "striata_time-weather": true,
-        "striata_admprision": true,
-        "striata_doors": true,
-        "striata_level": true,
-        "striata_notify": true,
-        "striata_survival": true,
-        "striata_production": true,
-        "striata_races": true,
-        "striata_advancedfuel": true
+        "striata_time-weather": false,
+        "striata_admprision": false,
+        "striata_doors": false,
+        "striata_level": false,
+        "striata_notify": false,
+        "striata_survival": false,
+        "striata_production": false,
+        "striata_races": false,
+        "striata_advancedfuel": false
     },
     "orderedResources": {
-        "striata_truck": true
+        "striata_truck": false
+    },
+    "otherResources": {
+        "striata_radars": false
     },
     "notifysTypes": {
         "success": "sucesso",
         "denied": "negado",
         "warning": "aviso",
         "important": "importante"
-    },
-    "otherResources": {
-        "striata_radars": false
     }
 }
