@@ -1,0 +1,126 @@
+.cm-s-lua.CodeMirror {
+    background-color: #1f1f1f !important;
+    color: #f8f8f2 !important;
+    border: none;
+}
+
+.cm-s-lua .CodeMirror-gutters {
+    background-color: #1f1f1f;
+    color: #a6b7bf;
+    border-color: #62616178;
+}
+
+.cm-s-lua.CodeMirror{
+    width: 100%;
+    height: 100%;
+}
+
+.cm-s-lua .CodeMirror-cursor {
+    border-left: solid thin #f8f8f0
+}
+
+.cm-s-lua .CodeMirror-linenumber {
+    color: #6d8a88
+}
+
+.cm-s-lua .CodeMirror-selected {
+    background: rgba(255, 255, 255, .1)
+}
+
+.cm-s-lua .CodeMirror-line::selection,
+.cm-s-lua .CodeMirror-line>span::selection,
+.cm-s-lua .CodeMirror-line>span>span::selection {
+    background: #22374b
+}
+
+.cm-s-lua .CodeMirror-line::-moz-selection,
+.cm-s-lua .CodeMirror-line>span::-moz-selection,
+.cm-s-lua .CodeMirror-line>span>span::-moz-selection {
+    background: #22374b
+}
+
+.cm-s-lua span.cm-comment {
+    color: #6a9955
+}
+
+.cm-s-lua span.cm-string,
+.cm-s-lua span.cm-string-2 {
+    color: #c39178
+}
+
+.cm-s-lua span.cm-number {
+    color: #b5cea8
+}
+
+.cm-s-lua span.cm-variable {
+    color: #9cdcf0
+}
+
+.cm-s-lua span.cm-variable-2 {
+    color: #fff
+}
+
+.cm-s-lua span.cm-def {
+    color: #50fa7b
+}
+
+.cm-s-lua span.cm-operator {
+    color: #ffffff
+}
+
+.cm-s-lua span.cm-keyword {
+    color: #c586c0
+}
+
+.cm-s-lua span.cm-keyword2 {
+    color: #3f9cd6
+}
+.cm-s-lua span.cm-keyword3 {
+    color: #ffffff
+}
+
+.cm-s-lua span.cm-atom {
+    color: #bd93f9
+}
+
+.cm-s-lua span.cm-meta {
+    color: #f8f8f2
+}
+
+.cm-s-lua span.cm-tag {
+    color: #4a9cd6
+}
+
+.cm-s-lua span.cm-attribute {
+    color: #8cdcfe
+}
+
+.cm-s-lua span.cm-qualifier {
+    color: #50fa7b
+}
+
+.cm-s-lua span.cm-property {
+    color: #66d9ef
+}
+
+.cm-s-lua span.cm-builtin {
+    color: #dcdcaa
+}
+
+.cm-s-lua span.cm-tableAccess {
+    color: #4ec9b0;
+}
+
+.cm-s-lua span.cm-type,
+.cm-s-lua span.cm-variable-3 {
+    color: #ffb86c
+}
+
+.cm-s-lua .CodeMirror-activeline-background {
+    background: rgba(255, 255, 255, .1)
+}
+
+.cm-s-lua .CodeMirror-matchingbracket {
+    text-decoration: underline;
+    color: #fff !important
+}
