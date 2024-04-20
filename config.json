@@ -1,0 +1,31 @@
+{
+    "resources": {
+        "striata_robberies": false,
+        "striata_group-manager": false,
+        "striata_admprision": true,
+        "striata_fuel": true,
+        "striata_races": true,
+        "striata_doors": true,
+        "striata_production": true,
+        "striata_notify": true,
+        "striata_survival": true,
+        "striata_time-weather": true,
+        "striata_level": true
+    },
+    "token": "striata157%",
+    "resourcesConfigPermission": "owner.permissao",
+    "orderedResources": {
+        "striata_truck": true
+    },
+    "notifysTypes": {
+        "denied": "negado",
+        "success": "sucesso",
+        "warning": "aviso",
+        "important": "importante"
+    },
+    "otherResources": {
+        "striata_radars": false
+    },
+    "framework": "auto",
+    "Language": "pt-BR"
+}
