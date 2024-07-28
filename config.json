@@ -12,7 +12,8 @@
         "striata_survival": false,
         "striata_production": false,
         "striata_races": false,
-        "striata_advancedfuel": false
+        "striata_advancedfuel": false,
+        "striata_discordbot": false
     },
     "orderedResources": {
         "striata_truck": false

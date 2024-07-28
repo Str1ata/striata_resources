@@ -1,9 +1,10 @@
 fx_version 'bodacious'
-game 'gta5'
+games { 'rdr3', 'gta5' }
+rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aware my resources *will* become incompatible once RedM ships.'
 
-author 'Striata <striatashop@hotmail.com>'
+author 'Striata Discord: (@StriatShop), E-mail: (striatashop@hotmail.com)'
 description 'striata resources (Striata shop)'
-version '2.0'
+version '2.03'
 
 lua54 'yes'
 

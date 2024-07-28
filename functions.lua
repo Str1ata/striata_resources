@@ -1,4 +1,4 @@
-FunctionsVersion = 1.4  --! por favor não altere aqui! | please do not change here!
+FunctionsVersion = 1.5  --! por favor não altere aqui! | please do not change here!
 Functions = {}
 Events = {}
 
@@ -122,6 +122,13 @@ Functions.vRP = {
 			return exports[args[1]][args[2]](args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10])
 		end,
 
+		getUserIdByIdentifiers = function(source,identifiers)
+			if source and not identifiers then
+				identifiers = GetPlayerIdentifiers(source)
+			end
+			return vRP.getUserIdByIdentifiers(identifiers)
+		end,
+		
 		getUserId = function(source)
 			return vRP.getUserId(source)
 		end,
@@ -138,27 +145,88 @@ Functions.vRP = {
 			return vRP.getUsersByPermission(perm)
 		end,
 
-		hasPermission = function(user_id, perm)			
-			return vRP.hasPermission(user_id, perm)
+		hasPermission = function(user_id, perm)
+			return vRP.hasPermission(parseInt(user_id), perm)
 		end,
 
 		getUserGroups = function(user_id)
-			return vRP.getUserGroups(user_id)
+			local userGroupsFormat = {}
+			if vRP.getUserSource(parseInt(user_id)) then
+				local userGroups = vRP.getUserGroups(parseInt(user_id))
+				for group,status in pairs(userGroups) do
+					if status then
+						userGroupsFormat[group] = { hierarchyName = "" }
+					end
+				end
+				return userGroupsFormat
+			else
+				local userGroups = {}
+
+				local rows = MySQL.Sync.fetchAll("SELECT * FROM vrp_user_data WHERE user_id = @user_id AND dkey = @dkey", {
+                    ['@user_id'] = user_id,
+                    ['@dkey'] = "vRP:datatable"
+                })
+
+				if rows[1] then
+					local dvalue = json.decode(rows[1].dvalue)
+					userGroups = dvalue.groups
+				end
+
+				for group,status in pairs(userGroups) do
+					if status then
+						userGroupsFormat[group] = { hierarchyName = "" }
+					end
+				end
+				return userGroupsFormat
+			end
+		end,
+
+		getAllUserGroups = function()
+			local allUserGroups = {}
+			local rows = MySQL.Sync.fetchAll("SELECT * FROM vrp_user_data WHERE dkey = @dkey",{
+				['@dkey'] = "vRP:datatable"
+			})
+
+			for rowNumber,rowInfos in pairs(rows) do
+				local user_id = rowInfos.user_id
+				local dataTable = json.decode(rowInfos.dvalue)
+				local userGroups = dataTable.groups
+				for group,enable in pairs(userGroups) do
+					if enable then
+						if not allUserGroups[group] then
+							allUserGroups[group] = {}
+						end
+						table.insert( allUserGroups[group], { user_id = user_id, hierarchyName = "" } )
+					end
+				end
+			end
+
+			return allUserGroups
 		end,
 
 		addUserGroup = function(user_id,group)
-			return vRP.addUserGroup(user_id,group)
+			if vRP.getUserSource(parseInt(user_id)) then
+				return vRP.addUserGroup(parseInt(user_id),group)
+			else
+				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				if dataTable and dataTable.groups then
+					if not dataTable.groups[group] then
+						dataTable.groups[group] = true
+						return vRP._setUData(user_id, "vRP:datatable", json.encode(dataTable))
+					end
+				end
+			end
 		end,
 
 		removeUserGroup = function(user_id,group)
-			if vRP.getUserSource(user_id) then
-				return vRP.removeUserGroup(user_id,group)
+			if vRP.getUserSource(parseInt(user_id)) then
+				return vRP.removeUserGroup(parseInt(user_id),group)
 			else
-				local dataTable = json.decode(vRP.getUData(user_id, "vRP:datatable") or {})
+				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
 				if dataTable and dataTable.groups then
 					if dataTable.groups[group] then
 						dataTable.groups[group] = nil
-						return vRP._setUData(user_id, "vRP:datatable", json.encode(dataTable))
+						return vRP._setUData(parseInt(user_id), "vRP:datatable", json.encode(dataTable))
 					end
 				end
 			end
@@ -173,39 +241,99 @@ Functions.vRP = {
 		end,
 
 		giveHandMoney = function(user_id, amount)
-			return vRP.giveMoney(user_id,amount)
+			return vRP.giveMoney(parseInt(user_id),amount)
 		end,
 
 		removeHandMoney = function(user_id, amount)
-			return vRP.tryPayment(user_id,amount)
+			return vRP.tryPayment(parseInt(user_id),amount)
 		end,
 
 		giveBankMoney = function(user_id, amount)
-			return vRP.giveBankMoney(user_id,amount)
+			return vRP.giveBankMoney(parseInt(user_id),amount)
 		end,
 
 		removeBankMoney = function(user_id, amount)
-			return vRP.tryFullPayment(user_id,amount)
+			return vRP.tryFullPayment(parseInt(user_id),amount)
+		end,
+
+		getInventoryItems = function(user_id,item)
+			local itemsTable = {}
+
+			local inventory = {}
+
+			if vRP.getUserSource(parseInt(user_id)) then
+				inventory = vRP.getInventory(parseInt(user_id))
+			else
+				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				inventory = dataTable.inventory
+			end
+
+			for item, amountTable in pairs(inventory) do
+				itemsTable[item] = amountTable.amount
+			end
+
+			return itemsTable
 		end,
 
 		getInventoryItemAmount = function(user_id,item)
-			return vRP.getInventoryItemAmount(user_id,item)
+			if vRP.getUserSource(parseInt(user_id)) then
+				return vRP.getInventoryItemAmount(parseInt(user_id),item)
+			else
+				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				inventory = dataTable.inventory
+				if inventory[item] then
+					return inventory[item].amount
+				else
+					return 0
+				end
+			end
 		end,
 
 		giveInventoryItem = function(user_id,item,amount)
-			return vRP.giveInventoryItem(user_id,item,amount,true)
+			if vRP.getUserSource(parseInt(user_id)) then
+				return vRP.giveInventoryItem(parseInt(user_id),item,amount,true)
+			else
+				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				inventory = dataTable.inventory or {}
+				if inventory[item] then
+					inventory[item] = inventory[item].amount + amount
+				else
+					inventory[item] = {amount = amount}
+				end
+
+				dataTable.inventory = inventory
+				vRP._setUData(parseInt(user_id), "vRP:datatable", json.encode(dataTable))
+
+				return true
+			end
+
+			return false
 		end,
 
 		removeInventoryItem = function(user_id,item,amount)
-			return vRP.tryGetInventoryItem(user_id,item,amount,true)
+			if vRP.getUserSource(parseInt(user_id)) then
+				return vRP.tryGetInventoryItem(parseInt(user_id),item,amount,true)
+			else
+				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				inventory = dataTable.inventory or {}
+				if inventory[item] then
+					inventory[item] = nil
+
+					dataTable.inventory = inventory
+					vRP._setUData(parseInt(user_id), "vRP:datatable", json.encode(dataTable))
+					return true
+				else
+					return false
+				end
+			end
 		end,
 
 		getInventoryWeight = function(user_id)
-			return vRP.getInventoryWeight(user_id)
+			return vRP.getInventoryWeight(parseInt(user_id))
 		end,
 
 		getInventoryMaxWeight = function(user_id)
-			return vRP.getInventoryMaxWeight(user_id)
+			return vRP.getInventoryMaxWeight(parseInt(user_id))
 		end,
 
 		getItemWeight = function(item)
@@ -294,12 +422,59 @@ Functions.vRP = {
 			})
 		end,
 
+		setHealth = function(user_id,amount)
+			local source = vRP.getUserSource(parseInt(user_id))
+			if source then
+				vRPclient.setHealth(source,amount)
+			else
+				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				dataTable.health = amount
+				vRP._setUData(parseInt(user_id), "vRP:datatable", json.encode(dataTable))
+			end
+		end,
+
+		setArmour = function(user_id,amount)
+			local source = vRP.getUserSource(parseInt(user_id))
+			if source then
+				vRPclient.setArmour(source,amount)
+			else
+				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				dataTable.colete = amount
+				vRP._setUData(parseInt(user_id), "vRP:datatable", json.encode(dataTable))
+			end
+		end,
+
 		setHunger = function(user_id,amount)
-			vRP.setHunger(parseInt(user_id),amount)
+			local source = vRP.getUserSource(parseInt(user_id))
+			if source then
+				vRP.setHunger(parseInt(user_id),amount)
+			else
+				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				dataTable.hunger = amount
+				vRP._setUData(parseInt(user_id), "vRP:datatable", json.encode(dataTable))
+			end
 		end,
 
 		setThirst = function(user_id,amount)
-			vRP.setThirst(parseInt(user_id),amount)
+			local source = vRP.getUserSource(parseInt(user_id))
+			if source then
+				vRP.setThirst(parseInt(user_id),amount)
+			else
+				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				dataTable.thirst = amount
+				vRP._setUData(parseInt(user_id), "vRP:datatable", json.encode(dataTable))
+			end
+		end,
+
+		setStress = function(user_id,amount)
+			local source = vRP.getUserSource(parseInt(user_id))
+			if source then
+				vRP.setStress(parseInt(user_id),amount)
+			else
+				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				dataTable.stress = amount
+				vRP._setUData(parseInt(user_id), "vRP:datatable", json.encode(dataTable))
+			end
 		end,
 		
 		CreateUseableItens = function()
@@ -310,8 +485,7 @@ Functions.vRP = {
 
 		checkHomeAcess = function(source,user_id,homeName)
 			if user_id and homeName	then
-				local table = vRP.query("homes/get_homeuserid",{ user_id = user_id })
-				local table =	MySQL.Sync.fetchAll("SELECT * FROM vrp_homes_permissions WHERE user_id = @user_id", {
+				local table = MySQL.Sync.fetchAll("SELECT * FROM vrp_homes_permissions WHERE user_id = @user_id", {
 					["@user_id"] = user_id,
 				})
 				if table and #table > 0 then
@@ -325,12 +499,33 @@ Functions.vRP = {
 				return false
 			end
 		end,
+
+		getWhiteListStatus = function(user_id,status)
+			return vRP.isWhitelisted(parseInt(user_id))
+		end,
+
+		changeWhiteListStatus = function(user_id,status)
+			vRP.setWhitelisted(parseInt(user_id),status)
+			return vRP.setWhitelisted(parseInt(user_id),status)
+		end,
+
+		getBanStatus = function(user_id)
+			return vRP.isBanned(parseInt(user_id))
+		end,
+
+		setBanStatus = function(user_id,status,reason)
+			local source = vRP.getUserSource(parseInt(user_id))
+			if status and source then
+				DropPlayer(source, reason)
+			end
+			return vRP.setBanned(parseInt(user_id),status)
+		end
 	}
-	
 }
+
 Events.vRP = {
 	client = {
-		playerSpawn = "playerSpawned"
+		playerSpawn = "tvRP:playerSpawnNow"
 	},
 	server = {
 		playerSpawn = "vRP:playerSpawn"
@@ -1061,6 +1256,7 @@ Functions.ESX = {
 		end,
 	}
 }
+
 Events.ESX = {
 	client = {
 		playerSpawn = "esx:playerLoaded"
@@ -1510,7 +1706,6 @@ Functions.QBCore = {
 			local player = QBCore.Functions.GetPlayerByCitizenId(user_id)
 			if player then
 				local itemInfo = player.Functions.GetItemByName(item)
-				print(item,json.encode(itemInfo))
 				local itemAmount = 0
 				if itemInfo then
 					itemAmount = itemInfo.amount
@@ -1833,6 +2028,7 @@ Functions.QBCore = {
 		end,
 	}
 }
+
 Events.QBCore = {
 	client = {
 		playerSpawn = "QBCore:Client:OnPlayerLoaded"
@@ -1954,6 +2150,11 @@ Functions.custom = {
 			return nil
 		end,
 
+		getAllUserGroups = function()
+			local allUserGroups = {}
+			return allUserGroups
+		end,
+
 		addUserGroup = function(user_id,group)
 			return nil
 		end,
@@ -1984,6 +2185,11 @@ Functions.custom = {
 
 		removeBankMoney = function(user_id, amount)
 			return nil
+		end,
+
+		getInventoryItems = function(user_id,item)
+			local itemsTable = {}
+			return itemsTable
 		end,
 
 		getInventoryItemAmount = function(user_id,item)
@@ -2058,11 +2264,23 @@ Functions.custom = {
 			return nil
 		end,
 
+		setHealth = function(user_id,amount)
+			return nil
+		end,
+
+		setArmour = function(user_id,amount)
+			return nil
+		end,
+
 		setHunger = function(user_id,amount)
 			return nil
 		end,
 
 		setThirst = function(user_id,amount)
+			return nil
+		end,
+
+		setStress = function(user_id,amount)
 			return nil
 		end,
 		
@@ -2075,6 +2293,22 @@ Functions.custom = {
 		checkHomeAcess = function(source,user_id,homeName)
 			return false
 		end,
+
+		getWhiteListStatus = function(user_id,status)
+			return nil
+		end,
+
+		changeWhiteListStatus = function(user_id,status)
+			return nil
+		end
+
+		getBanStatus = function(user_id),
+			return nil
+		end
+
+		setBanStatus = function(user_id,status,reason),
+			return nil
+		end
 	}
 	
 }
