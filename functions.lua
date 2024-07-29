@@ -2300,13 +2300,13 @@ Functions.custom = {
 
 		changeWhiteListStatus = function(user_id,status)
 			return nil
-		end
+		end,
 
-		getBanStatus = function(user_id),
+		getBanStatus = function(user_id)
 			return nil
-		end
+		end,
 
-		setBanStatus = function(user_id,status,reason),
+		setBanStatus = function(user_id,status,reason)
 			return nil
 		end
 	}
