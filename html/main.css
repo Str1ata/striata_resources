@@ -193,10 +193,15 @@
 
     white-space: nowrap;
     word-break: break-all;    
-} 
+}
+
 #nuiResources .containerConfig .options #clickOption:hover {
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
+}
+
+.selected {
+    background-color: rgba(255, 255, 255) !important;
 }
 
 #nuiResources .containerConfig .options #clickOptionDel {

@@ -151,7 +151,7 @@ Functions.vRP = {
 
 		getUserGroups = function(user_id)
 			local userGroupsFormat = {}
-			if vRP.getUserSource(parseInt(user_id)) then
+			if Functions["server"].getUserSource(parseInt(user_id)) then
 				local userGroups = vRP.getUserGroups(parseInt(user_id))
 				for group,status in pairs(userGroups) do
 					if status then
@@ -205,7 +205,7 @@ Functions.vRP = {
 		end,
 
 		addUserGroup = function(user_id,group)
-			if vRP.getUserSource(parseInt(user_id)) then
+			if Functions["server"].getUserSource(parseInt(user_id)) then
 				return vRP.addUserGroup(parseInt(user_id),group)
 			else
 				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
@@ -219,7 +219,7 @@ Functions.vRP = {
 		end,
 
 		removeUserGroup = function(user_id,group)
-			if vRP.getUserSource(parseInt(user_id)) then
+			if Functions["server"].getUserSource(parseInt(user_id)) then
 				return vRP.removeUserGroup(parseInt(user_id),group)
 			else
 				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
@@ -241,19 +241,119 @@ Functions.vRP = {
 		end,
 
 		giveHandMoney = function(user_id, amount)
-			return vRP.giveMoney(parseInt(user_id),amount)
+			if Functions["server"].getUserSource(user_id) then
+				return vRP.giveMoney(parseInt(user_id),amount)
+			else
+				local rows = MySQL.Sync.fetchAll("SELECT * FROM vrp_user_moneys WHERE user_id = @user_id", {
+					["@user_id"] = user_id
+				})
+
+				if rows[1] then
+					MySQL.Sync.fetchAll("UPDATE vrp_user_moneys SET wallet = @wallet WHERE user_id = @user_id", {
+						["@user_id"] = parseInt(user_id),
+						["@wallet"] = tonumber(rows[1].wallet) + amount,
+					})
+					
+					return true
+				else
+					return false
+				end
+			end
 		end,
 
 		removeHandMoney = function(user_id, amount)
-			return vRP.tryPayment(parseInt(user_id),amount)
+			if Functions["server"].getUserSource(user_id) then
+				return vRP.tryPayment(parseInt(user_id),amount)
+			else
+				local rows = MySQL.Sync.fetchAll("SELECT * FROM vrp_user_moneys WHERE user_id = @user_id", {
+					["@user_id"] = user_id
+				})
+
+				if rows[1] then
+					MySQL.Sync.fetchAll("UPDATE vrp_user_moneys SET wallet = @wallet WHERE user_id = @user_id", {
+						["@user_id"] = parseInt(user_id),
+						["@wallet"] = tonumber(rows[1].wallet) - amount,
+					})
+					
+					return true
+				else
+					return false
+				end
+			end
+		end,
+
+		getHandMoney = function(user_id)
+			if Functions["server"].getUserSource(user_id) then
+				return vRP.getMoney(parseInt(user_id)) or 0
+			else
+				local rows = MySQL.Sync.fetchAll("SELECT * FROM vrp_user_moneys WHERE user_id = @user_id", {
+					["@user_id"] = user_id
+				})
+
+				if rows[1] then
+					return tonumber(rows[1].wallet)
+				else
+					return false
+				end
+			end
 		end,
 
 		giveBankMoney = function(user_id, amount)
-			return vRP.giveBankMoney(parseInt(user_id),amount)
+			if Functions["server"].getUserSource(user_id) then
+				return vRP.giveBankMoney(parseInt(user_id),amount)
+			else
+				local rows = MySQL.Sync.fetchAll("SELECT * FROM vrp_user_moneys WHERE user_id = @user_id", {
+					["@user_id"] = user_id
+				})
+
+				if rows[1] then
+					MySQL.Sync.fetchAll("UPDATE vrp_user_moneys SET bank = @bank WHERE user_id = @user_id", {
+						["@user_id"] = parseInt(user_id),
+						["@bank"] = tonumber(rows[1].bank) + amount,
+					})
+					
+					return true
+				else
+					return false
+				end
+			end
 		end,
 
 		removeBankMoney = function(user_id, amount)
-			return vRP.tryFullPayment(parseInt(user_id),amount)
+			if Functions["server"].getUserSource(user_id) then
+				return vRP.tryFullPayment(parseInt(user_id),amount)
+			else
+				local rows = MySQL.Sync.fetchAll("SELECT * FROM vrp_user_moneys WHERE user_id = @user_id", {
+					["@user_id"] = user_id
+				})
+
+				if rows[1] then
+					MySQL.Sync.fetchAll("UPDATE vrp_user_moneys SET bank = @bank WHERE user_id = @user_id", {
+						["@user_id"] = parseInt(user_id),
+						["@bank"] = tonumber(rows[1].bank) - amount,
+					})
+					
+					return true
+				else
+					return false
+				end
+			end
+		end,
+
+		getBankMoney = function(user_id)
+			if Functions["server"].getUserSource(user_id) then
+				return vRP.getBankMoney(parseInt(user_id)) or 0
+			else
+				local rows = MySQL.Sync.fetchAll("SELECT * FROM vrp_user_moneys WHERE user_id = @user_id", {
+					["@user_id"] = user_id
+				})
+
+				if rows[1] then
+					return tonumber(rows[1].bank)
+				else
+					return false
+				end
+			end
 		end,
 
 		getInventoryItems = function(user_id,item)
@@ -261,7 +361,7 @@ Functions.vRP = {
 
 			local inventory = {}
 
-			if vRP.getUserSource(parseInt(user_id)) then
+			if Functions["server"].getUserSource(parseInt(user_id)) then
 				inventory = vRP.getInventory(parseInt(user_id))
 			else
 				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
@@ -276,7 +376,7 @@ Functions.vRP = {
 		end,
 
 		getInventoryItemAmount = function(user_id,item)
-			if vRP.getUserSource(parseInt(user_id)) then
+			if Functions["server"].getUserSource(parseInt(user_id)) then
 				return vRP.getInventoryItemAmount(parseInt(user_id),item)
 			else
 				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
@@ -290,13 +390,13 @@ Functions.vRP = {
 		end,
 
 		giveInventoryItem = function(user_id,item,amount)
-			if vRP.getUserSource(parseInt(user_id)) then
+			if Functions["server"].getUserSource(parseInt(user_id)) then
 				return vRP.giveInventoryItem(parseInt(user_id),item,amount,true)
 			else
 				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
 				inventory = dataTable.inventory or {}
 				if inventory[item] then
-					inventory[item] = inventory[item].amount + amount
+					inventory[item].amount = inventory[item].amount + amount
 				else
 					inventory[item] = {amount = amount}
 				end
@@ -311,7 +411,7 @@ Functions.vRP = {
 		end,
 
 		removeInventoryItem = function(user_id,item,amount)
-			if vRP.getUserSource(parseInt(user_id)) then
+			if Functions["server"].getUserSource(parseInt(user_id)) then
 				return vRP.tryGetInventoryItem(parseInt(user_id),item,amount,true)
 			else
 				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
@@ -359,8 +459,37 @@ Functions.vRP = {
 		removeVehicle = function(user_id,vehicle)
 			return MySQL.Sync.fetchAll("DELETE FROM vrp_user_vehicles WHERE user_id = @user_id AND vehicle = @vehicle", {
 				["@user_id"] = user_id,
-				["@vehicle"] = vehicle,
+				["@vehicle"] = vehicle
 			})
+		end,
+		
+		getUserVehicles = function(user_id)
+			local vehiclesInfos = {}
+
+			local rows = MySQL.Sync.fetchAll("SELECT * FROM vrp_user_vehicles WHERE user_id = @user_id", {
+				["@user_id"] = user_id
+			})
+
+			if #rows >= 1 then
+				for n,vehicleInfo in pairs(rows) do
+					table.insert(vehiclesInfos,
+						{
+							model = vehicleInfo.vehicle,
+							plate = "",
+							arest = vehicleInfo.detido, 
+							engineHealth = vehicleInfo.enigne, 
+							boryHealth = vehicleInfo.body,
+							fuel = vehicleInfo.fuel,
+							taxTime = vehicleInfo.ipva,
+							odometer = vehicleInfo.odometer,
+							tunning = {},
+							damage = json.decode(vehicleInfo.estado)
+						}
+					)
+				end
+			end
+
+			return vehiclesInfos
 		end,
 
 		saveOutfit = function(source,outfit)
@@ -389,7 +518,7 @@ Functions.vRP = {
 
 		getUserInfo = function(user_id)
 			local info = {}
-			if vRP.getUserSource(parseInt(user_id)) then
+			if Functions["server"].getUserSource(parseInt(user_id)) then
 				local identity = vRP.getUserIdentity(parseInt(user_id))
 				info["name"] = identity.name
 				info["lastName"] = identity.firstname
@@ -423,7 +552,7 @@ Functions.vRP = {
 		end,
 
 		setHealth = function(user_id,amount)
-			local source = vRP.getUserSource(parseInt(user_id))
+			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if source then
 				vRPclient.setHealth(source,amount)
 			else
@@ -434,7 +563,7 @@ Functions.vRP = {
 		end,
 
 		setArmour = function(user_id,amount)
-			local source = vRP.getUserSource(parseInt(user_id))
+			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if source then
 				vRPclient.setArmour(source,amount)
 			else
@@ -445,7 +574,7 @@ Functions.vRP = {
 		end,
 
 		setHunger = function(user_id,amount)
-			local source = vRP.getUserSource(parseInt(user_id))
+			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if source then
 				vRP.setHunger(parseInt(user_id),amount)
 			else
@@ -456,7 +585,7 @@ Functions.vRP = {
 		end,
 
 		setThirst = function(user_id,amount)
-			local source = vRP.getUserSource(parseInt(user_id))
+			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if source then
 				vRP.setThirst(parseInt(user_id),amount)
 			else
@@ -467,7 +596,7 @@ Functions.vRP = {
 		end,
 
 		setStress = function(user_id,amount)
-			local source = vRP.getUserSource(parseInt(user_id))
+			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if source then
 				vRP.setStress(parseInt(user_id),amount)
 			else
@@ -514,15 +643,15 @@ Functions.vRP = {
 		end,
 
 		setBanStatus = function(user_id,status,reason)
-			local source = vRP.getUserSource(parseInt(user_id))
+			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if status and source then
 				DropPlayer(source, reason)
 			end
 			return vRP.setBanned(parseInt(user_id),status)
 		end
 	}
+	
 }
-
 Events.vRP = {
 	client = {
 		playerSpawn = "tvRP:playerSpawnNow"
@@ -1256,7 +1385,6 @@ Functions.ESX = {
 		end,
 	}
 }
-
 Events.ESX = {
 	client = {
 		playerSpawn = "esx:playerLoaded"
@@ -2028,7 +2156,6 @@ Functions.QBCore = {
 		end,
 	}
 }
-
 Events.QBCore = {
 	client = {
 		playerSpawn = "QBCore:Client:OnPlayerLoaded"
@@ -2126,6 +2253,23 @@ Functions.custom = {
 			return exports[args[1]][args[2]](args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10])
 		end,
 
+		getUserIdByIdentifiers = function(source,identifiers)
+			if source and not identifiers then
+				identifiers = GetPlayerIdentifiers(source)
+			end
+
+			local steam
+
+			for n,identifier in pairs(identifiers) do
+				if string.sub(identifier, 1, string.len("steam:")) == "steam:" then
+					steam = identifier
+					break
+				end
+			end
+
+			return steam
+		end,
+		
 		getUserId = function(source)
 			return nil
 		end,
@@ -2179,6 +2323,10 @@ Functions.custom = {
 			return nil
 		end,
 
+		getHandMoney = function(user_id, amount)
+			return nil
+		end,
+
 		giveBankMoney = function(user_id, amount)
 			return nil
 		end,
@@ -2187,8 +2335,13 @@ Functions.custom = {
 			return nil
 		end,
 
+		getBankMoney = function(user_id, amount)
+			return nil
+		end,
+
 		getInventoryItems = function(user_id,item)
 			local itemsTable = {}
+
 			return itemsTable
 		end,
 
@@ -2230,6 +2383,12 @@ Functions.custom = {
 
 		removeVehicle = function(user_id,vehicle)
 			return nil
+		end,
+
+		getUserVehicles = function(user_id)
+			local vehiclesInfos = {}
+
+			return vehiclesInfos
 		end,
 
 		saveOutfit = function(source,outfit)
@@ -2312,7 +2471,6 @@ Functions.custom = {
 	}
 	
 }
-
 Events.custom = {
 	client = {
 		playerSpawn = ""
