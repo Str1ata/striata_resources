@@ -377,3 +377,22 @@
     visibility: visible;
     opacity: 1;
 }
+  
+.targetBox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+.targetContent {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgb(38,178,247);
+}

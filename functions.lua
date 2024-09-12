@@ -1,4 +1,26 @@
-FunctionsVersion = 1.5  --! por favor não altere aqui! | please do not change here!
+FunctionsVersion = 1.6  --! por favor não altere aqui! | please do not change here!
+Functions = {}
+Events = {}
+
+--todo: Configure alguns eventos para que funcione com o seu servidor aqui! | Set up some events to make it work with your server here!!
+if not IsDuplicityVersion() then  --? client
+	RegisterNetEvent("striata:truck:truckSpawned")
+	AddEventHandler("striata:truck:truckSpawned",function(entity,plate,netId,locked)
+		--! Coloque aqui eventos ou exports no lado do client para garagens com função de desligamento de veiculos. | Enter client-side events or exports here for garages with a vehicle shutdown function.
+		TriggerServerEvent("striata:truck:truckSpawned",plate,netId,locked)
+		
+		TriggerServerEvent("registerVehicleInRegister",netId)
+	end)
+else  --? Server
+	--! Coloque aqui eventos ou exports no lado do servidor para garagens com função de desligamento de veiculos. | Place server-side events or exports here for garages with vehicle shutdown function.
+	RegisterNetEvent("striata:truck:truckSpawned")
+	AddEventHandler("striata:truck:truckSpawned",function(plate,netId,locked)
+		--exports["nation-garages"]:toggleVehicleEngine(netId)
+	end)
+end
+
+--todo: Configure as funções do seu de servidor aqui! | Configure your server functions here!
+FunctionsVersion = 1.51  --! por favor não altere aqui! | please do not change here!
 Functions = {}
 Events = {}
 
@@ -551,6 +573,16 @@ Functions.vRP = {
 			})
 		end,
 
+		getHealth = function(user_id)
+			local source = Functions["server"].getUserSource(parseInt(user_id))
+			if source then
+				vRPclient.getHealth(source)
+			else
+				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				return dataTable.health
+			end
+		end,
+
 		setHealth = function(user_id,amount)
 			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if source then
@@ -559,6 +591,16 @@ Functions.vRP = {
 				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
 				dataTable.health = amount
 				vRP._setUData(parseInt(user_id), "vRP:datatable", json.encode(dataTable))
+			end
+		end,
+
+		getArmour = function(user_id)
+			local source = Functions["server"].getUserSource(parseInt(user_id))
+			if source then
+				vRPclient.getArmour(source)
+			else
+				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				return dataTable.colete
 			end
 		end,
 
@@ -573,6 +615,16 @@ Functions.vRP = {
 			end
 		end,
 
+		getHunger = function(user_id)
+			local source = Functions["server"].getUserSource(parseInt(user_id))
+			if source then
+				vRP.getHunger(parseInt(user_id))
+			else
+				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				return dataTable.hunger
+			end
+		end,
+
 		setHunger = function(user_id,amount)
 			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if source then
@@ -584,6 +636,16 @@ Functions.vRP = {
 			end
 		end,
 
+		getThirst = function(user_id)
+			local source = Functions["server"].getUserSource(parseInt(user_id))
+			if source then
+				vRP.getThirst(parseInt(user_id))
+			else
+				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				return dataTable.thirst
+			end
+		end,
+
 		setThirst = function(user_id,amount)
 			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if source then
@@ -592,6 +654,16 @@ Functions.vRP = {
 				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
 				dataTable.thirst = amount
 				vRP._setUData(parseInt(user_id), "vRP:datatable", json.encode(dataTable))
+			end
+		end,
+
+		getStress = function(user_id)
+			local source = Functions["server"].getUserSource(parseInt(user_id))
+			if source then
+				vRP.getStress(parseInt(user_id))
+			else
+				local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				return dataTable.stress
 			end
 		end,
 
@@ -648,6 +720,14 @@ Functions.vRP = {
 				DropPlayer(source, reason)
 			end
 			return vRP.setBanned(parseInt(user_id),status)
+		end,
+
+		checkPlayerIsDiscordMember = function(user_id,discordId)
+			if Config.resources["striata_discordbot"] then
+				return exports["striata_resources"]:checkIsMember(user_id,discordId)
+			else
+				return false
+			end
 		end
 	}
 	
@@ -2423,7 +2503,15 @@ Functions.custom = {
 			return nil
 		end,
 
+		getHealth = function(user_id)
+			return nil
+		end,
+
 		setHealth = function(user_id,amount)
+			return nil
+		end,
+
+		getArmour = function(user_id)
 			return nil
 		end,
 
@@ -2431,11 +2519,23 @@ Functions.custom = {
 			return nil
 		end,
 
+		getHunger = function(user_id)
+			return nil
+		end,
+
 		setHunger = function(user_id,amount)
 			return nil
 		end,
 
+		getThirst = function(user_id)
+			return nil
+		end,
+
 		setThirst = function(user_id,amount)
+			return nil
+		end,
+
+		getStress = function(user_id)
 			return nil
 		end,
 
@@ -2467,6 +2567,14 @@ Functions.custom = {
 
 		setBanStatus = function(user_id,status,reason)
 			return nil
+		end
+
+		checkPlayerIsDiscordMember = function(user_id,discordId)
+			if Config.resources["striata_discordbot"] then
+				return exports["striata_resources"]:checkIsMember(user_id,discordId)
+			else
+				return false
+			end
 		end
 	}
 	
