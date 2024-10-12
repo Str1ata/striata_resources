@@ -2567,7 +2567,7 @@ Functions.custom = {
 
 		setBanStatus = function(user_id,status,reason)
 			return nil
-		end
+		end,
 
 		checkPlayerIsDiscordMember = function(user_id,discordId)
 			if Config.resources["striata_discordbot"] then
