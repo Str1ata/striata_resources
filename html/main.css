@@ -111,10 +111,10 @@
     justify-content: center;
 }
 
-#nuiResources .containerConfig .upperBar .userinfo{
+#nuiResources .containerConfig .upperBar .languages{
     position: relative;
     top: 0%;
-    left: 28%;
+    left: -9%;
     width: 5%;
     height: 30%;
     
