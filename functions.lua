@@ -1,4 +1,4 @@
-FunctionsVersion = 1.7  --! por favor não altere aqui! | please do not change here!
+FunctionsVersion = 1.71  --! por favor não altere aqui! | please do not change here!
 FunctionsAutoUpdate = true --? Ative\Desative as atualizações automáticas aqui! | Enable/Disable automatic updates here!
 Functions = {}
 Events = {}
@@ -958,7 +958,7 @@ Functions.vRP = {
 		removeBankMoney = function(user_id, amount)
 			if Functions["server"].getUserSource(user_id) then
 				--? Player Online
-				return (vRP.tryWithdraw and vRP.tryWithdraw(parseInt(user_id),amount)) or (vRP.delBank and vRP.delBank(parseInt(user_id),amount)) or (vrp.RemoveBank and vrp.RemoveBank(parseInt(user_id),amount)) or (vRP.tryFullPayment and vRP.tryFullPayment(parseInt(user_id),amount)) or (vRP.PaymentFull and vRP.PaymentFull(parseInt(user_id),amount)) or (false)
+				return (vRP.tryWithdraw and vRP.tryWithdraw(parseInt(user_id),amount)) or (vRP.delBank and vRP.delBank(parseInt(user_id),amount)) or (vRP.RemoveBank and vRP.RemoveBank(parseInt(user_id),amount)) or (vRP.tryFullPayment and vRP.tryFullPayment(parseInt(user_id),amount)) or (vRP.PaymentFull and vRP.PaymentFull(parseInt(user_id),amount)) or (false)
 			else
 				--? Player Offline
 				local queryCheck = [[
