@@ -4,12 +4,16 @@ rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aw
 
 author 'Striata Discord: (@StriatShop), E-mail: (striatashop@hotmail.com)'
 description 'striata resources (Striata shop)'
-version '2.1'
+version '2.12'
 
 lua54 'yes'
 
 shared_scripts { 
 	"@vrp/lib/utils.lua",
+	"@vrp/config/Item.lua",
+	"@vrp/config/Vehicle.lua",
+	"@vrp/config/Global.lua",
+	"@vrp/config/Drops.lua",
 	"functions.lua"
 }
 

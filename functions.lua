@@ -1,4 +1,4 @@
-FunctionsVersion = 1.71  --! por favor não altere aqui! | please do not change here!
+FunctionsVersion = 1.8  --! por favor não altere aqui! | please do not change here!
 FunctionsAutoUpdate = true --? Ative\Desative as atualizações automáticas aqui! | Enable/Disable automatic updates here!
 Functions = {}
 Events = {}
@@ -11,6 +11,18 @@ if not IsDuplicityVersion() then  --? client
 		TriggerServerEvent("striata:truck:truckSpawned",plate,netId,locked)
 		
 		TriggerServerEvent("registerVehicleInRegister",netId)
+
+		--? Creative network
+		local Vehicle = NetworkGetEntityFromNetworkId(netId)
+
+		SetVehicleNeedsToBeHotwired(Vehicle,false)
+		DecorSetInt(Vehicle,"Player_Vehicle",-1)
+		
+		Entity(Vehicle)["state"]:set("Fuel",100,true)
+		Entity(Vehicle)["state"]:set("Nitro",0,true)
+		Entity(Vehicle)["state"]:set("Drift",false,true)
+		Entity(Vehicle)["state"]:set("Seatbelt",false,true)
+		Entity(Vehicle)["state"]:set("Lockpick",0,true)
 	end)
 else  --? Server
 	--! Coloque aqui eventos ou exports no lado do servidor para garagens com função de desligamento de veiculos. | Place server-side events or exports here for garages with vehicle shutdown function.
@@ -48,8 +60,9 @@ Functions.vRP = {
 		end,
 
 		getWeapons = function()
-			if vRP.getWeapons then
-				return vRP.getWeapons()
+			local weapons = vRP.getWeapons()
+			if weapons then
+				return weapons
 			else
 				local player = PlayerPedId()
 				local ammo_types = {}
@@ -75,20 +88,19 @@ Functions.vRP = {
 		end,
 
 		giveWeapons = function(weapons,clearBefore)
-			if vRP.giveWeapons then
+			local isZirix = vRP.getWeapons()
+			if isZirix then
 				return vRP.giveWeapons(weapons,clearBefore)
 			else
 				local player = PlayerPedId()
 				if clearBefore then
 					RemoveAllPedWeapons(player,true)
-					weapon_list = {}
 				end
 			
 				for k,weapon in pairs(weapons) do
 					local hash = GetHashKey(k)
 					local ammo = weapon.ammo or 0
 					GiveWeaponToPed(player,hash,ammo,false)
-					weapon_list[k] = weapon
 				end
 				
 				return true
@@ -96,8 +108,9 @@ Functions.vRP = {
 		end,
 
 		getOutfit = function()
-			if vRP.getCustomization then
-				return vRP.getCustomization()
+			local customization = vRP.getCustomization()
+			if customization then
+				return customization
 			else
 				local ped = PlayerPedId()
 				local custom = {}
@@ -115,8 +128,9 @@ Functions.vRP = {
 		end,
 
 		setOutfit = function(outfit)
-			if vRP.setCustomization then
-				return vRP.setCustomization(outfit)
+			local success = vRP.setCustomization(outfit)
+			if success then
+				return success
 			else
 				if outfit then
 					local ped = PlayerPedId()
@@ -175,12 +189,15 @@ Functions.vRP = {
 							end							
 						end
 					end
+					return true
 				end
+				return false
 			end
 		end,
 
 		setPlayerHandcuffed = function(toggle)
-			if vRP.setHandcuffed then
+			local isZirix = isHandcuffed() ~= nil
+			if isZirix then
 				vRP.setHandcuffed(toggle)
 				return true
 			elseif LocalPlayer["state"]["Handcuff"] ~= nil then
@@ -192,7 +209,8 @@ Functions.vRP = {
 		end,
 
 		teleportPlayer = function(x,y,z)
-			if vRP.teleport then
+			local isZirix = getPosition()
+			if isZirix then
 				vRP.teleport(x,y,z)
 			else
 				SetEntityCoords(PlayerPedId(), vector3(x,y,z), false, false, false, false)
@@ -209,8 +227,9 @@ Functions.vRP = {
 		end,
 
 		getNearestVehicles = function(radius)
-			if vRP.getNearestVehicles then 
-				return vRP.getNearestVehicles(radius)
+			local nearestVehicles = vRP.getNearestVehicles(radius)
+			if nearestVehicles then 
+				return nearestVehicles
 			else
 				local r = {}
 				local coords = GetEntityCoords(PlayerPedId())
@@ -241,12 +260,9 @@ Functions.vRP = {
 		end,
 
 		getNearestVehicle = function(radius)
-			if vRP.getNearestVehicle then 
-				return vRP.getNearestVehicle(radius)
-			elseif vRP.nearVehicle then 
-				return vRP.nearVehicle(radius)
-			elseif vRP.ClosestVehicle then 
-				return vRP.ClosestVehicle(radius)
+			local nearestVehicle = vRP.getNearestVehicle(radius) or vRP.nearVehicle(radius) or vRP.ClosestVehicle(radius)
+			if nearestVehicle then
+				return nearestVehicle
 			else
 				local vehicle
 				local vehicles = Functions["client"].getNearestVehicles(radius)
@@ -262,10 +278,9 @@ Functions.vRP = {
 		end,
 		
 		getNearestPlayers = function(radius)
-			if vRP.getNearestPlayers then
-				return vRP.getNearestPlayers(radius)
-			elseif vRP.ClosestPeds then
-				return vRP.ClosestPeds(radius)
+			local nearestPlayers = vRP.getNearestPlayers(radius) or vRP.ClosestPeds(radius)
+			if nearestPlayers then
+				return nearestPlayers
 			else
 				local allPlayers = GetActivePlayers()
 				local players = {}
@@ -284,10 +299,9 @@ Functions.vRP = {
 		end,
 
 		getNearestPlayer = function(radius)
-			if vRP.getNearestPlayer then
-				return vRP.getNearestPlayer(radius)
-			elseif vRP.ClosestPed then
-				return vRP.ClosestPed(radius)
+			local nearestPlayer = vRP.getNearestPlayer(radius) or vRP.ClosestPed(radius)
+			if nearestPlayer then
+				return nearestPlayer
 			else	
 				for player, distance in pairs (Functions["client"]:getNearestPlayers(radius)) do
 					if distance <= radius then
@@ -299,27 +313,26 @@ Functions.vRP = {
 		end,
 
 		killGod = function()
-			if vRP.killGod then
-				return vRP.killGod()
-			else
-				TransitionFromBlurred(1000)
+			vRP.killGod()
 
-				local ped = PlayerPedId()
-				if GetEntityHealth(ped) < 101 or IsEntityDead(ped) then
-					local x,y,z = table.unpack(GetEntityCoords(ped))
-					NetworkResurrectLocalPlayer(x,y,z,true,true,false)
-				end
-				ClearPedBloodDamage(ped)
-				SetEntityInvincible(ped,false)
-				Functions["client"].setHealth(120)
-				ClearPedTasks(ped)
-				ClearPedSecondaryTask(ped)
-				return true
+			TransitionFromBlurred(1000)
+
+			local ped = PlayerPedId()
+			if GetEntityHealth(ped) < 101 or IsEntityDead(ped) then
+				local x,y,z = table.unpack(GetEntityCoords(ped))
+				NetworkResurrectLocalPlayer(x,y,z,true,true,false)
 			end
+			ClearPedBloodDamage(ped)
+			SetEntityInvincible(ped,false)
+			Functions["client"].setHealth(120)
+			ClearPedTasks(ped)
+			ClearPedSecondaryTask(ped)
+			return true
 		end,
 	
 		setHealth = function(health)
-			if vRP.setHealth then
+			local isZirix = vRP.getHealth()
+			if isZirix then
 				vRP.setHealth(health)
 				return true
 			else
@@ -351,16 +364,62 @@ Functions.vRP = {
 			RemoveBlip(id)
 		end,
 
-		AddTargetModel = function(models,configuration)
+		targetAddModel = function(models,parameteres)
 			if GetResourceState('target') == "started" then
 				exports["target"]:AddTargetModel(models,{
-					options = configuration.options,
-					distance = configuration.distance,
-					Distance = configuration.distance
+					options = parameteres.options,
+					distance = parameteres.distance,
+					Distance = parameteres.distance
 				})
 
 				return true
 			end
+
+			return false
+		end,
+
+		targetRemoveModel = function(models)
+			if GetResourceState('target') == "started" then
+				exports["target"]:RemoveTargetModel(models)
+
+				return true
+			end
+
+			return false
+		end,
+
+		targetAddBoxZone = function(name,center,length,width,options,targetoptions)
+			if GetResourceState('target') == "started" then
+				exports["target"]:AddBoxZone(name,center,length,width,options,{
+					options = targetoptions.options,
+					distance = targetoptions.distance,
+					Distance = targetoptions.distance
+				})
+
+				return true
+			end
+
+			return false
+		end,
+
+		targetRemoveBoxZone = function(name)
+			if GetResourceState('target') == "started" then
+				exports["target"]:RemoveBoxZone(name)
+
+				return true
+			end
+
+			return false
+		end,
+
+		sendNotify = function(notifyType, mensage, time, title, color, audio, volume)
+			if Config.resources["striata_notify"] then
+				TriggerEvent("StriataNotify", notifyType, mensage, time, title, color, audio, volume)
+			else
+				TriggerEvent("Notify", notifyType, mensage, time)
+			end
+
+			return true
 		end
 	},
 
@@ -385,37 +444,45 @@ Functions.vRP = {
 			if source and not identifiers then
 				identifiers = GetPlayerIdentifiers(source)
 			end
-			if vRP.getUserIdByIdentifiers then
-				return vRP.getUserIdByIdentifiers(identifiers)
+
+			local userId = vRP.getUserIdByIdentifiers(identifiers)
+			if userId then
+				--? Zirix
+				return userId
 			else
+				--? Creative network
 				local steam
+				local token
 
 				for n,identifier in pairs(identifiers) do
 					if string.sub(identifier, 1, string.len("steam:")) == "steam:" then
 						steam = identifier
+						if steam then
+							local data = vRP.Query("accounts/Account",{ License = steam:sub(#"steam:" + 1) })
+							if data and data[1] and data[1].Token then
+								token = "token: "..data[1].Token
+							end
+						end
 						break
 					end
 				end
-	
-				return steam
+				
+				return token
 			end
 		end,
 		
 		getUserId = function(source)
-			return (vRP.getUserId and vRP.getUserId(source)) or (vRP.Passport and vRP.Passport(source)) or (nil)
+			return vRP.getUserId(source) or vRP.Passport(source) or nil
 		end,
 
 		getUserSource = function(user_id)
-			return (vRP.getUserSource and vRP.getUserSource(parseInt(user_id))) or (vRP.userSource and vRP.userSource(parseInt(user_id))) or (vRP.Source and vRP.Source(parseInt(user_id))) or (nil)
+			return vRP.getUserSource(parseInt(user_id)) or vRP.userSource(parseInt(user_id)) or vRP.Source(parseInt(user_id)) or nil
 		end,
 
 		getUsers = function()
-			if vRP.getUsers then
-				return vRP.getUsers()
-			elseif vRP.userList then
-				return vRP.userList()
-			elseif vRP.Players then
-				return vRP.Players()
+			local users = vRP.getUsers() or vRP.userList() or vRP.Players()
+			if users then
+				return users
 			else
 				local users = {}
 				for k,v in pairs(GetPlayers()) do
@@ -428,33 +495,39 @@ Functions.vRP = {
 
 		getUsersByPermission = function(perm)
 			local users = {}
-			if vRP.getUsersByPermission then
-				return vRP.getUsersByPermission(perm)
-			elseif vRP.numPermission then
-				local usersInService = vRP.numPermission(perm)
-				for user_id,source in pairs(GetPlayers()) do
+
+			local usersInService = vRP.getUsersByPermission(perm)
+			if usersInService then
+				return usersInService
+			end
+
+			local usersInService = vRP.numPermission(perm)
+			if usersInService then
+				for user_id,source in pairs(usersInService) do
 					table.insert(users,user_id)
-				end
-				return users
-			elseif vRP.NumPermission then
-				local usersInService = vRP.NumPermission(perm)
-				for user_id,source in pairs(GetPlayers()) do
-					table.insert(users,user_id)
-				end
-				return users
-			else
-				for n,source in pairs(GetPlayers()) do
-					local user_id = Functions["server"].getUserId(tonumber(source))
-					if Functions["server"].hasPermission(user_id,perm) then
-						table.insert(users,user_id)
-					end
 				end
 				return users
 			end
+
+			usersInService = vRP.NumPermission(perm)
+			if usersInService then
+				for user_id,source in pairs(usersInService) do
+					table.insert(users,user_id)
+				end
+				return users
+			end
+
+			for n,source in pairs(GetPlayers()) do
+				local user_id = Functions["server"].getUserId(tonumber(source))
+				if Functions["server"].hasPermission(user_id,perm) then
+					table.insert(users,user_id)
+				end
+			end
+			return users
 		end,
 
 		hasPermission = function(user_id, perm)
-			return (vRP.hasPermission and vRP.hasPermission(parseInt(user_id), perm)) or (vRP.HasPermission and vRP.HasPermission(parseInt(user_id), perm)) or (false)
+			return vRP.hasPermission(parseInt(user_id), perm) or vRP.HasPermission(parseInt(user_id), perm) or false
 		end,
 
 		getUserGroups = function(user_id)
@@ -462,21 +535,25 @@ Functions.vRP = {
 			
 			if Functions["server"].getUserSource(parseInt(user_id)) then
 				--? Player Online
-				if vRP.getUserGroups then
-					local userGroups = vRP.getUserGroups(parseInt(user_id))
+				local userGroups = vRP.getUserGroups(parseInt(user_id))
+				if userGroups then
 					for group,status in pairs(userGroups) do
 						if status then
 							userGroupsFormat[group] = { hierarchyName = "" }
 						end
 					end
-				elseif vRP.Groups then
-					for group, infos in pairs(vRP.Groups()) do
-						local Data = vRP.DataGroups(group)
-						if Data[tostring(user_id)] then
-							userGroupsFormat[group] = { hierarchyName = infos.Hierarchy[Data[tostring(user_id)]] }
+				end
+				
+				local userGroups = vRP.UserGroups(parseInt(user_id))
+				if userGroups then
+					for Permission,Level in pairs(userGroups) do
+						userGroupsFormat[Permission] = { hierarchyName = vRP.NameHierarchy(Permission,Level) }
+						if vRP.HasService(user_id,Permission) then
+							userGroupsFormat[Permission.."-"..Level] = { hierarchyName = vRP.NameHierarchy(Permission,Level) }
 						end
 					end
 				end
+
 				return userGroupsFormat
 			else
 				--? Player Offline
@@ -511,7 +588,7 @@ Functions.vRP = {
 					end
 				elseif resultCheck[1].t_entitydata_exists > 0 then
 					--? Creative network
-					local allGroups = vRP.Groups()
+					local allGroups = vRP.Groups() or Groups
 
 					local rows = MySQL.Sync.fetchAll("SELECT * FROM entitydata")
 	
@@ -520,7 +597,7 @@ Functions.vRP = {
 						for n,rowInfos in pairs(rows) do
 							local dkeyString = rowInfos.dkey or rowInfos.Name
 							if string.find(dkeyString,dkeySearch) then
-								local usersInPermissionList = rowInfos.dvalue and json.decode(rowInfos.dvalue) or rowInfos.Information or json.encode(rowInfos.Information)
+								local usersInPermissionList = rowInfos.dvalue and json.decode(rowInfos.dvalue) or rowInfos.Information or json.decode(rowInfos.Information)
 								local group = dkeyString:sub(#dkeySearch + 1)
 								for Passport, Hierarchy in pairs(usersInPermissionList) do 
 									if tonumber(Passport) == user_id then
@@ -571,7 +648,7 @@ Functions.vRP = {
 				end
 			elseif resultCheck[1].t_entitydata_exists > 0 then
 				--? Creative network
-				local allGroups = vRP.Groups()
+				local allGroups = vRP.Groups() or Groups
 
 				local rows = MySQL.Sync.fetchAll("SELECT * FROM entitydata")
 				if #rows > 0 then
@@ -579,7 +656,7 @@ Functions.vRP = {
 					for rowNumber,rowInfos in pairs(rows) do
 						local dkeyString = rowInfos.dkey or rowInfos.Name
 						if string.find(dkeyString,dkeySearch) then
-							local usersInPermissionList = rowInfos.dvalue and json.decode(rowInfos.dvalue) or rowInfos.Information or json.encode(rowInfos.Information)
+							local usersInPermissionList = rowInfos.dvalue and json.decode(rowInfos.dvalue) or rowInfos.Information or json.decode(rowInfos.Information)
 							local group = dkeyString:sub(#dkeySearch + 1)
 
 							if not allUserGroups[group] then
@@ -600,7 +677,15 @@ Functions.vRP = {
 		addUserGroup = function(user_id,group)
 			if Functions["server"].getUserSource(parseInt(user_id)) then
 				--? Player Online
-				return (vRP.addUserGroup and vRP.addUserGroup(parseInt(user_id),group)) or (vRP.SetPermission and vRP.SetPermission(parseInt(user_id),group)) or (false)
+				local isZirix = vRP.getUserGroups(parseInt(user_id))
+				local isCreativeNetwork = vRP.UserGroups(parseInt(user_id))
+				if isZirix then
+					return vRP.addUserGroup(parseInt(user_id),group)
+				elseif isCreativeNetwork then
+					return vRP.SetPermission(parseInt(user_id),group)
+				end
+
+				return false
 			else
 				--? Player Offline
 				local queryCheck = [[
@@ -624,7 +709,7 @@ Functions.vRP = {
 					end
 				elseif resultCheck[1].t_entitydata_exists > 0 then
 					--? Creative network
-					local allGroups = vRP.Groups()
+					local allGroups = vRP.Groups() or Groups
 
 					local rows = MySQL.Sync.fetchAll("SELECT * FROM entitydata")
 					if #rows > 0 then
@@ -633,7 +718,7 @@ Functions.vRP = {
 						for rowNumber,rowInfos in pairs(rows) do
 							local dkeyString = rowInfos.dkey or rowInfos.Name
 							if string.find(dkeyString,dkeySearch) then
-								local usersInPermissionList = rowInfos.dvalue and json.decode(rowInfos.dvalue) or rowInfos.Information or json.encode(rowInfos.Information)
+								local usersInPermissionList = rowInfos.dvalue and json.decode(rowInfos.dvalue) or rowInfos.Information or json.decode(rowInfos.Information)
 								local _group = dkeyString:sub(#dkeySearch + 1)
 	
 								if group == _group then
@@ -678,7 +763,17 @@ Functions.vRP = {
 		removeUserGroup = function(user_id,group)
 			if Functions["server"].getUserSource(parseInt(user_id)) then
 				--? Player Online
-				return (vRP.removeUserGroup and vRP.removeUserGroup(parseInt(user_id),group)) or (vRP.RemovePermissionand and vRP.RemovePermissionand(parseInt(user_id),group)) or (false)
+
+				local isZirix = vRP.getUserGroups(parseInt(user_id))
+				local isCreativeNetwork = vRP.UserGroups(parseInt(user_id))
+
+				if isZirix then
+					return vRP.removeUserGroup(parseInt(user_id),group)
+				elseif isCreativeNetwork then
+					return vRP.RemovePermissionand(parseInt(user_id),group)
+				end
+
+				return false
 			else
 				--? Player Offline
 				local queryCheck = [[
@@ -702,7 +797,7 @@ Functions.vRP = {
 					end
 				elseif resultCheck[1].t_entitydata_exists > 0 then
 					--? Creative network
-					local allGroups = vRP.Groups()
+					local allGroups = vRP.Groups() or Groups
 
 					local rows = MySQL.Sync.fetchAll("SELECT * FROM entitydata")
 					if #rows > 0 then
@@ -711,7 +806,7 @@ Functions.vRP = {
 						for rowNumber,rowInfos in pairs(rows) do
 							local dkeyString = rowInfos.dkey or rowInfos.Name
 							if string.find(dkeyString,dkeySearch) then
-								local usersInPermissionList = rowInfos.dvalue and json.decode(rowInfos.dvalue) or rowInfos.Information or json.encode(rowInfos.Information)
+								local usersInPermissionList = rowInfos.dvalue and json.decode(rowInfos.dvalue) or rowInfos.Information or json.decode(rowInfos.Information)
 								local _group = dkeyString:sub(#dkeySearch + 1)
 	
 								if group == _group then
@@ -762,45 +857,66 @@ Functions.vRP = {
 		end,
 
 		request = function(source, text, time)
-			if vRP.request then
-				return vRP.request(source, text, time)
-			elseif vRP.Request then
-				return vRP.Request(source,text,"Sim","Não")
+			local response = vRP.request(source, text, time)
+			if response then
+				return response
+			end
+			
+			response = vRP.Request(source,"Pergunta:",text)
+			if response then
+				return response
 			end
 		end,
 
 		textInput = function(source,text, input)
 			vKEYBOARD = Tunnel.getInterface("keyboard")
-			if vRP.prompt then
-				local resp = vRP.prompt(source,text, input)
-				return resp
-			elseif vKEYBOARD.keySingle ~= nil then
-				local text = vKEYBOARD.keySingle(source,text,input)
-	
-				if not text then
-					text = ""
+			local response = vRP.prompt(source,text, input)
+			if response then
+				return response
+			end
+			
+			response = vKEYBOARD.keySingle(source,text,input)
+			if response then	
+				if not response then
+					response = ""
 				else
-					text = text[1]
+					response = response[1]
 				end
 
-				return text
-			elseif vKEYBOARD.Primary ~= nil then
-				local text = vKEYBOARD.Primary(source,text)
-	
-				if not text then
-					text = ""
+				return response
+			end
+
+			response = vKEYBOARD.Primary(source,text)
+			if vKEYBOARD.Primary ~= nil then	
+				if not response then
+					response = ""
 				else
-					text = text[1]
+					response = response[1]
 				end
 
-				return text
+				return response
 			end
 		end,
 
 		giveHandMoney = function(user_id, amount)
 			if Functions["server"].getUserSource(user_id) then
 				--? Player Online
-				return (vRP.giveMoney and vRP.giveMoney(parseInt(user_id),amount)) or (vRP.giveInventoryItem and vRP.giveInventoryItem(user_id,"dinheiro",amount,true)) or (vRP.GenerateItem and vRP.GenerateItem(user_id,"dinheiro",amount,true)) or (false)
+				local handMoneyZirixEnable = vRP.getMoney(parseInt(user_id))
+				if handMoneyZirixEnable then
+					vRP.giveMoney(parseInt(user_id),amount)
+					return true
+				end
+				
+				local isZirix = vRP.getInventoryItemAmount(parseInt(user_id),"dinheiro") ~= nil
+				if isZirix then
+					vRP.giveInventoryItem(user_id,"dinheiro",amount,true)
+					return true
+				else
+					vRP.GenerateItem(user_id,"dollar",amount,true)
+					return true
+				end
+
+				return false
 			else
 				--? Player Offline
 				local queryCheck = [[
@@ -827,9 +943,9 @@ Functions.vRP = {
 					else
 						return false
 					end
-				elseif vRP.UserData then
+				else
 					--? Creative network
-					return Function["server"].getInventoryItemAmount(user_id,"dinheiro",amount)
+					return Function["server"].giveInventoryItem(user_id,"dollar",amount)
 				end
 			end
 		end,
@@ -837,7 +953,22 @@ Functions.vRP = {
 		removeHandMoney = function(user_id, amount)
 			if Functions["server"].getUserSource(user_id) then
 				--? Player Online
-				return (vRP.tryPayment and vRP.tryPayment(parseInt(user_id),amount)) or (vRP.tryGetInventoryItem and vRP.tryGetInventoryItem(user_id,"dinheiro",amount,true)) or (vRP.TakeItem and vRP.TakeItem(user_id,"dinheiro",amount,true)) or (false)
+				local handMoneyZirixResponse = vRP.tryPayment(parseInt(user_id),amount)
+				if handMoneyZirixResponse ~= nil then
+					return handMoneyZirixResponse
+				end
+
+				local inventoryZirixResponse = vRP.tryGetInventoryItem(user_id,"dinheiro",amount,true)
+				if inventoryZirixResponse ~= nil then
+					return inventoryZirixResponsev
+				end
+
+				local inventoryCreativeNetworkResponse = vRP.TakeItem(user_id,"dollar",amount,true)
+				if inventoryCreativeNetworkResponse ~= nil then
+					return inventoryCreativeNetworkResponse
+				end
+
+				return false
 			else
 				--? Player Offline
 				local queryCheck = [[
@@ -863,9 +994,9 @@ Functions.vRP = {
 					else
 						return false
 					end
-				elseif vRP.UserData then
+				else
 					--? Creative network
-					return Function["server"].removeInventoryItem(user_id,"dinheiro",amount)
+					return Function["server"].removeInventoryItem(user_id,"dollar",amount)
 				end
 			end
 		end,
@@ -873,7 +1004,27 @@ Functions.vRP = {
 		getHandMoney = function(user_id)
 			if Functions["server"].getUserSource(user_id) then
 				--? Player Online
-				return (vRP.getMoney and vRP.getMoney(parseInt(user_id))) or (vRP.getInventoryItemAmount and vRP.getInventoryItemAmount(user_id,"dinheiro")) or (vRP.ItemAmount and vRP.ItemAmount(user_id,"dinheiro")) or (vRP.InventoryItemAmount and vRP.InventoryItemAmount(user_id,"dinheiro")[1]) or 0
+				local handMoneyZirixResponse = vRP.getMoney(parseInt(user_id))
+				if handMoneyZirixResponse ~= nil then
+					return handMoneyZirixResponse
+				end
+
+				local inventoryZirixResponse = vRP.getInventoryItemAmount(user_id,"dinheiro")
+				if inventoryZirixResponse ~= nil then
+					return inventoryZirixResponse
+				end
+
+				local inventoryCreativeResponse = vRP.ItemAmount(user_id,"dollar")
+				if inventoryCreativeResponse ~= nil then
+					return inventoryCreativeResponse
+				end
+
+				local inventoryCreativeNetworkResponse = vRP.InventoryItemAmount(user_id,"dollar")[1]
+				if inventoryCreativeNetworkResponse ~= nil then
+					return inventoryCreativeNetworkResponse
+				end
+
+				return 0
 			else
 				--? Player Offline
 				local queryCheck = [[
@@ -894,9 +1045,9 @@ Functions.vRP = {
 					else
 						return 0
 					end
-				elseif vRP.UserData then
+				else
 					--? Creative network
-					return Function["server"].getInventoryItemAmount(user_id,"dinheiro")
+					return Function["server"].getInventoryItemAmount(user_id,"dollar")
 				end
 			end
 		end,
@@ -904,7 +1055,22 @@ Functions.vRP = {
 		giveBankMoney = function(user_id, amount)
 			if Functions["server"].getUserSource(user_id) then
 				--? Player Online
-				return (vRP.giveBankMoney and vRP.giveBankMoney(parseInt(user_id),amount)) or (vRP.addBank and vRP.addBank(parseInt(user_id),amount)) or (vRP.GiveBank and vRP.GiveBank(parseInt(user_id),amount)) or (false)
+				local isZirix = vRP.getBankMoney(parseInt(user_id)) ~= nil
+				if isZirix then
+					return vRP.giveBankMoney(parseInt(user_id),amount)
+				end
+
+				local isCreative = vRP.getBank(parseInt(user_id)) ~= nil
+				if isCreative then
+					return vRP.addBank(parseInt(user_id),amount)
+				end
+
+				local isCreativeNetwork = vRP.GetBank(parseInt(user_id)) ~= nil
+				if isCreativeNetwork then
+					return vRP.GiveBank(parseInt(user_id),amount)
+				end
+
+				return false
 			else
 				--? Player Offline
 				local queryCheck = [[
@@ -958,7 +1124,22 @@ Functions.vRP = {
 		removeBankMoney = function(user_id, amount)
 			if Functions["server"].getUserSource(user_id) then
 				--? Player Online
-				return (vRP.tryWithdraw and vRP.tryWithdraw(parseInt(user_id),amount)) or (vRP.delBank and vRP.delBank(parseInt(user_id),amount)) or (vRP.RemoveBank and vRP.RemoveBank(parseInt(user_id),amount)) or (vRP.tryFullPayment and vRP.tryFullPayment(parseInt(user_id),amount)) or (vRP.PaymentFull and vRP.PaymentFull(parseInt(user_id),amount)) or (false)
+				local zirixResponse = vRP.tryWithdraw(parseInt(user_id),amount)
+				if zirixResponse ~= nil then
+					return zirixResponse or vRP.tryFullPayment(parseInt(user_id),amount)
+				end
+
+				local creativeResponse = vRP.delBank(parseInt(user_id),amount)
+				if creativeResponse ~= nil then
+					return creativeResponse
+				end
+
+				local creativeNetworkResponse = vRP.RemoveBank(parseInt(user_id),amount)
+				if creativeNetworkResponse ~= nil then
+					return creativeNetworkResponse or vRP.PaymentFull(parseInt(user_id),amount)
+				end
+
+				return false
 			else
 				--? Player Offline
 				local queryCheck = [[
@@ -1011,7 +1192,7 @@ Functions.vRP = {
 		getBankMoney = function(user_id)
 			if Functions["server"].getUserSource(user_id) then
 				--? Player Online
-				return (vRP.getBankMoney and vRP.getBankMoney(parseInt(user_id))) or (vRP.getBank and vRP.getBank(parseInt(user_id))) or (vRP.GetBank and vRP.GetBank(Functions["server"].getUserSource(user_id))) or (0)
+				return vRP.getBankMoney(parseInt(user_id)) or vRP.getBank(parseInt(user_id)) or vRP.GetBank(parseInt(user_id)) or 0
 			else
 				--? Player Offline
 				local queryCheck = [[
@@ -1059,27 +1240,28 @@ Functions.vRP = {
 			if Functions["server"].getUserSource(parseInt(user_id)) then
 				--? Player Online
 
-				if vRP.Inventory then
-					currentInventory = vRP.Inventory(user_id) or {}
-					for slot,itensIfos in pairs(currentInventory) do
+				local creativeNetworkResponse = vRP.Inventory(user_id)
+				if creativeNetworkResponse then
+					for slot,itensIfos in pairs(creativeNetworkResponse) do
 						inventory[itensIfos.item] = {amount = itensIfos.amount}
 					end
 				else
-					inventory = (vRP.getInventory and vRP.getInventory(parseInt(user_id))) or (vRP.getUserDataTable and vRP.getUserDataTable(parseInt(user_id)).inventory) or ({})
+					inventory = vRP.getInventory(parseInt(user_id)) or vRP.getUserDataTable(parseInt(user_id)).inventory or {}
 				end
 			else
 				--? Player Offline
-				if vRP.UserData then
+				local creativeNetworkResponse = vRP.Datatable(user_id)
+				if creativeNetworkResponse then
 					--? Creative network
-					local Datatable = vRP.UserData(user_id,"Datatable")
+					local Datatable = creativeNetworkResponse
 					if Datatable and Datatable.Inventory then
 						for slot, itemInfos in pairs(Datatable.Inventory) do
 							inventory[itensIfos.item] = {amount = itensIfos.amount}
 						end
 					end
-				elseif vRP.getUData then
+				else
 					--? Zirix
-					local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+					local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or "{}")
 					inventory = dataTable and dataTable.inventory or {}
 				end
 			end
@@ -1094,12 +1276,14 @@ Functions.vRP = {
 		getInventoryItemAmount = function(user_id,item)
 			if Functions["server"].getUserSource(parseInt(user_id)) then
 				--? Player Online
-				return (vRP.getInventoryItemAmount and vRP.getInventoryItemAmount(parseInt(user_id),item)) or (vRP.ItemAmount and vRP.ItemAmount(parseInt(user_id),item)) or (vRP.InventoryItemAmount and vRP.InventoryItemAmount(parseInt(user_id),item)[1]) or (0)
+				
+				return vRP.getInventoryItemAmount(parseInt(user_id),item) or vRP.ItemAmount(parseInt(user_id),item) or vRP.InventoryItemAmount(parseInt(user_id),item)[1] or 0
 			else
 				--? Player Offline
-				if vRP.UserData then
+				local creativeNetworkResponse = vRP.Datatable(user_id)
+				if creativeNetworkResponse then
 					--? Creative network
-					local Datatable = vRP.UserData(user_id,"Datatable")
+					local Datatable = creativeNetworkResponse
 					if Datatable and Datatable.Inventory then
 						for slot, itemInfos in pairs(Datatable.Inventory) do
 							if itemInfos.item == item then
@@ -1109,7 +1293,7 @@ Functions.vRP = {
 					end
 
 					return 0
-				elseif vRP.getUData then
+				else
 					--? Zirix
 					local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
 					inventory = dataTable.inventory
@@ -1125,12 +1309,26 @@ Functions.vRP = {
 		giveInventoryItem = function(user_id,item,amount)
 			if Functions["server"].getUserSource(parseInt(user_id)) then
 				--? Player Online
-				return (vRP.giveInventoryItem and vRP.giveInventoryItem(parseInt(user_id),item,amount,true)) or (vRP.GiveItem and vRP.GiveItem(parseInt(user_id),item,amount,true)) or (vRP.GenerateItem and vRP.GenerateItem(parseInt(user_id),item,amount,true)) or (false)
+				local isZirix = vRP.getInventoryItemAmount(parseInt(user_id),item) ~= nil
+				if isZirix then
+					vRP.giveInventoryItem(parseInt(user_id),item,amount,true)
+					return true
+				end
+
+				local isCreativeNetwork = vRP.ItemAmount(parseInt(user_id),item) ~= nil or vRP.InventoryItemAmount(parseInt(user_id),item)[1] ~= nil
+				if isCreativeNetwork then
+					-- vRP.GiveItem(parseInt(user_id),item,amount,true)
+					vRP.GenerateItem(parseInt(user_id),item,amount,true)
+					return true
+				end
+
+				return false
 			else
 				--? Player Offline
-				if vRP.UserData then
+				local creativeNetworkResponse = vRP.Datatable(user_id)
+				if creativeNetworkResponse then
 					--? Creative network
-					local Datatable = vRP.UserData(user_id,"Datatable")
+					local Datatable = creativeNetworkResponse
 					local finded = false
 					if Datatable and Datatable.Inventory then
 						for slot, itemInfos in pairs(Datatable.Inventory) do
@@ -1156,7 +1354,7 @@ Functions.vRP = {
 					end
 
 					return false
-				elseif vRP.getUData then
+				else
 					--? Zirix
 					local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
 					inventory = dataTable.inventory or {}
@@ -1179,10 +1377,14 @@ Functions.vRP = {
 		removeInventoryItem = function(user_id,item,amount)
 			if Functions["server"].getUserSource(parseInt(user_id)) then
 				--? Player Online
-				if vRP.tryGetInventoryItem then
-					return vRP.tryGetInventoryItem(parseInt(user_id),item,amount,true)
-				elseif vRP.InventoryItemAmount and vRP.TakeItem then
-					consultItem = vRP.InventoryItemAmount(user_id,item)
+				local zirixResponse = vRP.tryGetInventoryItem(parseInt(user_id),item,amount,true)
+				if zirixResponse ~= nil then
+					return zirixResponse
+				end
+				
+				local creativeNetworkResponse = vRP.InventoryItemAmount(user_id,item)
+				if creativeNetworkResponse ~= nil then
+					consultItem = creativeNetworkResponse
 					if not consultItem then
 						return false
 					else
@@ -1197,9 +1399,10 @@ Functions.vRP = {
 				end
 			else
 				--? Player Offline
-				if vRP.UserData then
+				local creativeNetworkResponse = vRP.Datatable(user_id)
+				if creativeNetworkResponse then
 					--? Creative network
-					local Datatable = vRP.UserData(user_id,"Datatable")
+					local Datatable = creativeNetworkResponse
 					local finded = false
 					if Datatable and Datatable.Inventory then
 						for slot, itemInfos in pairs(Datatable.Inventory) do
@@ -1222,7 +1425,7 @@ Functions.vRP = {
 					end
 
 					return false
-				elseif vRP.getUData then
+				else
 					--? Zirix
 					local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
 					inventory = dataTable.inventory or {}
@@ -1240,23 +1443,23 @@ Functions.vRP = {
 		end,
 
 		getInventoryWeight = function(user_id)
-			return (vRP.getInventoryWeight and vRP.getInventoryWeight(parseInt(user_id))) or (vRP.inventoryWeight and vRP.inventoryWeight(parseInt(user_id))) or (vRP.InventoryWeight and vRP.InventoryWeight(parseInt(user_id))) or (0.0)
+			return vRP.getInventoryWeight(parseInt(user_id)) or vRP.inventoryWeight(parseInt(user_id)) or vRP.InventoryWeight(parseInt(user_id)) or 0.0
 		end,
 
 		getInventoryMaxWeight = function(user_id)
-			return (vRP.getInventoryMaxWeight and vRP.getInventoryMaxWeight(parseInt(user_id))) or (vRP.getWeight and vRP.getWeight(parseInt(user_id))) or (vRP.GetWeight and vRP.GetWeight(parseInt(user_id))) or (0.0)
+			return vRP.getInventoryMaxWeight(parseInt(user_id)) or vRP.getWeight(parseInt(user_id)) or vRP.GetWeight(parseInt(user_id)) or 0.0
 		end,
 
 		getItemWeight = function(item)
-			return (vRP.getItemWeight and vRP.getItemWeight(item)) or (itemWeight and itemWeight(item)) or (0.0)
+			return vRP.getItemWeight(item) or itemWeight(item) or 0.0
 		end,
 
 		getItemName = function(item)
-			return (vRP.itemNameList and vRP.itemNameList(item)) or (itemName and itemName(item)) or ("")
+			return vRP.itemNameList(item) or itemName(item) or ""
 		end,
 
 		getItemIndex = function(item)
-			return (vRP.itemIndexList and vRP.itemIndexList(item)) or (itemIndex and itemIndex(item)) or ("")
+			return vRP.itemIndexList(item) or itemIndex(item) or ""
 		end,
 
 		giveVehicle = function(user_id,vehicle)
@@ -1264,7 +1467,7 @@ Functions.vRP = {
 				SELECT 
 					(SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'vrp_user_vehicles') AS t_vrp_user_vehicles_exists,
 					(SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'vrp_user_vehicles' AND COLUMN_NAME = 'user_id') AS c_user_id_inT_vrp_user_vehicles_exists,
-					(SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'vrp_user_vehicles' AND COLUMN_NAME = 'vehicle') AS c_vehicle_inT_vrp_user_vehicles_exists
+					(SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'vrp_user_vehicles' AND COLUMN_NAME = 'vehicle') AS c_vehicle_inT_vrp_user_vehicles_exists,
 					(SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'vrp_user_vehicles' AND COLUMN_NAME = 'ipva') AS c_ipva_inT_vrp_user_vehicles_exists
 			]]
 			local resultCheck = MySQL.Sync.fetchAll(queryCheck)
@@ -1275,7 +1478,7 @@ Functions.vRP = {
 					["@vehicle"] = vehicle,
 					["@ipva"] = parseInt(os.time())
 				})
-			elseif vRP.Query and vRP.GeneratePlate then
+			elseif VehicleExist(vehicle) then
 				return vRP.Query("vehicles/addVehicles",{ Passport = user_id, vehicle = vehicle, plate = vRP.GeneratePlate(), work = "false" })
 			else
 				return false
@@ -1296,7 +1499,7 @@ Functions.vRP = {
 					["@user_id"] = user_id,
 					["@vehicle"] = vehicle
 				})
-			elseif vRP.Query then
+			elseif VehicleExist(vehicle) then
 				return vRP.Query("vehicles/removeVehicles",{ Passport = user_id, vehicle = vehicle })
 			else
 				return false
@@ -1338,7 +1541,7 @@ Functions.vRP = {
 						)
 					end
 				end
-			elseif vRP.Query then
+			elseif VehicleExist(vehicle) then
 				--? Creative network
 				local Consult = vRP.Query("vehicles/UserVehicles", { Passport = user_id })
 				for _, v in pairs(Consult) do
@@ -1367,8 +1570,9 @@ Functions.vRP = {
 		end,
 
 		saveOutfit = function(source,outfit)
-			if vRP.save_idle_custom then
-				return vRP.save_idle_custom(source,outfit)
+			local zirixResponse = vRP.save_idle_custom(source,outfit)
+			if zirixResponse ~= nil then
+				return zirixResponse
 			else
 				local currentOutfit = ""
 
@@ -1400,7 +1604,8 @@ Functions.vRP = {
 		end,
 
 		removeOutfit = function(source)
-			if vRP.removeCloak then
+			local isZirix = vRP.getUserDataTable(Functions["server"].getUserId(source))
+			if isZirix then
 				return vRP.removeCloak(source)
 			else
 				local savedOutfit = MySQL.Sync.fetchAll("SELECT txt FROM striatadb WHERE user_id = @user_id AND db = @db", {
@@ -1422,9 +1627,10 @@ Functions.vRP = {
 		end,
 
 		getArrestPoliceTime = function(user_id)
-			if vRP.getUData then
+			local zirixResponse = vRP.getUData(parseInt(user_id),"vRP:prisao")
+			if zirixResponse ~= nil then
 				--? Zirix
-				return vRP.getUData(parseInt(user_id),"vRP:prisao")
+				return zirixResponse
 			else
 				--? Creative network
 				local Query = vRP.Query("characters/Person", { id = user_id })
@@ -1437,27 +1643,69 @@ Functions.vRP = {
 		end,
 
 		setArrestPoliceTime = function(user_id,time)
-			return (vRP.InitPrison and vRP.InitPrison(user_id, time)) or (vRP.setUData and vRP.setUData(parseInt(user_id),"vRP:prisao",json.encode(parseInt(time)))) or (false)
+			local isCreativeNetwork = vRP.Identity(user_id)
+			if isCreativeNetwork ~= nil then
+				vRP.InsertPrison(user_id, time)
+				return true
+			else
+				vRP.setUData(parseInt(user_id),"vRP:prisao",json.encode(parseInt(time)))
+				return true
+			end
+
+			return false
 		end,
 
 		getFines = function(user_id)
-			return (vRP.getFines and vRP.getFines(parseInt(user_id))) or (vRP.GetFine and vRP.GetFine(parseInt(user_id))) or (vRP.getUData and vRP.getUData(parseInt(user_id),"vRP:multas")) or (0.0)
+			local creativeNetworkResponse = vRP.GetFine(parseInt(user_id))
+			if creativeNetworkResponse ~= nil then
+				return creativeNetworkResponse
+			end
+
+			local creativeResponse = vRP.getFines(parseInt(user_id))
+			if creativeResponse ~= nil then
+				return creativeResponse
+			end
+
+			local zirixResponse = vRP.getUData(parseInt(user_id),"vRP:multas")
+			if zirixResponse ~= nil then
+				return zirixResponse
+			end
+			
+			return 0.0
 		end,
 
 		setFine = function(user_id,value)
-			return (vRP.addFines and vRP.addFines(parseInt(user_id))) or (vRP.GiveFine and vRP.GiveFine(parseInt(user_id),value)) or (vRP.setUData and vRP.setUData(parseInt(user_id),"vRP:multas",json.encode(parseInt(value)))) or (false)
+			local creativeNetworkResponse = vRP.GetFine(parseInt(user_id))
+			if creativeNetworkResponse ~= nil then
+				vRP.GiveFine(parseInt(user_id),value)
+				return true
+			end
+
+			local creativeResponse = vRP.getFines(parseInt(user_id))
+			if creativeResponse ~= nil then
+				vRP.addFines(parseInt(user_id))
+				return true
+			end
+
+			local zirixResponse = vRP.getUData(parseInt(user_id),"vRP:multas")
+			if zirixResponse ~= nil then
+				vRP.setUData(parseInt(user_id),"vRP:multas",json.encode(parseInt(value)))
+				return true
+			end
+			
+			return false
 		end,
 
 		getUserInfo = function(user_id)
 			local info = {}
 			if Functions["server"].getUserSource(parseInt(user_id)) then
 				--? Player Online
-				local identity = (vRP.getUserIdentity and vRP.getUserIdentity(parseInt(user_id))) or (vRP.Identity and vRP.Identity(Passport))
+				local identity = vRP.getUserIdentity(parseInt(user_id)) or vRP.Identity(user_id)
 				info["name"] = identity.name or identity.Name
 				info["lastName"] = identity.firstname or identity.name2 or identity.Lastname
-				info["age"] = identity.age or 20
-				info["document"] = identity.registration or identity.license
-				info["phone"] = identity.phone
+				info["age"] = identity.age or (identity.Daily and tonumber(os.date("%Y")) - tonumber(splitString(identity.Daily)[3])) or 20
+				info["document"] = identity.registration or identity.license or identity.License
+				info["phone"] = identity.phone or identity.Phone
 				return info
 			else
 				--? Player Offline
@@ -1489,9 +1737,9 @@ Functions.vRP = {
 				
 				info["name"] = identity.name or identity.Name
 				info["lastName"] = identity.firstname or identity.name2 or identity.Lastname
-				info["age"] = identity.age or 20
-				info["document"] = identity.registration or identity.license
-				info["phone"] = identity.phone
+				info["age"] = identity.age or (identity.Daily and tonumber(os.date("%Y")) - tonumber(splitString(identity.Daily)[3])) or 20
+				info["document"] = identity.registration or identity.license or identity.License
+				info["phone"] = identity.phone or identity.Phone
 				return info
 			end
 		end,
@@ -1500,16 +1748,30 @@ Functions.vRP = {
 			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if source then
 				--? Player Online
-				return (vRPclient.getHealth and vRPclient.getHealth(source)) or (vRP.GetHealth and vRP.GetHealth(source)) or nil
+				local zirixResponse = vRPclient.getHealth(source)
+				if zirixResponse ~= nil then
+					return zirixResponse
+				end
+
+				local creativeNetworkResponse = vRP.GetHealth(source)
+				if creativeNetworkResponse ~= nil then
+					return creativeNetworkResponse
+				end
+
+				return nil
 			else
 				--? Player Offline
-				if vRP.UserData then
+				local creativeNetworkResponse = vRP.Datatable(user_id)
+				if creativeNetworkResponse then
 					--? Creative network
-					local Datatable = vRP.UserData(user_id,"Datatable")
+					local Datatable = creativeNetworkResponse
 					return Datatable.Health
-				elseif vRP.getUData then
+				end
+				
+				local zirixResponse = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				if zirixResponse then
 					--? Zirix
-					local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+					local Datatable = zirixResponse
 					return dataTable.health
 				end
 			end
@@ -1519,22 +1781,37 @@ Functions.vRP = {
 			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if source then
 				--? Player Online
-				return (vRPclient.setHealth and vRPclient.setHealth(source,amount)) or (vRPclient.SetHealth and vRPclient.SetHealth(source,amount)) or (false)
+				local zirixResponse = vRPclient.getHealth(source)
+				if zirixResponse ~= nil then
+					return vRPclient.setHealth(source,amount)
+				end
+
+				local creativeNetworkResponse = vRP.GetHealth(source)
+				if creativeNetworkResponse ~= nil then
+					return vRPclient.SetHealth(source,amount)
+				end
+
+				return false
 			else
 				--? Player Offline
-				if vRP.UserData then
+				local creativeNetworkResponse = vRP.Datatable(user_id)
+				if creativeNetworkResponse then
 					--? Creative network
-					local Datatable = vRP.UserData(user_id,"Datatable")
+					local Datatable = creativeNetworkResponse
 					Datatable.Health = amount
 					vRP.Query("playerdata/SetData",{ Passport = user_id, Name = "Datatable", dkey = "Datatable", dvalue = json.encode(Datatable), Information = json.encode(Datatable)})
 					return true
-				elseif vRP.getUData then
+				end
+				
+				local zirixResponse = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				if zirixResponse then
 					--? Zirix
-					local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+					local Datatable = zirixResponse
 					dataTable.health = amount
 					vRP._setUData(parseInt(user_id), "vRP:datatable", json.encode(dataTable))
 					return true
 				end
+
 				return false
 			end
 		end,
@@ -1543,16 +1820,25 @@ Functions.vRP = {
 			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if source then
 				--? Player Online
-				return (vRPclient.getArmour and vRPclient.getArmour(source)) or GetPedArmour(GetPlayerPed(source))
+				local zirixResponse = vRPclient.getArmour(source)
+				if zirixResponse ~= nil then
+					return zirixResponse
+				else
+					return GetPedArmour(GetPlayerPed(source))
+				end
 			else
 				--? Player Offline
-				if vRP.UserData then
+				local creativeNetworkResponse = vRP.Datatable(user_id)
+				if creativeNetworkResponse then
 					--? Creative network
-					local Datatable = vRP.UserData(user_id,"Datatable")
-					return dataTable.Armour
-				elseif vRP.getUData then
+					local Datatable = creativeNetworkResponse
+					return Datatable.Armour
+				end
+				
+				local zirixResponse = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				if zirixResponse then
 					--? Zirix
-					local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+					local Datatable = zirixResponse
 					return dataTable.colete
 				end
 			end
@@ -1562,22 +1848,35 @@ Functions.vRP = {
 			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if source then
 				--? Player Online
-				return (vRPclient.setArmour(source,amount)) or (vRP.SetArmour(source,amount)) or (false)
+				local zirixResponse = vRPclient.getArmour(source)
+				if zirixResponse ~= nil then
+					vRPclient.setArmour(source,amount)
+					return true
+				else
+					vRP.SetArmour(source,amount)
+					return true
+				end
+				
+				return false
 			else
 				--? Player Offline
-				if vRP.UserData then
+				local creativeNetworkResponse = vRP.Datatable(user_id)
+				if creativeNetworkResponse then
 					--? Creative network
-					local Datatable = vRP.UserData(user_id,"Datatable")
 					Datatable.Armour = amount
 					vRP.Query("playerdata/SetData",{ Passport = user_id, Name = "Datatable", dkey = "Datatable", dvalue = json.encode(Datatable), Information = json.encode(Datatable)})
 					return true
-				elseif vRP.getUData then
+				end
+				
+				local zirixResponse = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				if zirixResponse then
 					--? Zirix
-					local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+					local Datatable = zirixResponse
 					dataTable.colete = amount
 					vRP._setUData(parseInt(user_id), "vRP:datatable", json.encode(dataTable))
 					return true
 				end
+
 				return false
 			end
 		end,
@@ -1586,18 +1885,34 @@ Functions.vRP = {
 			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if source then
 				--? Player Online
-				return (vRP.getHunger and vRP.getHunger(parseInt(user_id))) or (vRP.Datatable and vRP.Datatable(parseInt(user_id)).Hunger) or (100.0)
+				local zirixResponse = vRP.getHunger(parseInt(user_id))
+				if zirixResponse ~= nil then
+					return zirixResponse
+				end
+
+				local creativeNetworkResponse = vRP.Datatable(parseInt(user_id)).Hunger
+				if creativeNetworkResponse ~= nil then
+					return creativeNetworkResponse
+				end
+
+				return 100.0
 			else
 				--? Player Offline
-				if vRP.UserData then
+				local creativeNetworkResponse = vRP.Datatable(user_id)
+				if creativeNetworkResponse then
 					--? Creative network
-					local Datatable = vRP.UserData(user_id,"Datatable")
-					return dataTable.Hunger
-				elseif vRP.getUData then
+					local Datatable = creativeNetworkResponse
+					return Datatable.Hunger
+				end
+				
+				local zirixResponse = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				if zirixResponse then
 					--? Zirix
-					local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+					local Datatable = zirixResponse
 					return dataTable.hunger
 				end
+
+				return 100.0
 			end
 		end,
 
@@ -1605,28 +1920,38 @@ Functions.vRP = {
 			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if source then
 				--? Player Online
-				if vRP.setHunger then
+				local zirixResponse = vRP.getHunger(parseInt(user_id))
+				if zirixResponse ~= nil then
 					return vRP.setHunger(parseInt(user_id),amount)
-				elseif vRP.UpgradeHunger then
-					local currentHunger = Functions["server"].getHunger(user_id) 
+				end
+
+				local creativeNetworkResponse = vRP.Datatable(parseInt(user_id)).Hunger
+				if creativeNetworkResponse ~= nil then
+					local currentHunger = creativeNetworkResponse
 					return vRP.UpgradeHunger(parseInt(user_id),amount - currentHunger)
 				end
+
 				return false
 			else
 				--? Player Offline
-				if vRP.UserData then
+				local creativeNetworkResponse = vRP.Datatable(user_id)
+				if creativeNetworkResponse then
 					--? Creative network
-					local Datatable = vRP.UserData(user_id,"Datatable")
+					local Datatable = creativeNetworkResponse
 					Datatable.Hunger = amount
 					vRP.Query("playerdata/SetData",{ Passport = user_id, Name = "Datatable", dkey = "Datatable", dvalue = json.encode(Datatable), Information = json.encode(Datatable)})
 					return true
-				elseif vRP.getUData then
+				end
+				
+				local zirixResponse = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				if zirixResponse then
 					--? Zirix
-					local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+					local Datatable = zirixResponse
 					dataTable.hunger = amount
 					vRP._setUData(parseInt(user_id), "vRP:datatable", json.encode(dataTable))
 					return true
 				end
+
 				return false
 			end
 		end,
@@ -1635,18 +1960,34 @@ Functions.vRP = {
 			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if source then
 				--? Player Online
-				return (vRP.getThirst and vRP.getThirst(parseInt(user_id))) or (vRP.Datatable and vRP.Datatable(parseInt(user_id)).Thirst) or (100.0)
+				local zirixResponse = vRP.getThirst(parseInt(user_id))
+				if zirixResponse ~= nil then
+					return zirixResponse
+				end
+
+				local creativeNetworkResponse = vRP.Datatable(parseInt(user_id)).Thirst
+				if creativeNetworkResponse ~= nil then
+					return creativeNetworkResponse
+				end
+
+				return 100.0
 			else
 				--? Player Offline
-				if vRP.UserData then
+				local creativeNetworkResponse = vRP.Datatable(user_id)
+				if creativeNetworkResponse then
 					--? Creative network
-					local Datatable = vRP.UserData(user_id,"Datatable")
+					local Datatable = creativeNetworkResponse
 					return Datatable.Thirst
-				elseif vRP.getUData then
+				end
+				
+				local zirixResponse = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				if zirixResponse then
 					--? Zirix
-					local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+					local Datatable = zirixResponse
 					return dataTable.thirst
 				end
+
+				return 100.0
 			end
 		end,
 
@@ -1654,27 +1995,38 @@ Functions.vRP = {
 			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if source then
 				--? Player Online
-				if vRP.setThirst then
+				local zirixResponse = vRP.getThirst(parseInt(user_id))
+				if zirixResponse ~= nil then
 					return vRP.setThirst(parseInt(user_id),amount)
-				elseif vRP.UpgradeThirst then
-					local currentThirst = Functions["server"].getThirst(user_id) 
+				end
+
+				local creativeNetworkResponse = vRP.Datatable(parseInt(user_id)).Thirst
+				if creativeNetworkResponse ~= nil then
+					local currentThirst = creativeNetworkResponse
 					return vRP.UpgradeThirst(parseInt(user_id),amount - currentThirst)
 				end
+
+				return false
 			else
 				--? Player Offline
-				if vRP.UserData then
+				local creativeNetworkResponse = vRP.Datatable(user_id)
+				if creativeNetworkResponse then
 					--? Creative network
-					local Datatable = vRP.UserData(user_id,"Datatable")
+					local Datatable = creativeNetworkResponse
 					Datatable.Thirst = amount
 					vRP.Query("playerdata/SetData",{ Passport = user_id, Name = "Datatable", dkey = "Datatable", dvalue = json.encode(Datatable), Information = json.encode(Datatable)})
 					return true
-				elseif vRP.getUData then
+				end
+				
+				local zirixResponse = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				if zirixResponse then
 					--? Zirix
-					local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+					local Datatable = zirixResponse
 					dataTable.thirst = amount
 					vRP._setUData(parseInt(user_id), "vRP:datatable", json.encode(dataTable))
 					return true
 				end
+
 				return false
 			end
 		end,
@@ -1683,18 +2035,34 @@ Functions.vRP = {
 			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if source then
 				--? Player Online
-				return (vRP.getStress and vRP.getStress(parseInt(user_id))) or (vRP.Datatable and vRP.Datatable(parseInt(user_id)).Stress) or (0.0)
+				local zirixResponse = vRP.getStress(parseInt(user_id))
+				if zirixResponse ~= nil then
+					return zirixResponse
+				end
+
+				local creativeNetworkResponse = vRP.Datatable(parseInt(user_id)).Stress
+				if creativeNetworkResponse ~= nil then
+					return creativeNetworkResponse
+				end
+
+				return 0.0
 			else
 				--? Player Offline
-				if vRP.UserData then
+				local creativeNetworkResponse = vRP.Datatable(user_id)
+				if creativeNetworkResponse then
 					--? Creative network
-					local Datatable = vRP.UserData(user_id,"Datatable")
+					local Datatable = creativeNetworkResponse
 					return Datatable.Stress
-				elseif vRP.getUData then
+				end
+				
+				local zirixResponse = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				if zirixResponse then
 					--? Zirix
-					local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+					local Datatable = zirixResponse
 					return dataTable.stress
 				end
+
+				return 0.0
 			end
 		end,
 
@@ -1702,27 +2070,38 @@ Functions.vRP = {
 			local source = Functions["server"].getUserSource(parseInt(user_id))
 			if source then
 				--? Player Online
-				if vRP.setStress then
+				local zirixResponse = vRP.getStress(parseInt(user_id))
+				if zirixResponse ~= nil then
 					return vRP.setStress(parseInt(user_id),amount)
-				elseif vRP.UpgradeStress then
-					local currentStress = Functions["server"].getStress(user_id) 
+				end
+
+				local creativeNetworkResponse = vRP.Datatable(parseInt(user_id)).Stress
+				if creativeNetworkResponse ~= nil then
+					local currentStress = creativeNetworkResponse
 					return vRP.UpgradeStress(parseInt(user_id),amount - currentStress)
 				end
+
+				return false
 			else
 				--? Player Offline
-				if vRP.UserData then
+				local creativeNetworkResponse = vRP.Datatable(user_id)
+				if creativeNetworkResponse then
 					--? Creative network
-					local Datatable = vRP.UserData(user_id,"Datatable")
+					local Datatable = creativeNetworkResponse
 					Datatable.Stress = amount
 					vRP.Query("playerdata/SetData",{ Passport = user_id, Name = "Datatable", dkey = "Datatable", dvalue = json.encode(Datatable), Information = json.encode(Datatable)})
 					return true
-				elseif vRP.getUData then
+				end
+				
+				local zirixResponse = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+				if zirixResponse then
 					--? Zirix
-					local dataTable = json.decode(vRP.getUData(parseInt(user_id), "vRP:datatable") or {})
+					local Datatable = zirixResponse
 					dataTable.stress = amount
 					vRP._setUData(parseInt(user_id), "vRP:datatable", json.encode(dataTable))
 					return true
 				end
+
 				return false
 			end
 		end,
@@ -1778,7 +2157,7 @@ Functions.vRP = {
 					})
 					if rows and #rows > 0 then
 						for rowNumber, rowInfos in pairs(rows) do 
-							if rowInfos.Name == homeName then
+							if rowInfos.Name == homeName or vRP.InventoryFull(user_id,"propertys-"..rowInfos.Serial) then
 								return true
 							end
 						end
@@ -1791,30 +2170,63 @@ Functions.vRP = {
 		end,
 
 		getWhiteListStatus = function(user_id)
-			if vRP.isWhitelisted then
-				return vRP.isWhitelisted(parseInt(user_id))
-			elseif vRP.Identities and vRP.Account then
-				local Identity = vRP.Identities(source)
-				local Account = vRP.Account(Identity)
-				return Account.whitelist
+			local zirixResponse = vRP.isWhitelisted(parseInt(user_id))
+			if zirixResponse ~= nil then
+				return zirixResponse
 			end
+			
+			local creativeNetworkResponse = vRP.Source(user_id)
+			if creativeNetworkResponse ~= nil then
+				if creativeNetworkResponse then
+					local Identity = vRP.Identities(creativeNetworkResponse)
+					local Account = vRP.Account(Identity)
+					return Account.Whitelist
+				end
+			end
+
+			return nil
 		end,
 
 		changeWhiteListStatus = function(user_id,status)
-			if vRP.setWhitelisted then
-				return vRP.setWhitelisted(parseInt(user_id),status)
-			elseif vRP.Query then
-				vRP.Query("accounts/updateWhitelist",{ id = parseInt(user_id), whitelist = status })
-				return
+			local zirixResponse = vRP.isWhitelisted(parseInt(user_id))
+			if zirixResponse ~= nil then
+				vRP.setWhitelisted(parseInt(user_id),status)
+				return true
+			else
+				if string.find(user_id,"token: ") then
+					user_id = user_id:sub(#"token: " + 1)
+					local row = vRP.Query("accounts/Token",{ Token = user_id })
+					if row and row[1] and row[1].License then
+						vRP.Query("accounts/updateWhitelist",{ License = row[1].License, Whitelist = status })
+						return true
+					else
+						return false
+					end
+				elseif string.find(user_id,"steam:") then
+					local License = user_id:sub(#"steam:" + 1)
+					vRP.Query("accounts/updateWhitelist",{ License = License, Whitelist = status })
+					return true
+				else
+					vRP.Query("accounts/updateWhitelist",{ License = vRP.Identity(user_id).License, Whitelist = status })
+					return true
+				end
+
+				return false
 			end
 		end,
 
 		getBanStatus = function(user_id)
-			if vRP.isBanned then
-				return (vRP.isBanned and vRP.isBanned(parseInt(user_id))) or (false)
-			elseif vRP.Banned and vRP.Identity then
-				return (vRP.Banned and vRP.Banned(vRP.Identity(user_id).License)) or (false)
+			local zirixResponse = vRP.isBanned(parseInt(user_id))
+			if zirixResponse ~= nil then
+				return zirixResponse
 			end
+
+			local creativeNetworkResponse = vRP.Banned(vRP.Identity(user_id).License)
+			if creativeNetworkResponse ~= nil then
+				return creativeNetworkResponse
+			end
+
+			return false
 		end,
 
 		setBanStatus = function(user_id,status,reason)
@@ -1823,10 +2235,16 @@ Functions.vRP = {
 				DropPlayer(source, reason)
 			end
 
-			if vRP.setBanned then
-				return (vRP.setBanned(parseInt(user_id),status)) or (false)
-			elseif vRP.Query and vRP.Identity then
-				return (vRP.Query("banneds/InsertBanned",{ license = vRP.Identity(user_id).License, time = 0 })) or (false)
+			local zirixResponse = vRP.isBanned(parseInt(user_id))
+			if zirixResponse ~= nil then
+				vRP.setBanned(parseInt(user_id),status)
+				return true
+			end
+
+			local creativeNetworkResponse = vRP.Banned(vRP.Identity(user_id).License)
+			if creativeNetworkResponse ~= nil then
+				vRP.Query("banneds/InsertBanned",{ license = vRP.Identity(user_id).License, time = 0 })
+				return creativeNetworkResponse
 			end
 		end,
 
@@ -1857,7 +2275,7 @@ if IsDuplicityVersion() then --? Server only
 			for n,event in pairs(Events["server"].groupChange) do
 				RegisterServerEvent(event)
 				AddEventHandler(event, function(user_id,group)
-					local source = Functions["server"].GetUserSource(user_id)
+					local source = Functions["server"].getUserSource(user_id)
 					TriggerClientEvent("vRP:GroupUpdated",source,group)
 				end)
 			end
@@ -2215,8 +2633,28 @@ Functions.ESX = {
 			RemoveBlip(id)
 		end,
 
-		AddTargetModel = function(models,configuration)
+		targetAddModel = function(models,parameteres)
 			return false
+		end,
+
+		targetRemoveModel = function(models)
+			return false
+		end,
+
+		targetAddBoxZone = function(name,center,length,width,options,targetoptions)
+			return false
+		end,
+
+		targetRemoveBoxZone = function(name)
+			return false
+		end,
+
+		sendNotify = function(notifyType, mensage, time, title, color, audio, volume)
+			if Config.resources["striata_notify"] then
+				TriggerEvent("StriataNotify", notifyType, mensage, time, title, color, audio, volume)
+			else
+				TriggerEvent("Notify", notifyType, mensage, time)
+			end
 		end
 	},
 
@@ -3451,10 +3889,10 @@ Functions.QBCore = {
 			RemoveBlip(id)
 		end,
 
-		AddTargetModel = function(models,configuration)
+		targetAddModel = function(models,parameteres)
 			if GetResourceState('qb-target') == "started" then
 				local newOptions = {}
-				for n,option in pairs(configuration.options) do
+				for n,option in pairs(parameteres.options) do
 					newOptions[n] = {
 						event = option.event,
 						label = option.label,
@@ -3466,10 +3904,59 @@ Functions.QBCore = {
 	
 				exports['qb-target']:AddTargetModel(models,{
 					options = newOptions,
-					distance = configuration.distance
+					distance = parameteres.distance
 				})
 
 				return true
+			end
+
+			return false
+		end,
+
+		targetRemoveModel = function(models)
+			if GetResourceState('qb-target') == "started" then
+				exports['qb-target']:RemoveTargetModel(models)
+				return true
+			end
+
+			return false
+		end,
+		
+		targetAddBoxZone = function(name,center,length,width,options,targetoptions)
+			if GetResourceState('qb-target') == "started" then
+				local newOptions = {}
+				for n,option in pairs(targetoptions.options) do
+					newOptions[n] = {
+						event = option.event,
+						label = option.label,
+						type = option.tunnel,
+					}
+				end
+
+				exports['qb-target']:AddBoxZone(name, center, length, width, options, {
+					options = newOptions,
+					distance = targetoptions.distance
+				})
+				return true
+			end
+			
+			return false
+		end,
+		
+		targetRemoveBoxZone = function(name)
+			if GetResourceState('qb-target') == "started" then
+				exports['qb-target']:RemoveZone(name)
+				return true
+			end
+
+			return false
+		end,
+
+		sendNotify = function(notifyType, mensage, time, title, color, audio, volume)
+			if Config.resources["striata_notify"] then
+				TriggerEvent("StriataNotify", notifyType, mensage, time, title, color, audio, volume)
+			else
+				TriggerEvent("Notify", notifyType, mensage, time)
 			end
 		end
 	},
@@ -5118,8 +5605,28 @@ Functions.VORP = {
 			end
 		end,
 
-		AddTargetModel = function(models,configuration)
+		targetAddModel = function(models,parameteres)
 			return false
+		end,
+
+		targetRemoveModel = function(models)
+			return false
+		end,
+		
+		targetAddBoxZone = function(name,center,length,width,options,targetoptions)
+			return false
+		end,
+		
+		targetRemoveBoxZone = function(name)
+			return false
+		end,
+
+		sendNotify = function(notifyType, mensage, time, title, color, audio, volume)
+			if Config.resources["striata_notify"] then
+				TriggerEvent("StriataNotify", notifyType, mensage, time, title, color, audio, volume)
+			else
+				TriggerEvent("Notify", notifyType, mensage, time)
+			end
 		end,
 
 		fxHudSetStatus = function(status,amount) --? Exclusive fx-hud script
@@ -6296,6 +6803,7 @@ Functions.VORP = {
 			local source = Functions["server"].getUserSource(user_id)
 			if source then
 				--? Player Online
+				local user = VorpCore.getUserByCharId(user_id)
 				if GetResourceState('fx-hud') == "started" then
 					getTunnelInformation(user.source,"fxHudSetStatus","functions","hunger",amount)
 				else
@@ -6367,6 +6875,7 @@ Functions.VORP = {
 			local source = Functions["server"].getUserSource(user_id)
 			if source then
 				--? Player Online
+				local user = VorpCore.getUserByCharId(user_id)
 				if GetResourceState('fx-hud') == "started" then
 					getTunnelInformation(user.source,"fxHudSetStatus","functions","thirst",amount)
 				else
@@ -6438,6 +6947,7 @@ Functions.VORP = {
 			local source = Functions["server"].getUserSource(user_id)
 			if source then
 				--? Player Online
+				local user = VorpCore.getUserByCharId(user_id)
 				if GetResourceState('fx-hud') == "started" then
 					getTunnelInformation(user.source,"fxHudSetStatus","functions","stress",amount)
 				else
@@ -6583,7 +7093,20 @@ Functions.VORP = {
 		end,
 
 		getWhiteListStatus = function(user_id)
-			local result = MySQL.Sync.fetchAll('SELECT status FROM whitelist WHERE identifier = ?', { user_id })
+			local identifier
+			local user = VorpCore.getUserByCharId(user_id)
+			if user then
+				--? Player Online
+				identifier = user.getUsedCharacter.identifier
+			else
+				--? Player Offline
+				local rows = MySQL.Sync.fetchAll("SELECT * FROM characters WHERE charidentifier = @charidentifier", {
+					["@charidentifier"] = user_id,
+				})
+				identifier = rows.identifier
+			end
+
+			local result = MySQL.Sync.fetchAll('SELECT status FROM whitelist WHERE identifier = ?', { identifier })
 			if result[1] then
 				if result[1].status and (result[1].status == 1 or result[1].status == "1" or result[1].status == true) then
 					return true
@@ -6593,11 +7116,24 @@ Functions.VORP = {
 		end,
 
 		changeWhiteListStatus = function(user_id,status)
+			local identifier
+			local user = VorpCore.getUserByCharId(user_id)
+			if user then
+				--? Player Online
+				identifier = user.getUsedCharacter.identifier
+			else
+				--? Player Offline
+				local rows = MySQL.Sync.fetchAll("SELECT * FROM characters WHERE charidentifier = @charidentifier", {
+					["@charidentifier"] = user_id,
+				})
+				identifier = rows.identifier
+			end
+
 			if status then
-				VorpCore.Whitelist.whitelistUser(user_id)
+				VorpCore.Whitelist.whitelistUser(identifier)
 				return true
 			else
-				VorpCore.Whitelist.unWhitelistUser(user_id)
+				VorpCore.Whitelist.unWhitelistUser(identifier)
 				return true
 			end
 		end,
@@ -6645,7 +7181,19 @@ Functions.VORP = {
 
 		checkPlayerIsDiscordMember = function(user_id,discordId)
 			if Config.resources["striata_discordbot"] then
-				return exports["striata_resources"]:checkIsMember(user_id,discordId)
+				local identifier
+				local user = VorpCore.getUserByCharId(user_id)
+				if user then
+					--? Player Online
+					identifier = user.getUsedCharacter.identifier
+				else
+					--? Player Offline
+					local rows = MySQL.Sync.fetchAll("SELECT * FROM characters WHERE charidentifier = @charidentifier", {
+						["@charidentifier"] = user_id,
+					})
+					identifier = rows.identifier
+				end
+				return exports["striata_resources"]:checkIsMember(identifier,discordId)
 			else
 				return false
 			end
@@ -7001,9 +7549,44 @@ Functions.custom = {
 		--- @param ex table: {model # player ped model name or modelhash #player ped model hash, [integer: #clothing index from 1 to 20] = {DrawableVariation, TextureVariation, PaletteVariation},... [string: "p"..integer #clothing prop index from 1 to 10] = {DrawableVariation, TextureVariation, PaletteVariation} }
 
 		--- @param models table: {1234576789,-987654321,...}
-		--- @param configuration table: { options = table: {{event = string, label = string, tunnel = string},...}, distance = float }
-		AddTargetModel = function(models,configuration)
+		--- @param parameteres table: { options = table: {{event = string, label = string, tunnel = string},...}, distance = float }
+		targetAddModel = function(models,parameteres)
 			return false
+		end,
+	
+		--- @param models table: {1234576789,-987654321,...}
+		targetRemoveModel = function(models)
+			return false
+		end,
+		
+		--- @param name string
+		--- @param center vector3
+		--- @param length float
+		--- @param width float
+		--- @param options table: { name = string, heading = float, debugPoly = boolean, maxZ = float, minZ = float }
+		--- @param targetoptions table: { options = table: {{event = string, label = string, tunnel = string},...}, distance = float }
+		targetAddBoxZone = function(name,center,length,width,options,targetoptions)
+			return false
+		end,
+		
+		--- @param name string
+		targetRemoveBoxZone = function(name)
+			return false
+		end,
+
+		--- @param notifyType string
+		--- @param mensage string
+		--- @param time integer: (miliseconds)
+		--- @param title string
+		--- @param color table: {R = integer, G = integer, B = integer}
+		--- @param audio string: url (.mp4)
+		--- @param volume float
+		sendNotify = function(notifyType, mensage, time, title, color, audio, volume)
+			if Config.resources["striata_notify"] then
+				TriggerEvent("StriataNotify", notifyType, mensage, time, title, color, audio, volume)
+			else
+				TriggerEvent("Notify", notifyType, mensage, time)
+			end
 		end
 	},
 

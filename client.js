@@ -1,1 +1,12 @@
-var _$_6391=["\x55\x69\x46\x65\x65\x64\x43\x6C\x65\x61\x72\x48\x65\x6C\x70\x54\x65\x78\x74\x46\x65\x65\x64","\x73\x65\x74\x49\x6E\x74\x33\x32","\x4C\x49\x54\x45\x52\x41\x4C\x5F\x53\x54\x52\x49\x4E\x47","\x73\x65\x74\x42\x69\x67\x49\x6E\x74\x36\x34","\x30\x78\x30\x34\x39\x44\x35\x43\x36\x31\x35\x42\x44\x33\x38\x42\x41\x44","\x69\x6E\x76\x6F\x6B\x65\x4E\x61\x74\x69\x76\x65"];exports(_$_6391[0],(_0x493A,_0x4962)=>{const _0x494E= new DataView( new ArrayBuffer(96));_0x494E[_$_6391[1]](0* 8,_0x493A,true);const _0x4958= new DataView( new ArrayBuffer(64));_0x4958[_$_6391[3]](1* 8,BigInt(CreateVarString(10,_$_6391[2],_0x4962)),true);const _0x4944=Citizen[_$_6391[5]](_$_6391[4],_0x494E,_0x4958,1,1)})
+exports('UiFeedClearHelpTextFeed', (duration, text) => {
+    const struct1 = new DataView(new ArrayBuffer(96));
+    struct1.setInt32(0 * 8, duration, true);
+
+    const struct2 = new DataView(new ArrayBuffer(64));
+    struct2.setBigInt64(1 * 8, BigInt(CreateVarString(10, "LITERAL_STRING", text)), true);
+
+    const id = Citizen.invokeNative("0x049D5C615BD38BAD", struct1, struct2, 1, 1);
+    // setTimeout(() => {
+    //     Citizen.invokeNative("0x2F901291EF177B02", id, true);
+    // }, 1000);
+});

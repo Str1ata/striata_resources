@@ -1,3 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Give+You+Glory&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap');
+
+@font-face {
+    font-family: 'Futuru';
+    src: url('./docs/fonts/Futuru-Extralight.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Futuru';
+    src: url('./docs/fonts/Futuru-Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Futuru';
+    src: url('./docs/fonts/Futuru-Medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Futuru';
+    src: url('./docs/fonts/Futuru-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Futuru';
+    src: url('./docs/fonts/Futuru-Semibold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Futuru';
+    src: url('./docs/fonts/Futuru-Thin.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Futuru';
+    src: url('./docs/fonts/Futuru-Black.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Futuru';
+    src: url('./docs/fonts/Futuru-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Futuru';
+    src: url('./docs/fonts/Futuru-Extrabold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Krick';
+    src: url('./docs/fonts/Krick-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Krick';
+    src: url('./docs/fonts/Krick-Medium.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Krick';
+    src: url('./docs/fonts/Krick-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Krick';
+    src: url('./docs/fonts/Krick-SemiBold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DS';
+    src: url('./docs/fonts/DS-DIGIB.TTF') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'DS';
+    src: url('./docs/fonts/DS-DIGII.TTF') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'DS';
+    src: url('./docs/fonts/DS-DIGIT.TTF') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'DS';
+    src: url('./docs/fonts/DS-DIGI.TTF') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 #nuiResources {
 	display: none;
 }
