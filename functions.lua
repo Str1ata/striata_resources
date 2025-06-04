@@ -597,7 +597,7 @@ Functions.vRP = {
 						for n,rowInfos in pairs(rows) do
 							local dkeyString = rowInfos.dkey or rowInfos.Name
 							if string.find(dkeyString,dkeySearch) then
-								local usersInPermissionList = rowInfos.dvalue and json.decode(rowInfos.dvalue) or rowInfos.Information or json.decode(rowInfos.Information)
+								local usersInPermissionList = rowInfos.dvalue and json.decode(rowInfos.dvalue) or rowInfos.Information and json.decode(rowInfos.Information)
 								local group = dkeyString:sub(#dkeySearch + 1)
 								for Passport, Hierarchy in pairs(usersInPermissionList) do 
 									if tonumber(Passport) == user_id then
