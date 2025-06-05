@@ -1451,15 +1451,15 @@ Functions.vRP = {
 		end,
 
 		getItemWeight = function(item)
-			return vRP.getItemWeight(item) or itemWeight(item) or 0.0
+			return vRP.getItemWeight(item) or ItemWeight(item) or 0.0
 		end,
 
 		getItemName = function(item)
-			return vRP.itemNameList(item) or itemName(item) or ""
+			return vRP.itemNameList(item) or ItemName(item) or ""
 		end,
 
 		getItemIndex = function(item)
-			return vRP.itemIndexList(item) or itemIndex(item) or ""
+			return vRP.itemIndexList(item) or ItemIndex(item) or ""
 		end,
 
 		giveVehicle = function(user_id,vehicle)
