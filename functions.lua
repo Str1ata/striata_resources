@@ -1,4 +1,4 @@
-FunctionsVersion = 1.8  --! por favor não altere aqui! | please do not change here!
+FunctionsVersion = 1.81  --! por favor não altere aqui! | please do not change here!
 FunctionsAutoUpdate = true --? Ative\Desative as atualizações automáticas aqui! | Enable/Disable automatic updates here!
 Functions = {}
 Events = {}
@@ -1479,7 +1479,7 @@ Functions.vRP = {
 					["@ipva"] = parseInt(os.time())
 				})
 			elseif VehicleExist(vehicle) then
-				return vRP.Query("vehicles/addVehicles",{ Passport = user_id, vehicle = vehicle, plate = vRP.GeneratePlate(), work = "false" })
+				return vRP.Query("vehicles/addVehicles",{ Passport = user_id, Vehicle = vehicle, Plate = vRP.GeneratePlate(), Weight = VehicleWeight(vehicle), Work = "false" })
 			else
 				return false
 			end
