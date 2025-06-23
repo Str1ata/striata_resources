@@ -656,7 +656,7 @@ Functions.vRP = {
 					for rowNumber,rowInfos in pairs(rows) do
 						local dkeyString = rowInfos.dkey or rowInfos.Name
 						if string.find(dkeyString,dkeySearch) then
-							local usersInPermissionList = rowInfos.dvalue and json.decode(rowInfos.dvalue) or rowInfos.Information or json.decode(rowInfos.Information)
+							local usersInPermissionList = rowInfos.dvalue and json.decode(rowInfos.dvalue) or rowInfos.Information and json.decode(rowInfos.Information)
 							local group = dkeyString:sub(#dkeySearch + 1)
 
 							if not allUserGroups[group] then
