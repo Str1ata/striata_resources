@@ -527,7 +527,7 @@ Functions.vRP = {
 		end,
 
 		hasPermission = function(user_id, perm)
-			return vRP.hasPermission(parseInt(user_id), perm) or vRP.HasPermission(parseInt(user_id), perm) or false
+			return vRP.hasPermission(parseInt(user_id), perm) or vRP.HasPermission(parseInt(user_id), perm) or vRP.HasGroup(parseInt(user_id), perm) or false
 		end,
 
 		getUserGroups = function(user_id)
