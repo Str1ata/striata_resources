@@ -4,7 +4,7 @@ rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aw
 
 author 'Striata Discord: (@StriatShop), E-mail: (striatashop@hotmail.com)'
 description 'striata resources (Striata shop)'
-version '2.12'
+version '2.14'
 
 lua54 'yes'
 

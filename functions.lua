@@ -1,4 +1,4 @@
-FunctionsVersion = 1.81  --! por favor não altere aqui! | please do not change here!
+FunctionsVersion = 1.82  --! por favor não altere aqui! | please do not change here!
 FunctionsAutoUpdate = true --? Ative\Desative as atualizações automáticas aqui! | Enable/Disable automatic updates here!
 Functions = {}
 Events = {}
@@ -361,7 +361,7 @@ Functions.vRP = {
 		end,
 
 		removeBlip = function(blipId)
-			RemoveBlip(id)
+			RemoveBlip(blipId)
 		end,
 
 		targetAddModel = function(models,parameteres)
@@ -2243,7 +2243,7 @@ Functions.vRP = {
 
 			local creativeNetworkResponse = vRP.Banned(vRP.Identity(user_id).License)
 			if creativeNetworkResponse ~= nil then
-				vRP.Query("banneds/InsertBanned",{ license = vRP.Identity(user_id).License, time = 0 })
+				vRP.Query("accounts/InsertBanned",{ license = vRP.Identity(user_id).License, Reason = "striata resoruces ban", time = 0 })
 				return creativeNetworkResponse
 			end
 		end,
@@ -2630,7 +2630,7 @@ Functions.ESX = {
 		end,
 
 		removeBlip = function(blipId)
-			RemoveBlip(id)
+			RemoveBlip(blipId)
 		end,
 
 		targetAddModel = function(models,parameteres)
@@ -3886,7 +3886,7 @@ Functions.QBCore = {
 		end,
 
 		removeBlip = function(blipId)
-			RemoveBlip(id)
+			RemoveBlip(blipId)
 		end,
 
 		targetAddModel = function(models,parameteres)
@@ -7544,7 +7544,7 @@ Functions.custom = {
 		
 		--- @param blipId integer #blip id
 		removeBlip = function(blipId)
-			RemoveBlip(id)
+			RemoveBlip(blipId)
 		end,
 		--- @param ex table: {model # player ped model name or modelhash #player ped model hash, [integer: #clothing index from 1 to 20] = {DrawableVariation, TextureVariation, PaletteVariation},... [string: "p"..integer #clothing prop index from 1 to 10] = {DrawableVariation, TextureVariation, PaletteVariation} }
 
