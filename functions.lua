@@ -1,4 +1,4 @@
-FunctionsVersion = 1.82  --! por favor não altere aqui! | please do not change here!
+FunctionsVersion = 1.83  --! por favor não altere aqui! | please do not change here!
 FunctionsAutoUpdate = true --? Ative\Desative as atualizações automáticas aqui! | Enable/Disable automatic updates here!
 Functions = {}
 Events = {}
@@ -2164,7 +2164,7 @@ Functions.vRP = {
 					end
 				end
 				
-				TriggerClientEvent("Notify",source,Config["notifysTypes"].denied,"Você não tem acesso à essa residência.",4500)
+				getTunnelInformation(source,"sendNotify","functions",Config["notifysTypes"].denied,"Você não tem acesso à essa residência.",4500)
 				return false
 			end
 		end,
@@ -3560,7 +3560,7 @@ Functions.ESX = {
 				end
 			end
 
-			TriggerClientEvent("Notify",source,Config["notifysTypes"].denied,"Você não tem acesso à essa residência.",4500)
+			getTunnelInformation(source,"sendNotify","functions",Config["notifysTypes"].denied,"Você não tem acesso à essa residência.",4500)
 			return false
 		end,
 
@@ -4838,7 +4838,7 @@ Functions.QBCore = {
 				end
 			end
 			
-			TriggerClientEvent("Notify",source,Config["notifysTypes"].denied,"Você não tem acesso à essa residência.",4500)
+			getTunnelInformation(source,"sendNotify","functions",Config["notifysTypes"].denied,"Você não tem acesso à essa residência.",4500)
 			return false
 		end,
 
@@ -7088,7 +7088,7 @@ Functions.VORP = {
 		end,
 
 		checkHomeAcess = function(source,user_id,homeName)
-			TriggerClientEvent("Notify",source,Config["notifysTypes"].denied,"Você não tem acesso à essa residência.",4500)
+			getTunnelInformation(source,"sendNotify","functions",Config["notifysTypes"].denied,"Você não tem acesso à essa residência.",4500)
 			return false
 		end,
 
@@ -7985,7 +7985,7 @@ Functions.custom = {
 		--- @param homeName string
 		--- @param return bloolean
 		checkHomeAcess = function(source,user_id,homeName)
-			TriggerClientEvent("Notify",source,Config["notifysTypes"].denied,"Você não tem acesso à essa residência.",4500)
+			getTunnelInformation(source,"sendNotify","functions",Config["notifysTypes"].denied,"Você não tem acesso à essa residência.",4500)
 			return false
 		end,
 
