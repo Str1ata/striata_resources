@@ -1,1 +1,0 @@
-Coloque os scrips nesta pasta!

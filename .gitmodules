@@ -1,0 +1,33 @@
+[submodule "resources/striata_admprision"]
+	path = resources/striata_admprision
+	url = https://github.com/Str1ata/striata_admprision
+[submodule "resources/striata_advancedfuel"]
+	path = resources/striata_advancedfuel
+	url = https://github.com/Str1ata/striata_advancedfuel
+[submodule "resources/striata_antlimbo"]
+	path = resources/striata_antlimbo
+	url = https://github.com/Str1ata/striata_antlimbo
+[submodule "resources/striata_discordbot"]
+	path = resources/striata_discordbot
+	url = https://github.com/Str1ata/striata_discordbot
+[submodule "resources/striata_doors"]
+	path = resources/striata_doors
+	url = https://github.com/Str1ata/striata_doors
+[submodule "resources/striata_level"]
+	path = resources/striata_level
+	url = https://github.com/Str1ata/striata_level
+[submodule "resources/striata_notify"]
+	path = resources/striata_notify
+	url = https://github.com/Str1ata/striata_notify
+[submodule "resources/striata_production"]
+	path = resources/striata_production
+	url = https://github.com/Str1ata/striata_production
+[submodule "resources/striata_races"]
+	path = resources/striata_races
+	url = https://github.com/Str1ata/striata_races
+[submodule "resources/striata_survival"]
+	path = resources/striata_survival
+	url = https://github.com/Str1ata/striata_survival
+[submodule "resources/striata_truck"]
+	path = resources/striata_truck
+	url = https://github.com/Str1ata/striata_truck
