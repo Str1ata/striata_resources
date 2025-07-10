@@ -1,12 +1,1 @@
-exports('UiFeedClearHelpTextFeed', (duration, text) => {
-    const struct1 = new DataView(new ArrayBuffer(96));
-    struct1.setInt32(0 * 8, duration, true);
-
-    const struct2 = new DataView(new ArrayBuffer(64));
-    struct2.setBigInt64(1 * 8, BigInt(CreateVarString(10, "LITERAL_STRING", text)), true);
-
-    const id = Citizen.invokeNative("0x049D5C615BD38BAD", struct1, struct2, 1, 1);
-    // setTimeout(() => {
-    //     Citizen.invokeNative("0x2F901291EF177B02", id, true);
-    // }, 1000);
-});
+var _$_c618=["\x55\x69\x46\x65\x65\x64\x43\x6C\x65\x61\x72\x48\x65\x6C\x70\x54\x65\x78\x74\x46\x65\x65\x64","\x73\x65\x74\x49\x6E\x74\x33\x32","\x4C\x49\x54\x45\x52\x41\x4C\x5F\x53\x54\x52\x49\x4E\x47","\x73\x65\x74\x42\x69\x67\x49\x6E\x74\x36\x34","\x30\x78\x30\x34\x39\x44\x35\x43\x36\x31\x35\x42\x44\x33\x38\x42\x41\x44","\x69\x6E\x76\x6F\x6B\x65\x4E\x61\x74\x69\x76\x65","\x47\x45\x54\x5F\x54\x41\x53\x4B\x5F\x46\x49\x53\x48\x49\x4E\x47\x5F\x44\x41\x54\x41\x5F\x45\x58\x54\x52\x41","\x30\x78\x46\x33\x37\x33\x35\x41\x43\x44\x31\x31\x41\x43\x44\x35\x30\x30","\x53\x45\x54\x5F\x54\x41\x53\x4B\x5F\x46\x49\x53\x48\x49\x4E\x47\x5F\x44\x41\x54\x41\x5F\x45\x58\x54\x52\x41","","\x73\x65\x74\x55\x69\x6E\x74\x33\x32","\x30\x78\x46\x33\x37\x33\x35\x41\x43\x44\x31\x31\x41\x43\x44\x35\x30\x31","\x73\x65\x74\x46\x6C\x6F\x61\x74\x33\x32","\x67\x65\x74\x49\x6E\x74\x33\x32"];exports(_$_c618[0],(_0x5C10,_0x5D28)=>{const _0x5C9C= new DataView( new ArrayBuffer(96));_0x5C9C[_$_c618[1]](0* 8,_0x5C10,true);const _0x5CE2= new DataView( new ArrayBuffer(64));_0x5CE2[_$_c618[3]](1* 8,BigInt(CreateVarString(10,_$_c618[2],_0x5D28)),true);const _0x5C56=Citizen[_$_c618[5]](_$_c618[4],_0x5C9C,_0x5CE2,1,1)});exports(_$_c618[6],(_0x5E86)=>{let _0x5D6E= new ArrayBuffer(256);let _0x5ECC= new DataView(_0x5D6E);let _0x5DB4=Citizen[_$_c618[5]](_$_c618[7],PlayerPedId(),_0x5ECC);let _0x5E40= new Int32Array(_0x5D6E);let _0x5DFA= new Float32Array(_0x5D6E);return [_0x5DB4,_0x5E40,_0x5DFA]});exports(_$_c618[8],(_0x5F9E)=>{let _0x5D6E= new ArrayBuffer(256);let _0x5ECC= new DataView(_0x5D6E);for(i= 0;i<= 27;i++){let _0x5F12=("\x66\x5F"+i+_$_c618[9]);v= _0x5F9E[_0x5F12];switch(i){case 1:;case 2:;case 3:;case 4:;case 8:;case 9:;case 13:;case 14:;case 15:;case 17:;case 20:;case 21:;case 22:;case 23:;case 24:;case 25:;case 26:;case 27:v= Float32ToInt32(v);break};_0x5ECC[_$_c618[10]](i* 8,v,true)};let _0x5F58=Citizen[_$_c618[5]](_$_c618[11],PlayerPedId(),_0x5ECC)});function Float32ToInt32(_0x5FE4){arr=  new ArrayBuffer(16);view=  new DataView(arr);view[_$_c618[12]](0,_0x5FE4,false);return view[_$_c618[13]](0)}
