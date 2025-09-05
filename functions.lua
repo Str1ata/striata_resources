@@ -1,13 +1,16 @@
-FunctionsVersion = 1.83  --! por favor não altere aqui! | please do not change here!
+FunctionsVersion = 1.84  --! por favor não altere aqui! | please do not change here!
 FunctionsAutoUpdate = true --? Ative\Desative as atualizações automáticas aqui! | Enable/Disable automatic updates here!
 Functions = {}
 Events = {}
 
+local weaponTypes = { --[[fivem]] "WEAPON_DAGGER","WEAPON_BAT","WEAPON_BOTTLE","WEAPON_CROWBAR","WEAPON_FLASHLIGHT","WEAPON_GOLFCLUB","WEAPON_HAMMER","WEAPON_HATCHET","WEAPON_KNUCKLE","WEAPON_KNIFE","WEAPON_MACHETE","WEAPON_SWITCHBLADE","WEAPON_NIGHTSTICK","WEAPON_WRENCH","WEAPON_BATTLEAXE","WEAPON_POOLCUE","WEAPON_STONE_HATCHET","WEAPON_CANDYCANE","WEAPON_STUNROD","WEAPON_PISTOL","WEAPON_PISTOL_MK2","WEAPON_COMBATPISTOL","WEAPON_APPISTOL","WEAPON_STUNGUN","WEAPON_PISTOL50","WEAPON_SNSPISTOL","WEAPON_SNSPISTOL_MK2","WEAPON_HEAVYPISTOL","WEAPON_VINTAGEPISTOL","WEAPON_FLAREGUN","WEAPON_MARKSMANPISTOL","WEAPON_REVOLVER","WEAPON_REVOLVER_MK2","WEAPON_DOUBLEACTION","WEAPON_RAYPISTOL","WEAPON_CERAMICPISTOL","WEAPON_NAVYREVOLVER","WEAPON_GADGETPISTOL","WEAPON_STUNGUN_MP","WEAPON_MICROSMG","WEAPON_SMG","WEAPON_SMG_MK2","WEAPON_ASSAULTSMG","WEAPON_COMBATPDW","WEAPON_MACHINEPISTOL","WEAPON_MINISMG","WEAPON_RAYCARBINE","WEAPON_TECPISTOL","WEAPON_PUMPSHOTGUN","WEAPON_PUMPSHOTGUN_MK2","WEAPON_SAWNOFFSHOTGUN","WEAPON_ASSAULTSHOTGUN","WEAPON_BULLPUPSHOTGUN","WEAPON_HEAVYSHOTGUN","WEAPON_DBSHOTGUN","WEAPON_AUTOSHOTGUN","WEAPON_COMBATSHOTGUN","WEAPON_ASSAULTRIFLE","WEAPON_ASSAULTRIFLE_MK2","WEAPON_CARBINERIFLE","WEAPON_CARBINERIFLE_MK2","WEAPON_ADVANCEDRIFLE","WEAPON_SPECIALCARBINE","WEAPON_SPECIALCARBINE_MK2","WEAPON_BULLPUPRIFLE","WEAPON_BULLPUPRIFLE_MK2","WEAPON_COMPACTRIFLE","WEAPON_MILITARYRIFLE","WEAPON_HEAVYRIFLE","WEAPON_TACTICALRIFLE","WEAPON_MG","WEAPON_COMBATMG","WEAPON_COMBATMG_MK2","WEAPON_GUSENBERG","WEAPON_SNIPERRIFLE","WEAPON_HEAVYSNIPER","WEAPON_HEAVYSNIPER_MK2","WEAPON_MARKSMANRIFLE","WEAPON_MARKSMANRIFLE_MK2","WEAPON_MUSKET","WEAPON_PRECISIONRIFLE","WEAPON_RPG","WEAPON_GRENADELAUNCHER","WEAPON_GRENADELAUNCHER_SMOKE","WEAPON_MINIGUN","WEAPON_FIREWORK","WEAPON_RAILGUN","WEAPON_HOMINGLAUNCHER","WEAPON_COMPACTLAUNCHER","WEAPON_RAYMINIGUN","WEAPON_EMPLAUNCHER","weapon_railgunxm3","WEAPON_GRENADE","WEAPON_BZGAS","WEAPON_MOLOTOV","WEAPON_STICKYBOMB","WEAPON_PROXMINE","WEAPON_SNOWBALL","WEAPON_PIPEBOMB","WEAPON_BALL","WEAPON_SMOKEGRENADE","WEAPON_FLARE","WEAPON_ANCIENTPACKAGE","WEAPON_PETROLCAN","GADGET_PARACHUTER","WEAPON_FIREEXTINGUISHER","WEAPON_HAZARDCAN","WEAPON_FERTILIZERCAN", --[[redm]] "WEAPON_BOW_IMPROVED","WEAPON_FISHINGROD","WEAPON_KIT_BINOCULARS","WEAPON_KIT_BINOCULARS_IMPROVED","WEAPON_KIT_CAMERA","WEAPON_KIT_METAL_DETECTOR","WEAPON_LASSO","WEAPON_LASSO_REINFORCED","WEAPON_MELEE_CLEAVER","WEAPON_MELEE_DAVY_LANTERN","WEAPON_MELEE_HAMMER","WEAPON_MELEE_HATCHET","WEAPON_MELEE_HATCHET_HUNTER","WEAPON_MELEE_KNIFE","WEAPON_MELEE_KNIFE_JAWBONE","WEAPON_MELEE_KNIFE_TRADER","WEAPON_MELEE_LANTERN","WEAPON_MELEE_MACHETE","WEAPON_MELEE_MACHETE_COLLECTOR","WEAPON_MELEE_MACHETE_HORROR","WEAPON_MELEE_TORCH","WEAPON_MOONSHINEJUG_MP","WEAPON_PISTOL_M1899","WEAPON_PISTOL_MAUSER","WEAPON_PISTOL_SEMIAUTO","WEAPON_PISTOL_VOLCANIC","WEAPON_REPEATER_CARBINE","WEAPON_REPEATER_EVANS","WEAPON_REPEATER_HENRY","WEAPON_REPEATER_WINCHESTER","WEAPON_REVOLVER_CATTLEMAN","WEAPON_REVOLVER_CATTLEMAN_MEXICAN","WEAPON_REVOLVER_DOUBLEACTION","WEAPON_REVOLVER_DOUBLEACTION_GAMBLER","WEAPON_REVOLVER_LEMAT","WEAPON_REVOLVER_NAVY","WEAPON_REVOLVER_SCHOFIELD","WEAPON_RIFLE_BOLTACTION","WEAPON_RIFLE_ELEPHANT","WEAPON_RIFLE_SPRINGFIELD","WEAPON_RIFLE_VARMINT","WEAPON_SHOTGUN_DOUBLEBARREL","WEAPON_SHOTGUN_PUMP","WEAPON_SHOTGUN_REPEATING","WEAPON_SHOTGUN_SAWEDOFF","WEAPON_SHOTGUN_SEMIAUTO","WEAPON_SNIPERRIFLE_CARCANO","WEAPON_SNIPERRIFLE_ROLLINGBLOCK","WEAPON_THROWN_BOLAS","WEAPON_THROWN_DYNAMITE","WEAPON_THROWN_MOLOTOV","WEAPON_THROWN_THROWING_KNIVES","WEAPON_THROWN_TOMAHAWK","WEAPON_THROWN_TOMAHAWK_ANCIENT" }
 --todo: Configure alguns eventos para que funcione com o seu servidor aqui! | Set up some events to make it work with your server here!!
 if not IsDuplicityVersion() then  --? client
 	RegisterNetEvent("striata:truck:truckSpawned")
 	AddEventHandler("striata:truck:truckSpawned",function(entity,plate,netId,locked)
-		--! Coloque aqui eventos ou exports no lado do client para garagens com função de desligamento de veiculos. | Enter client-side events or exports here for garages with a vehicle shutdown function.
+		--! Coloque aqui eventos ou exports no lado do client
+		
+		--? Para garagens com função de desligamento de veiculos. | Enter client-side events or exports here for garages with a vehicle shutdown function.
 		TriggerServerEvent("striata:truck:truckSpawned",plate,netId,locked)
 		
 		TriggerServerEvent("registerVehicleInRegister",netId)
@@ -25,7 +28,24 @@ if not IsDuplicityVersion() then  --? client
 		Entity(Vehicle)["state"]:set("Lockpick",0,true)
 	end)
 else  --? Server
-	--! Coloque aqui eventos ou exports no lado do servidor para garagens com função de desligamento de veiculos. | Place server-side events or exports here for garages with vehicle shutdown function.
+	--! Coloque aqui eventos ou exports no lado do servidor
+
+	--? Para quem usa o script de discord bot, está é a função para alterar o nome do jogador no discord. | For those who use the discord bot script, this is the function to change the player's name on discord.
+	RegisterNetEvent("striata_resources:serverReady")
+	AddEventHandler("striata_resources:serverReady",function()
+		RegisterNetEvent(Events["server"].playerSpawn)
+		AddEventHandler(Events["server"].playerSpawn,function(source)
+			if Config.resources["striata_discordbot"] then
+				local user_id = Functions["server"].getUserId(source)
+				if user_id then
+					local identity = Functions["server"].getUserInfo(user_id)
+					TriggerEvent('striata:discordBot:changePlayerName',user_id,identity.name.." "..identity.lastName)
+				end
+			end
+		end)
+	end)
+	
+	--? Para garagens com função de desligamento de veiculos. | Place server-side events or exports here for garages with vehicle shutdown function.
 	RegisterNetEvent("striata:truck:truckSpawned")
 	AddEventHandler("striata:truck:truckSpawned",function(plate,netId,locked)
 		--exports["nation-garages"]:toggleVehicleEngine(netId)
@@ -67,8 +87,7 @@ Functions.vRP = {
 				local player = PlayerPedId()
 				local ammo_types = {}
 				local weapons = {}
-				local weapon_types = { "WEAPON_DAGGER","WEAPON_BAT","WEAPON_BOTTLE","WEAPON_CROWBAR","WEAPON_FLASHLIGHT","WEAPON_GOLFCLUB","WEAPON_HAMMER","WEAPON_HATCHET","WEAPON_KNUCKLE","WEAPON_KNIFE","WEAPON_MACHETE","WEAPON_SWITCHBLADE","WEAPON_NIGHTSTICK","WEAPON_WRENCH","WEAPON_BATTLEAXE","WEAPON_POOLCUE","WEAPON_STONE_HATCHET","WEAPON_PISTOL","WEAPON_PISTOL_MK2","WEAPON_COMBATPISTOL","WEAPON_APPISTOL","WEAPON_STUNGUN","WEAPON_PISTOL50","WEAPON_SNSPISTOL","WEAPON_SNSPISTOL_MK2","WEAPON_HEAVYPISTOL","WEAPON_VINTAGEPISTOL","WEAPON_FLAREGUN","WEAPON_MARKSMANPISTOL","WEAPON_REVOLVER","WEAPON_REVOLVER_MK2","WEAPON_DOUBLEACTION","WEAPON_RAYPISTOL","WEAPON_CERAMICPISTOL","WEAPON_NAVYREVOLVER","WEAPON_GADGETPISTOL","WEAPON_STUNGUN_MP","WEAPON_MICROSMG","WEAPON_SMG","WEAPON_SMG_MK2","WEAPON_ASSAULTSMG","WEAPON_COMBATPDW","WEAPON_MACHINEPISTOL","WEAPON_MINISMG","WEAPON_RAYCARBINE","WEAPON_PUMPSHOTGUN","WEAPON_PUMPSHOTGUN_MK2","WEAPON_SAWNOFFSHOTGUN","WEAPON_ASSAULTSHOTGUN","WEAPON_BULLPUPSHOTGUN","WEAPON_MUSKET","WEAPON_HEAVYSHOTGUN","WEAPON_DBSHOTGUN","WEAPON_AUTOSHOTGUN","WEAPON_COMBATSHOTGUN","WEAPON_ASSAULTRIFLE","WEAPON_ASSAULTRIFLE_MK2","WEAPON_CARBINERIFLE","WEAPON_CARBINERIFLE_MK2","WEAPON_ADVANCEDRIFLE","WEAPON_SPECIALCARBINE","WEAPON_SPECIALCARBINE_MK2","WEAPON_BULLPUPRIFLE","WEAPON_BULLPUPRIFLE_MK2","WEAPON_COMPACTRIFLE","WEAPON_MILITARYRIFLE","WEAPON_HEAVYRIFLE","WEAPON_TACTICALRIFLE","WEAPON_MG","WEAPON_COMBATMG","WEAPON_COMBATMG_MK2","WEAPON_GUSENBERG","WEAPON_SNIPERRIFLE","WEAPON_HEAVYSNIPER","WEAPON_HEAVYSNIPER_MK2","WEAPON_MARKSMANRIFLE","WEAPON_MARKSMANRIFLE_MK2","WEAPON_PRECISIONRIFLE","WEAPON_RPG","WEAPON_GRENADELAUNCHER","WEAPON_GRENADELAUNCHER_SMOKE","WEAPON_MINIGUN","WEAPON_FIREWORK","WEAPON_RAILGUN","WEAPON_HOMINGLAUNCHER","WEAPON_COMPACTLAUNCHER","WEAPON_RAYMINIGUN","WEAPON_EMPLAUNCHER","WEAPON_GRENADE","WEAPON_BZGAS","WEAPON_MOLOTOV","WEAPON_STICKYBOMB","WEAPON_PROXMINE","WEAPON_SNOWBALL","WEAPON_PIPEBOMB","WEAPON_BALL","WEAPON_SMOKEGRENADE","WEAPON_FLARE","WEAPON_PETROLCAN","GADGET_PARACHUTER","WEAPON_FIREEXTINGUISHER","WEAPON_HAZARDCAN","WEAPON_FERTILIZERCAN" }
-				for k,v in pairs(weapon_types) do
+				for k,v in pairs(weaponTypes) do
 					local hash = GetHashKey(v)
 					if HasPedGotWeapon(player,hash) then
 						local weapon = {}
@@ -1232,6 +1251,10 @@ Functions.vRP = {
 			end
 		end,
 
+		paySalary = function(user_id, amount)
+			return Functions["server"].giveBankMoney(user_id, amount)
+		end,
+
 		getInventoryItems = function(user_id)
 			local itemsTable = {}
 
@@ -1242,8 +1265,8 @@ Functions.vRP = {
 
 				local creativeNetworkResponse = vRP.Inventory(user_id)
 				if creativeNetworkResponse then
-					for slot,itensIfos in pairs(creativeNetworkResponse) do
-						inventory[itensIfos.item] = {amount = itensIfos.amount}
+					for slot,itemInfos in pairs(creativeNetworkResponse) do
+						inventory[itemInfos.item] = {amount = itemInfos.amount}
 					end
 				else
 					inventory = vRP.getInventory(parseInt(user_id)) or vRP.getUserDataTable(parseInt(user_id)).inventory or {}
@@ -1256,7 +1279,7 @@ Functions.vRP = {
 					local Datatable = creativeNetworkResponse
 					if Datatable and Datatable.Inventory then
 						for slot, itemInfos in pairs(Datatable.Inventory) do
-							inventory[itensIfos.item] = {amount = itensIfos.amount}
+							inventory[itemInfos.item] = {amount = itemInfos.amount}
 						end
 					end
 				else
@@ -1455,11 +1478,45 @@ Functions.vRP = {
 		end,
 
 		getItemName = function(item)
-			return vRP.itemNameList(item) or ItemName(item) or ""
+			if type(item) == "table" then
+				local itemNameList = {}
+				for n,itemModel in pairs(item) do
+					if itemModel and itemModel ~= "" then
+						itemNameList[n] = vRP.itemNameList(itemModel) or ItemName(itemModel) or itemModel
+					else
+						itemNameList[n] = ""
+					end
+				end
+				return itemNameList
+			else
+				if not item or item == "" then
+					return ""
+				end
+				return vRP.itemNameList(item) or ItemName(item) or item
+			end
 		end,
 
 		getItemIndex = function(item)
-			return vRP.itemIndexList(item) or ItemIndex(item) or ""
+			return vRP.itemIndexList(item) or ItemIndex(item) or item
+		end,
+
+		getVehicleName = function(vehicle)
+			if type(vehicle) == "table" then
+				local vehicleNameList = {}
+				for n,vehicleModel in pairs(vehicle) do
+					if vehicleModel and vehicleModel ~= "" then
+						vehicleNameList[n] = vRP.vehicleName(vehicleModel) or VehicleName(vehicleModel) or vehicleModel
+					else
+						vehicleNameList[n] = ""
+					end
+				end
+				return vehicleNameList
+			else
+				if not vehicle or vehicle == "" then
+					return ""
+				end
+				return vRP.vehicleName(vehicle) or VehicleName(vehicle) or vehicle
+			end
 		end,
 
 		giveVehicle = function(user_id,vehicle)
@@ -2397,8 +2454,7 @@ Functions.ESX = {
 			local player = PlayerPedId()
 			local ammo_types = {}
 			local weapons = {}
-			local weapon_types = { "WEAPON_DAGGER","WEAPON_BAT","WEAPON_BOTTLE","WEAPON_CROWBAR","WEAPON_FLASHLIGHT","WEAPON_GOLFCLUB","WEAPON_HAMMER","WEAPON_HATCHET","WEAPON_KNUCKLE","WEAPON_KNIFE","WEAPON_MACHETE","WEAPON_SWITCHBLADE","WEAPON_NIGHTSTICK","WEAPON_WRENCH","WEAPON_BATTLEAXE","WEAPON_POOLCUE","WEAPON_STONE_HATCHET","WEAPON_PISTOL","WEAPON_PISTOL_MK2","WEAPON_COMBATPISTOL","WEAPON_APPISTOL","WEAPON_STUNGUN","WEAPON_PISTOL50","WEAPON_SNSPISTOL","WEAPON_SNSPISTOL_MK2","WEAPON_HEAVYPISTOL","WEAPON_VINTAGEPISTOL","WEAPON_FLAREGUN","WEAPON_MARKSMANPISTOL","WEAPON_REVOLVER","WEAPON_REVOLVER_MK2","WEAPON_DOUBLEACTION","WEAPON_RAYPISTOL","WEAPON_CERAMICPISTOL","WEAPON_NAVYREVOLVER","WEAPON_GADGETPISTOL","WEAPON_STUNGUN_MP","WEAPON_MICROSMG","WEAPON_SMG","WEAPON_SMG_MK2","WEAPON_ASSAULTSMG","WEAPON_COMBATPDW","WEAPON_MACHINEPISTOL","WEAPON_MINISMG","WEAPON_RAYCARBINE","WEAPON_PUMPSHOTGUN","WEAPON_PUMPSHOTGUN_MK2","WEAPON_SAWNOFFSHOTGUN","WEAPON_ASSAULTSHOTGUN","WEAPON_BULLPUPSHOTGUN","WEAPON_MUSKET","WEAPON_HEAVYSHOTGUN","WEAPON_DBSHOTGUN","WEAPON_AUTOSHOTGUN","WEAPON_COMBATSHOTGUN","WEAPON_ASSAULTRIFLE","WEAPON_ASSAULTRIFLE_MK2","WEAPON_CARBINERIFLE","WEAPON_CARBINERIFLE_MK2","WEAPON_ADVANCEDRIFLE","WEAPON_SPECIALCARBINE","WEAPON_SPECIALCARBINE_MK2","WEAPON_BULLPUPRIFLE","WEAPON_BULLPUPRIFLE_MK2","WEAPON_COMPACTRIFLE","WEAPON_MILITARYRIFLE","WEAPON_HEAVYRIFLE","WEAPON_TACTICALRIFLE","WEAPON_MG","WEAPON_COMBATMG","WEAPON_COMBATMG_MK2","WEAPON_GUSENBERG","WEAPON_SNIPERRIFLE","WEAPON_HEAVYSNIPER","WEAPON_HEAVYSNIPER_MK2","WEAPON_MARKSMANRIFLE","WEAPON_MARKSMANRIFLE_MK2","WEAPON_PRECISIONRIFLE","WEAPON_RPG","WEAPON_GRENADELAUNCHER","WEAPON_GRENADELAUNCHER_SMOKE","WEAPON_MINIGUN","WEAPON_FIREWORK","WEAPON_RAILGUN","WEAPON_HOMINGLAUNCHER","WEAPON_COMPACTLAUNCHER","WEAPON_RAYMINIGUN","WEAPON_EMPLAUNCHER","WEAPON_GRENADE","WEAPON_BZGAS","WEAPON_MOLOTOV","WEAPON_STICKYBOMB","WEAPON_PROXMINE","WEAPON_SNOWBALL","WEAPON_PIPEBOMB","WEAPON_BALL","WEAPON_SMOKEGRENADE","WEAPON_FLARE","WEAPON_PETROLCAN","GADGET_PARACHUTER","WEAPON_FIREEXTINGUISHER","WEAPON_HAZARDCAN","WEAPON_FERTILIZERCAN" }
-			for k,v in pairs(weapon_types) do
+			for k,v in pairs(weaponTypes) do
 				local hash = GetHashKey(v)
 				if HasPedGotWeapon(player,hash) then
 					local weapon = {}
@@ -2926,6 +2982,10 @@ Functions.ESX = {
 				return userAccounts.bank
 			end
 		end,
+		
+		paySalary = function(user_id, amount)
+			return Functions["server"].giveBankMoney(user_id, amount)
+		end,
 
 		getInventoryItems = function(user_id)
 			local player = ESX.GetPlayerFromIdentifier(user_id)
@@ -3048,11 +3108,25 @@ Functions.ESX = {
 		end,
 
 		getItemName = function(item)
-			if item == "" then
-				return ""
-			end
-			if ESX.Items[item] then
-				return ESX.Items[item].label
+			if type(item) == "table" then
+				local itemNameList = {}
+				for n,itemModel in pairs(item) do
+					if itemModel and itemModel ~= "" then
+						itemNameList[n] = ESX.Items[item] and ESX.Items[item].label or itemModel
+					else
+						itemNameList[n] = ""
+					end
+				end
+			else
+				if item == "" then
+					return ""
+				end
+
+				if ESX.Items[item] then
+					return ESX.Items[item].label
+				else
+					return item
+				end
 			end
 		end,
 
@@ -3062,6 +3136,27 @@ Functions.ESX = {
 			end
 			if ESX.Items[item] then
 				return item
+			end
+			return item
+		end,
+
+		getVehicleName = function(vehicle)
+			if type(vehicle) == "table" then
+				local vehicleNameList = {}
+				for n,vehicleModel in pairs(vehicle) do
+					if vehicleModel and vehicleModel ~= "" then
+						vehicleNameList[n] = vehicleModel
+					else
+						vehicleNameList[n] = ""
+					end
+				end
+				return vehicleNameList
+			else
+				if vehicle == "" then
+					return ""
+				end
+
+				return vehicle
 			end
 		end,
 
@@ -3661,8 +3756,7 @@ Functions.QBCore = {
 			local player = PlayerPedId()
 			local ammo_types = {}
 			local weapons = {}
-			local weapon_types = { "WEAPON_DAGGER","WEAPON_BAT","WEAPON_BOTTLE","WEAPON_CROWBAR","WEAPON_FLASHLIGHT","WEAPON_GOLFCLUB","WEAPON_HAMMER","WEAPON_HATCHET","WEAPON_KNUCKLE","WEAPON_KNIFE","WEAPON_MACHETE","WEAPON_SWITCHBLADE","WEAPON_NIGHTSTICK","WEAPON_WRENCH","WEAPON_BATTLEAXE","WEAPON_POOLCUE","WEAPON_STONE_HATCHET","WEAPON_PISTOL","WEAPON_PISTOL_MK2","WEAPON_COMBATPISTOL","WEAPON_APPISTOL","WEAPON_STUNGUN","WEAPON_PISTOL50","WEAPON_SNSPISTOL","WEAPON_SNSPISTOL_MK2","WEAPON_HEAVYPISTOL","WEAPON_VINTAGEPISTOL","WEAPON_FLAREGUN","WEAPON_MARKSMANPISTOL","WEAPON_REVOLVER","WEAPON_REVOLVER_MK2","WEAPON_DOUBLEACTION","WEAPON_RAYPISTOL","WEAPON_CERAMICPISTOL","WEAPON_NAVYREVOLVER","WEAPON_GADGETPISTOL","WEAPON_STUNGUN_MP","WEAPON_MICROSMG","WEAPON_SMG","WEAPON_SMG_MK2","WEAPON_ASSAULTSMG","WEAPON_COMBATPDW","WEAPON_MACHINEPISTOL","WEAPON_MINISMG","WEAPON_RAYCARBINE","WEAPON_PUMPSHOTGUN","WEAPON_PUMPSHOTGUN_MK2","WEAPON_SAWNOFFSHOTGUN","WEAPON_ASSAULTSHOTGUN","WEAPON_BULLPUPSHOTGUN","WEAPON_MUSKET","WEAPON_HEAVYSHOTGUN","WEAPON_DBSHOTGUN","WEAPON_AUTOSHOTGUN","WEAPON_COMBATSHOTGUN","WEAPON_ASSAULTRIFLE","WEAPON_ASSAULTRIFLE_MK2","WEAPON_CARBINERIFLE","WEAPON_CARBINERIFLE_MK2","WEAPON_ADVANCEDRIFLE","WEAPON_SPECIALCARBINE","WEAPON_SPECIALCARBINE_MK2","WEAPON_BULLPUPRIFLE","WEAPON_BULLPUPRIFLE_MK2","WEAPON_COMPACTRIFLE","WEAPON_MILITARYRIFLE","WEAPON_HEAVYRIFLE","WEAPON_TACTICALRIFLE","WEAPON_MG","WEAPON_COMBATMG","WEAPON_COMBATMG_MK2","WEAPON_GUSENBERG","WEAPON_SNIPERRIFLE","WEAPON_HEAVYSNIPER","WEAPON_HEAVYSNIPER_MK2","WEAPON_MARKSMANRIFLE","WEAPON_MARKSMANRIFLE_MK2","WEAPON_PRECISIONRIFLE","WEAPON_RPG","WEAPON_GRENADELAUNCHER","WEAPON_GRENADELAUNCHER_SMOKE","WEAPON_MINIGUN","WEAPON_FIREWORK","WEAPON_RAILGUN","WEAPON_HOMINGLAUNCHER","WEAPON_COMPACTLAUNCHER","WEAPON_RAYMINIGUN","WEAPON_EMPLAUNCHER","WEAPON_GRENADE","WEAPON_BZGAS","WEAPON_MOLOTOV","WEAPON_STICKYBOMB","WEAPON_PROXMINE","WEAPON_SNOWBALL","WEAPON_PIPEBOMB","WEAPON_BALL","WEAPON_SMOKEGRENADE","WEAPON_FLARE","WEAPON_PETROLCAN","GADGET_PARACHUTER","WEAPON_FIREEXTINGUISHER","WEAPON_HAZARDCAN","WEAPON_FERTILIZERCAN" }
-			for k,v in pairs(weapon_types) do
+			for k,v in pairs(weaponTypes) do
 				local hash = GetHashKey(v)
 				if HasPedGotWeapon(player,hash) then
 					local weapon = {}
@@ -4234,6 +4328,10 @@ Functions.QBCore = {
 
 			return player.PlayerData.money.bank
 		end,
+		
+		paySalary = function(user_id, amount)
+			return Functions["server"].giveBankMoney(user_id, amount)
+		end,
 
 		getInventoryItems = function(user_id)
 			local itemsTable = {}
@@ -4367,10 +4465,23 @@ Functions.QBCore = {
 		end,
 
 		getItemName = function(item)
-			if item == "" then
-				return ""
+			if type(item) == "table" then
+				local itemNameList = {}
+				for n,itemModel in pairs(item) do
+					if itemModel and itemModel ~= "" then
+						itemNameList[n] = QBCore.Shared.Items[itemModel] and QBCore.Shared.Items[itemModel].label or itemModel
+					else
+						itemNameList[n] = ""
+					end
+				end
+				
+				return itemNameList
+			else
+				if item == "" then
+					return ""
+				end
+				return QBCore.Shared.Items[item] and QBCore.Shared.Items[item].label or item
 			end
-			return QBCore.Shared.Items[item] and QBCore.Shared.Items[item].label or item
 		end,
 
 		getItemIndex = function(item)
@@ -4380,6 +4491,26 @@ Functions.QBCore = {
 			local index = QBCore.Shared.Items[item] and QBCore.Shared.Items[item].image or item
 			index = index:gsub("%.png", "")
 			return index
+		end,
+
+		getVehicleName = function(vehicle)
+			if type(vehicle) == "table" then
+				local vehicleNameList = {}
+				for n,vehModel in pairs(vehicle) do
+					if vehModel and vehModel ~= "" then
+						vehicleNameList[n] = QBCore.Shared.Vehicles[vehModel] and QBCore.Shared.Vehicles[vehModel].name or vehModel
+					else
+						vehicleNameList[n] = ""
+					end
+				end
+				
+				return vehicleNameList
+			else
+				if vehicle == "" then
+					return ""
+				end
+				return QBCore.Shared.Vehicles[vehicle] and QBCore.Shared.Vehicles[vehicle].name or vehicle
+			end
 		end,
 
 		giveVehicle = function(user_id,vehicle)
@@ -4940,6 +5071,506 @@ Events.QBCore = {
 	}
 }
 
+local horsesConfig = {
+	{
+		attributes = {
+			name = "Default",
+			speed = 1,
+			maxSpeed = 10,
+			acceleration = 1,
+			maxAcceleration = 9,
+			handling = 1,
+			maxHandling = 4,
+		},
+		variations = {}
+	},
+	{
+		attributes = {
+			name = "Puro-Sangue Árabe",
+			speed = 8,
+			maxSpeed = 10,
+			acceleration = 7,
+			maxAcceleration = 9,
+			handling = 4,
+			maxHandling = 4,
+		},
+		variations = {
+			"A_C_Horse_Arabian_Black",
+			"A_C_Horse_Arabian_Grey",
+			"A_C_Horse_Arabian_RedChestnut",
+			"a_c_horse_arabian_redchestnut_pc",
+			"A_C_Horse_Arabian_RoseGreyBay",
+			"A_C_Horse_Arabian_WarpedBrindle_PC",
+			"A_C_Horse_Arabian_White",
+			"a_c_horse_gang_dutch"
+		}
+	},
+	{
+		saddlebag = {
+			useWeight = true,
+			maxWeight = 30.0,
+			maxSlots = 9999,
+			acceptWeapons = true, 
+		},
+		name = "American Standard",
+		variations = {
+			"A_C_Horse_AmericanStandardbred_Black",
+			"A_C_Horse_AmericanStandardbred_Buckskin",
+			"A_C_Horse_AmericanStandardbred_PalominoDapple",
+			"A_C_Horse_AmericanStandardbred_SilverTailBuckskin"
+		},
+		attributes = {
+			speed = 3,
+			maxSpeed = 4,
+			acceleration = 3,
+			maxAcceleration = 6,
+			handling = 2,
+			maxHandling = 4,
+		}
+	},
+	{
+		name = "Andalusian",
+		variations = {
+			"A_C_Horse_Andalusian_DarkBay",
+			"A_C_Horse_Andalusian_Perlino",
+			"A_C_Horse_Andalusian_RoseGray"
+		},
+		attributes = {
+			speed = 7,
+			maxSpeed = 9,
+			acceleration = 6,
+			maxAcceleration = 8,
+			handling = 4,
+			maxHandling = 4,
+		}
+	},
+	{
+		name = "Appaloosa",
+		attributes = {
+			speed = 6,
+			maxSpeed = 7,
+			acceleration = 8,
+			maxAcceleration = 9,
+			handling = 3,
+			maxHandling = 4,
+		},
+		variations = {
+			"A_C_Horse_Appaloosa_BlackSnowflake",
+			"A_C_Horse_Appaloosa_Blanket",
+			"A_C_Horse_Appaloosa_BrownLeopard",
+			"A_C_Horse_Appaloosa_FewSpotted_PC",
+			"A_C_Horse_Appaloosa_Leopard",
+			"A_C_Horse_Appaloosa_LeopardBlanket",
+			"a_c_horse_gang_charles",
+			"a_c_horse_gang_uncle_endlesssummer"
+		},
+	},
+
+	{
+		attributes = {
+			name = "Ardennes",
+			speed = 2,
+			maxSpeed = 4,
+			acceleration = 4,
+			maxAcceleration = 6,
+			handling = 1,
+			maxHandling = 4,
+		},
+		variations = {
+			"A_C_Horse_Ardennes_BayRoan",
+			"A_C_Horse_Ardennes_IronGreyRoan",
+			"A_C_Horse_Ardennes_StrawberryRoan",
+			"a_c_horse_gang_bill"
+		}
+	},
+	{
+		attributes = {
+			name = "Belga",
+			speed = 3,
+			maxSpeed = 5,
+			acceleration = 4,
+			maxAcceleration = 6,
+			handling = 2,
+			maxHandling = 4,
+		},
+		variations = {
+			"A_C_Horse_Belgian_BlondChestnut",
+			"A_C_Horse_Belgian_MealyChestnut"
+		}
+	},
+	{
+		attributes = {
+			name = "Warmblood Holandês",
+			speed = 7,
+			maxSpeed = 8,
+			acceleration = 8,
+			maxAcceleration = 9,
+			handling = 4,
+			maxHandling = 4,
+		},
+		variations = {
+			"A_C_Horse_DutchWarmblood_ChocolateRoan",
+			"A_C_Horse_DutchWarmblood_SealBrown",
+			"A_C_Horse_DutchWarmblood_SootyBuckskin",
+			"a_c_horse_buell_warvets",
+		}
+	},
+	{
+		attributes = {
+			name = "Mestiço Húngaro",
+			speed = 3,
+			maxSpeed = 5,
+			acceleration = 4,
+			maxAcceleration = 6,
+			handling = 2,
+			maxHandling = 3,
+		},
+		variations = {
+			"A_C_Horse_HungarianHalfbred_DarkDappleGrey",
+			"A_C_Horse_HungarianHalfbred_FlaxenChestnut",
+			"A_C_Horse_HungarianHalfbred_LiverChestnut",
+			"A_C_Horse_HungarianHalfbred_PiebaldTobiano",
+			"a_c_horse_gang_john"
+		}
+	},
+	{
+		attributes = {
+			name = "Kentucky Saddle",
+			speed = 3,
+			maxSpeed = 4,
+			acceleration = 4,
+			maxAcceleration = 6,
+			handling = 2,
+			maxHandling = 4,
+		},
+		variations = {
+			"A_C_Horse_KentuckySaddle_Black",
+			"A_C_Horse_KentuckySaddle_ButterMilkBuckskin_PC",
+			"A_C_Horse_KentuckySaddle_ChestnutPinto",
+			"A_C_Horse_KentuckySaddle_Grey",
+			"A_C_Horse_KentuckySaddle_SilverBay",
+			"a_c_horse_gang_uncle"
+		}
+	},
+	{
+		attributes = {
+			name = "Kladruber",
+			speed = 5,
+			maxSpeed = 7,
+			acceleration = 5,
+			maxAcceleration = 8,
+			handling = 3,
+			maxHandling = 4,
+		},
+		variations = {
+			"A_C_Horse_Kladruber_Black",
+			"A_C_Horse_Kladruber_Silver",
+			"A_C_Horse_Kladruber_Cremello",
+			"A_C_Horse_Kladruber_Grey",
+			"A_C_Horse_Kladruber_DappleRoseGrey",
+			"A_C_Horse_Kladruber_White"
+		}
+	},
+	{
+		attributes = {
+			name = "Missouri Fox Trotter",
+			speed = 7,
+			maxSpeed = 9,
+			acceleration = 7,
+			maxAcceleration = 9,
+			handling = 4,
+			maxHandling = 4,
+		},
+		variations = {
+			"A_C_Horse_MissouriFoxTrotter_AmberChampagne",
+			"A_C_Horse_MissouriFoxTrotter_SableChampagne",
+			"A_C_Horse_MissouriFoxTrotter_SilverDapplePinto",
+			"a_c_horse_missourifoxtrotter_blueroan",
+			"a_c_horse_missourifoxtrotter_buckskinbrindle",
+			"a_c_horse_missourifoxtrotter_dapplegrey",
+			"a_c_horse_gang_micah"
+		}
+	},
+	{
+		attributes = {
+			name = "Morgan",
+			speed = 3,
+			maxSpeed = 5,
+			acceleration = 4,
+			maxAcceleration = 6,
+			handling = 3,
+			maxHandling = 3,
+		},
+		variations = {
+			"A_C_Horse_Morgan_Bay",
+			"A_C_Horse_Morgan_BayRoan",
+			"A_C_Horse_Morgan_FlaxenChestnut",
+			"A_C_Horse_Morgan_LiverChestnut_PC",
+			"A_C_Horse_Morgan_Palomino"
+		}
+	},
+	{
+		attributes = {
+			name = "Pangaré desnutrido",
+			speed = 2,
+			maxSpeed = 2,
+			acceleration = 2,
+			maxAcceleration = 2,
+			handling = 1,
+			maxHandling = 2,
+		},
+		variations = { "A_C_Horse_MP_Mangy_Backup" }
+	},
+	{
+		attributes = {
+			name = "Mustang",
+			speed = 6,
+			maxSpeed = 8,
+			acceleration = 7,
+			maxAcceleration = 9,
+			handling = 4,
+			maxHandling = 4,
+		},
+		variations = {
+			"A_C_Horse_Mustang_GoldenDun",
+			"A_C_Horse_Mustang_GrulloDun",
+			"A_C_Horse_Mustang_TigerStripedBay",
+			"A_C_Horse_Mustang_WildBay",
+			"a_c_horse_mustang_buckskin",
+			"a_c_horse_mustang_chestnuttovero",
+			"a_c_horse_mustang_reddunovero",
+			"a_c_horse_gang_lenny",
+			"a_c_horse_gang_sadie_endlesssummer",
+			"A_C_Horse_Mustang_GoldenDun",
+			"A_C_Horse_Mustang_GrulloDun",
+		}
+	},
+	{
+		attributes = {
+			name = "Nokota",
+			speed = 4,
+			maxSpeed = 7,
+			acceleration = 5,
+			maxAcceleration = 7,
+			handling = 3,
+			maxHandling = 3,
+		},
+		variations = {
+			"A_C_Horse_Nokota_BlueRoan",
+			"A_C_Horse_Nokota_ReverseDappleRoan",
+			"A_C_Horse_Nokota_WhiteRoan",
+			"a_c_horse_gang_charles_endlesssummer",
+			"a_c_horse_gang_karen"
+		}
+	},
+	{
+		attributes = {
+			name = "Shire",
+			speed = 4,
+			maxSpeed = 6,
+			acceleration = 5,
+			maxAcceleration = 7,
+			handling = 1,
+			maxHandling = 4,
+		},
+		variations = {
+			"A_C_Horse_Shire_DarkBay",
+			"A_C_Horse_Shire_LightGrey",
+			"A_C_Horse_Shire_RavenBlack"
+		}
+	},
+	{
+		attributes = {
+			name = "Suffolk Punch",
+			speed = 2,
+			maxSpeed = 5,
+			acceleration = 2,
+			maxAcceleration = 5,
+			handling = 1,
+			maxHandling = 2,
+		},
+		variations = {
+			"A_C_Horse_SuffolkPunch_RedChestnut",
+			"A_C_Horse_SuffolkPunch_Sorrel"
+		}
+	},
+	{
+		attributes = {
+			name = "Tennessee Walker",
+			speed = 3,
+			maxSpeed = 5,
+			acceleration = 4,
+			maxAcceleration = 6,
+			handling = 2,
+			maxHandling = 2,
+		},
+		variations = {
+			"A_C_Horse_TennesseeWalker_BlackRabicano",
+			"A_C_Horse_TennesseeWalker_Chestnut",
+			"A_C_Horse_TennesseeWalker_DappleBay",
+			"A_C_Horse_TennesseeWalker_FlaxenRoan",
+			"A_C_Horse_TennesseeWalker_MahoganyBay",
+			"A_C_Horse_TennesseeWalker_RedRoan",
+			"A_C_Horse_TennesseeWalker_GoldPalomino_PC"
+		}
+	},
+	{
+		attributes = {
+			name = "Puro-Sangue Inglês",
+			speed = 8,
+			maxSpeed = 10,
+			acceleration = 7,
+			maxAcceleration = 9,
+			handling = 4,
+			maxHandling = 4,
+		},
+		variations = {
+			"A_C_Horse_Thoroughbred_BlackChestnut",
+			"A_C_Horse_Thoroughbred_BloodBay",
+			"A_C_Horse_Thoroughbred_Brindle",
+			"A_C_Horse_Thoroughbred_DappleGrey",
+			"A_C_Horse_Thoroughbred_ReverseDappleBlack"
+		}
+	},
+	{
+		attributes = {
+			name = "Turcomeno",
+			speed = 7,
+			maxSpeed = 9,
+			acceleration = 6,
+			maxAcceleration = 9,
+			handling = 4,
+			maxHandling = 4,
+		},
+		variations = {
+			"A_C_Horse_Turkoman_DarkBay",
+			"A_C_Horse_Turkoman_Gold",
+			"A_C_Horse_Turkoman_Silver",
+			"a_c_horse_turkoman_chestnut",
+			"a_c_horse_turkoman_grey",
+			"a_c_horse_turkoman_perlino",
+			"a_c_horse_gang_sadie"
+		}
+	},
+	{
+		attributes = {
+			name = "Crioulo",
+			speed = 4,
+			maxSpeed = 7,
+			acceleration = 5,
+			maxAcceleration = 7,
+			handling = 4,
+			maxHandling = 4,
+		},
+		variations = {
+			"A_C_Horse_Criollo_Dun",
+			"A_C_Horse_Criollo_MarbleSabino",
+			"A_C_Horse_Criollo_BayFrameOvero",
+			"A_C_Horse_Criollo_BayBrindle",
+			"A_C_Horse_Criollo_SorrelOvero",
+			"A_C_Horse_Criollo_BlueRoanOvero"
+		}
+	},
+	{
+		attributes = {
+			name = "Bretão",
+			speed = 3,
+			maxSpeed = 5,
+			acceleration = 4,
+			maxAcceleration = 6,
+			handling = 2,
+			maxHandling = 2,
+		},
+		variations = {
+			"A_C_Horse_Breton_SteelGrey",
+			"A_C_Horse_Breton_MealyDappleBay",
+			"A_C_Horse_Breton_SealBrown",
+			"A_C_Horse_Breton_GrulloDun",
+			"A_C_Horse_Breton_Sorrel",
+			"A_C_Horse_Breton_RedRoan"
+		}
+	},
+	{
+		attributes = {
+			name = "Norfolk Roadster",
+			speed = 6,
+			maxSpeed = 7,
+			acceleration = 5,
+			maxAcceleration = 7,
+			handling = 4,
+			maxHandling = 4,
+		},
+		variations = {
+			"A_C_HORSE_NORFOLKROADSTER_BLACK",
+			"A_C_HORSE_NORFOLKROADSTER_SPECKLEDGREY",
+			"A_C_HORSE_NORFOLKROADSTER_PIEBALDROAN",
+			"A_C_HORSE_NORFOLKROADSTER_ROSEGREY",
+			"A_C_HORSE_NORFOLKROADSTER_DAPPLEDBUCKSKIN",
+			"A_C_HORSE_NORFOLKROADSTER_SPOTTEDTRICOLOR"
+		}
+	},
+	{
+		attributes = {
+			name = "Mula",
+			speed = 5,
+			maxSpeed = 8,
+			acceleration = 5,
+			maxAcceleration = 9,
+			handling = 4,
+			maxHandling = 4,
+		},
+		variations = {
+			"A_C_HorseMulePainted_01"
+		}
+	},
+	{
+		attributes = {
+			name = "Mula",
+			speed = 4,
+			maxSpeed = 6,
+			acceleration = 5,
+			maxAcceleration = 7,
+			handling = 3,
+			maxHandling = 3,
+		},
+		variations = {
+			"A_C_HorseMule_01"
+		}
+	},
+	{
+		attributes = {
+			name = "Burro",
+			speed = 5,
+			maxSpeed = 8,
+			acceleration = 5,
+			maxAcceleration = 9,
+			handling = 1,
+			maxHandling = 4,
+		},
+		variations = {
+			"A_C_Donkey_01"
+		}
+	},
+	{
+		attributes = {
+			name = "Gypsy Cob",
+			speed = 4,
+			maxSpeed = 6,
+			acceleration = 5,
+			maxAcceleration = 6,
+			handling = 1,
+			maxHandling = 4,
+		},
+		variations = {
+			"a_c_horse_gypsycob_piebald",
+			"a_c_horse_gypsycob_skewbald",
+			"a_c_horse_gypsycob_splashedbay",
+			"a_c_horse_gypsycob_splashedpiebald",
+			"a_c_horse_gypsycob_whiteblagdon",
+		}
+	},
+}
+
 Functions.VORP = {
 	client = {
 		getSharedObject = function()
@@ -5062,8 +5693,7 @@ Functions.VORP = {
 			local player = PlayerPedId()
 			local ammo_types = {}
 			local weapons = {}
-			local weapon_types = { "WEAPON_DAGGER","WEAPON_BAT","WEAPON_BOTTLE","WEAPON_CROWBAR","WEAPON_FLASHLIGHT","WEAPON_GOLFCLUB","WEAPON_HAMMER","WEAPON_HATCHET","WEAPON_KNUCKLE","WEAPON_KNIFE","WEAPON_MACHETE","WEAPON_SWITCHBLADE","WEAPON_NIGHTSTICK","WEAPON_WRENCH","WEAPON_BATTLEAXE","WEAPON_POOLCUE","WEAPON_STONE_HATCHET","WEAPON_PISTOL","WEAPON_PISTOL_MK2","WEAPON_COMBATPISTOL","WEAPON_APPISTOL","WEAPON_STUNGUN","WEAPON_PISTOL50","WEAPON_SNSPISTOL","WEAPON_SNSPISTOL_MK2","WEAPON_HEAVYPISTOL","WEAPON_VINTAGEPISTOL","WEAPON_FLAREGUN","WEAPON_MARKSMANPISTOL","WEAPON_REVOLVER","WEAPON_REVOLVER_MK2","WEAPON_DOUBLEACTION","WEAPON_RAYPISTOL","WEAPON_CERAMICPISTOL","WEAPON_NAVYREVOLVER","WEAPON_GADGETPISTOL","WEAPON_STUNGUN_MP","WEAPON_MICROSMG","WEAPON_SMG","WEAPON_SMG_MK2","WEAPON_ASSAULTSMG","WEAPON_COMBATPDW","WEAPON_MACHINEPISTOL","WEAPON_MINISMG","WEAPON_RAYCARBINE","WEAPON_PUMPSHOTGUN","WEAPON_PUMPSHOTGUN_MK2","WEAPON_SAWNOFFSHOTGUN","WEAPON_ASSAULTSHOTGUN","WEAPON_BULLPUPSHOTGUN","WEAPON_MUSKET","WEAPON_HEAVYSHOTGUN","WEAPON_DBSHOTGUN","WEAPON_AUTOSHOTGUN","WEAPON_COMBATSHOTGUN","WEAPON_ASSAULTRIFLE","WEAPON_ASSAULTRIFLE_MK2","WEAPON_CARBINERIFLE","WEAPON_CARBINERIFLE_MK2","WEAPON_ADVANCEDRIFLE","WEAPON_SPECIALCARBINE","WEAPON_SPECIALCARBINE_MK2","WEAPON_BULLPUPRIFLE","WEAPON_BULLPUPRIFLE_MK2","WEAPON_COMPACTRIFLE","WEAPON_MILITARYRIFLE","WEAPON_HEAVYRIFLE","WEAPON_TACTICALRIFLE","WEAPON_MG","WEAPON_COMBATMG","WEAPON_COMBATMG_MK2","WEAPON_GUSENBERG","WEAPON_SNIPERRIFLE","WEAPON_HEAVYSNIPER","WEAPON_HEAVYSNIPER_MK2","WEAPON_MARKSMANRIFLE","WEAPON_MARKSMANRIFLE_MK2","WEAPON_PRECISIONRIFLE","WEAPON_RPG","WEAPON_GRENADELAUNCHER","WEAPON_GRENADELAUNCHER_SMOKE","WEAPON_MINIGUN","WEAPON_FIREWORK","WEAPON_RAILGUN","WEAPON_HOMINGLAUNCHER","WEAPON_COMPACTLAUNCHER","WEAPON_RAYMINIGUN","WEAPON_EMPLAUNCHER","WEAPON_GRENADE","WEAPON_BZGAS","WEAPON_MOLOTOV","WEAPON_STICKYBOMB","WEAPON_PROXMINE","WEAPON_SNOWBALL","WEAPON_PIPEBOMB","WEAPON_BALL","WEAPON_SMOKEGRENADE","WEAPON_FLARE","WEAPON_PETROLCAN","GADGET_PARACHUTER","WEAPON_FIREEXTINGUISHER","WEAPON_HAZARDCAN","WEAPON_FERTILIZERCAN" }
-			for k,v in pairs(weapon_types) do
+			for k,v in pairs(weaponTypes) do
 				local hash = GetHashKey(v)
 				if HasPedGotWeapon(player,hash) then
 					local weapon = {}
@@ -5606,18 +6236,50 @@ Functions.VORP = {
 		end,
 
 		targetAddModel = function(models,parameteres)
+			if GetResourceState('target') == "started" then
+				exports["target"]:AddTargetModel(models,{
+					options = parameteres.options,
+					distance = parameteres.distance,
+					Distance = parameteres.distance
+				})
+
+				return true
+			end
+
 			return false
 		end,
 
 		targetRemoveModel = function(models)
+			if GetResourceState('target') == "started" then
+				exports["target"]:RemoveTargetModel(models)
+
+				return true
+			end
+
 			return false
 		end,
-		
+
 		targetAddBoxZone = function(name,center,length,width,options,targetoptions)
+			if GetResourceState('target') == "started" then
+				exports["target"]:AddBoxZone(name,center,length,width,options,{
+					options = targetoptions.options,
+					distance = targetoptions.distance,
+					Distance = targetoptions.distance
+				})
+
+				return true
+			end
+
 			return false
 		end,
-		
+
 		targetRemoveBoxZone = function(name)
+			if GetResourceState('target') == "started" then
+				exports["target"]:RemoveBoxZone(name)
+
+				return true
+			end
+
 			return false
 		end,
 
@@ -6072,6 +6734,10 @@ Functions.VORP = {
 			end
 		end,
 
+		paySalary = function(user_id, amount)
+			return Functions["server"].giveHandMoney(user_id, amount)
+		end,
+		
 		getInventoryItems = function(user_id)
 			local itemsTable = {}
 			
@@ -6422,20 +7088,94 @@ Functions.VORP = {
 		end,
 
 		getItemName = function(item)
-			if item == "" then
-				return ""
-			end
-			
-			local itemInfos = exports["vorp_inventory"]:getItemDB(item)
-			if itemInfos then
-				return itemInfos.label
+			if type(item) == "table" then
+				local itemNameList = {}
+				for n,itemModel in pairs(item) do
+					if itemModel == "" then
+						itemNameList[n] = ""
+					elseif string.sub(itemModel, 1, string.len("wbody|")) == "wbody|" then
+						local itemSplit = Functions["default-server"].striata_splitString(itemModel,"|")
+						local itemInfos = exports["vorp_inventory"]:getItemDB(itemSplit[2])
+						
+						if itemInfos then
+							itemNameList[n] = itemInfos.label or itemSplit[2]
+						else
+							itemNameList[n] = itemSplit[2]
+						end
+					else
+						local itemInfos = exports["vorp_inventory"]:getItemDB(itemModel)
+						if itemInfos then
+							itemNameList[n] = itemInfos.label or itemModel
+						else
+							itemNameList[n] = itemModel
+						end
+					end
+				end
 			else
-				return "Indefinido"
+				if item == "" then
+					return ""
+				end
+				
+				local itemInfos = exports["vorp_inventory"]:getItemDB(item)
+				if itemInfos then
+					return itemInfos.label or item
+				else
+					return item
+				end
 			end
 		end,
 
 		getItemIndex = function(item)
 			return item
+		end,
+
+		getVehicleName = function(vehicle)
+			if type(vehicle) == "table" then
+				local vehicleNameList = {}
+				for n,vehicleModel in pairs(vehicle) do
+					if vehicleModel == "" then
+						vehicleNameList[n] = ""
+					elseif string.sub(vehicleModel, 1, string.len("horse|")) == "horse|" then
+						local itemSplit = Functions["default-server"].striata_splitString(vehicleModel,"|")
+
+						for n, horsesInfos in pairs(horsesConfig) do
+							for n, horseModel in pairs(horsesInfos.variations) do
+								if horseModel == itemSplit[2] then
+									vehicleNameList[n] = horsesInfos.attributes.name
+									break
+								end
+							end
+						end
+
+						if not vehicleNameList[n] then
+							vehicleNameList[n] = itemSplit[2] 
+						end
+					else
+						return vehicleModel
+					end
+				end
+
+				return vehicleNameList
+			else
+				if vehicle == "" then
+					return ""
+				end
+				
+				if string.sub(vehicle, 1, string.len("horse|")) == "horse|" then
+					local itemSplit = Functions["default-server"].striata_splitString(vehicle,"|")
+					for n, horsesInfos in pairs(horsesConfig) do
+						for n, horseModel in pairs(horsesInfos.variations) do
+							if horseModel == itemSplit[2] then
+								return horsesInfos.attributes.name
+							end
+						end
+					end
+
+					return itemSplit[2]
+				else
+					return vehicleModel
+				end
+			end
 		end,
 
 		giveVehicle = function(user_id,vehicle)
@@ -6452,12 +7192,37 @@ Functions.VORP = {
 					]]
 					local resultCheck = MySQL.Sync.fetchAll(queryCheck)
 					if resultCheck[1].t_kd_horses_exists > 0 then
-						MySQL.Sync.fetchAll("INSERT IGNORE INTO kd_horses(identifier,charid,model,name) VALUES(@identifier,@charid,@model,@name)", {
+						local horseInfos
+						for n, horsesInfos in pairs(horsesConfig) do
+							for n, horseModel in pairs(horsesInfos.variations) do
+								if horseModel == itemSplit[2] then
+									horseInfos = horsesInfos.attributes
+									break
+								end
+							end
+						end
+
+						if not horseInfos then
+							horseInfos = horsesConfig[1].attributes
+						end
+
+						MySQL.Sync.fetchAll("INSERT IGNORE INTO kd_horses(identifier,charid,stable,model,name,speed,acceleration,handling) VALUES(@identifier,@charid,@stable,@model,@name,@speed,@acceleration,@handling)", {
 							["@identifier"] = rows[1].identifier,
 							["@charid"] = user_id,
+							["@stable"] = "valentine",
 							["@model"] = itemSplit[2],
-							["@name"] = "Galopante"
+							["@name"] = "Galopante",
+							["@speed"] = math.random(horseInfos.speed,horseInfos.maxSpeed),
+							["@acceleration"] = math.random(horseInfos.acceleration,horseInfos.maxAcceleration),
+							["@handling"] = math.random(horseInfos.handling,horseInfos.maxHandling)
 						})
+
+						TriggerEvent("kd_stable:reloadTables") --! custom event
+
+						local source = Functions["server"].getUserSource(user_id)
+						if source then
+							TriggerClientEvent("kd_stable:client:buySuccess",source)
+						end
 					else
 						MySQL.Sync.fetchAll("INSERT IGNORE INTO stables(identifier,charidentifier,modelname,name) VALUES(@identifier,@charid,@model,@name)", {
 							["@identifier"] = rows[1].identifier,
@@ -6491,6 +7256,13 @@ Functions.VORP = {
 						["@charid"] = user_id,
 						["@model"] = itemSplit[2],
 					})
+
+					TriggerEvent("kd_stable:reloadTables") --! custom event
+					
+					local source = Functions["server"].getUserSource(user_id)
+					if source then
+						TriggerClientEvent("kd_stable:client:buySuccess",source)
+					end
 				else
 					local itemSplit = Functions["default-server"].striata_splitString(vehicle,"|")
 					MySQL.Sync.fetchAll("DELETE FROM stables WHERE charidentifier = @charidentifier AND modelname = @modelname", {
@@ -6740,7 +7512,7 @@ Functions.VORP = {
 			local source = Functions["server"].getUserSource(user_id)
 			if source then
 				--? Player Online
-				getTunnelInformation("setHealth","functions",source,amount)
+				getTunnelInformation(source,"setHealth","functions",amount)
 			else
 				--? Player Offline
 				if amount > 0 then
@@ -7264,8 +8036,7 @@ Functions.custom = {
 			local player = PlayerPedId()
 			local ammo_types = {}
 			local weapons = {}
-			local weapon_types = { "WEAPON_DAGGER","WEAPON_BAT","WEAPON_BOTTLE","WEAPON_CROWBAR","WEAPON_FLASHLIGHT","WEAPON_GOLFCLUB","WEAPON_HAMMER","WEAPON_HATCHET","WEAPON_KNUCKLE","WEAPON_KNIFE","WEAPON_MACHETE","WEAPON_SWITCHBLADE","WEAPON_NIGHTSTICK","WEAPON_WRENCH","WEAPON_BATTLEAXE","WEAPON_POOLCUE","WEAPON_STONE_HATCHET","WEAPON_PISTOL","WEAPON_PISTOL_MK2","WEAPON_COMBATPISTOL","WEAPON_APPISTOL","WEAPON_STUNGUN","WEAPON_PISTOL50","WEAPON_SNSPISTOL","WEAPON_SNSPISTOL_MK2","WEAPON_HEAVYPISTOL","WEAPON_VINTAGEPISTOL","WEAPON_FLAREGUN","WEAPON_MARKSMANPISTOL","WEAPON_REVOLVER","WEAPON_REVOLVER_MK2","WEAPON_DOUBLEACTION","WEAPON_RAYPISTOL","WEAPON_CERAMICPISTOL","WEAPON_NAVYREVOLVER","WEAPON_GADGETPISTOL","WEAPON_STUNGUN_MP","WEAPON_MICROSMG","WEAPON_SMG","WEAPON_SMG_MK2","WEAPON_ASSAULTSMG","WEAPON_COMBATPDW","WEAPON_MACHINEPISTOL","WEAPON_MINISMG","WEAPON_RAYCARBINE","WEAPON_PUMPSHOTGUN","WEAPON_PUMPSHOTGUN_MK2","WEAPON_SAWNOFFSHOTGUN","WEAPON_ASSAULTSHOTGUN","WEAPON_BULLPUPSHOTGUN","WEAPON_MUSKET","WEAPON_HEAVYSHOTGUN","WEAPON_DBSHOTGUN","WEAPON_AUTOSHOTGUN","WEAPON_COMBATSHOTGUN","WEAPON_ASSAULTRIFLE","WEAPON_ASSAULTRIFLE_MK2","WEAPON_CARBINERIFLE","WEAPON_CARBINERIFLE_MK2","WEAPON_ADVANCEDRIFLE","WEAPON_SPECIALCARBINE","WEAPON_SPECIALCARBINE_MK2","WEAPON_BULLPUPRIFLE","WEAPON_BULLPUPRIFLE_MK2","WEAPON_COMPACTRIFLE","WEAPON_MILITARYRIFLE","WEAPON_HEAVYRIFLE","WEAPON_TACTICALRIFLE","WEAPON_MG","WEAPON_COMBATMG","WEAPON_COMBATMG_MK2","WEAPON_GUSENBERG","WEAPON_SNIPERRIFLE","WEAPON_HEAVYSNIPER","WEAPON_HEAVYSNIPER_MK2","WEAPON_MARKSMANRIFLE","WEAPON_MARKSMANRIFLE_MK2","WEAPON_PRECISIONRIFLE","WEAPON_RPG","WEAPON_GRENADELAUNCHER","WEAPON_GRENADELAUNCHER_SMOKE","WEAPON_MINIGUN","WEAPON_FIREWORK","WEAPON_RAILGUN","WEAPON_HOMINGLAUNCHER","WEAPON_COMPACTLAUNCHER","WEAPON_RAYMINIGUN","WEAPON_EMPLAUNCHER","WEAPON_GRENADE","WEAPON_BZGAS","WEAPON_MOLOTOV","WEAPON_STICKYBOMB","WEAPON_PROXMINE","WEAPON_SNOWBALL","WEAPON_PIPEBOMB","WEAPON_BALL","WEAPON_SMOKEGRENADE","WEAPON_FLARE","WEAPON_PETROLCAN","GADGET_PARACHUTER","WEAPON_FIREEXTINGUISHER","WEAPON_HAZARDCAN","WEAPON_FERTILIZERCAN" }
-			for k,v in pairs(weapon_types) do
+			for k,v in pairs(weaponTypes) do
 				local hash = GetHashKey(v)
 				if HasPedGotWeapon(player,hash) then
 					local weapon = {}
@@ -7734,6 +8505,13 @@ Functions.custom = {
 		end,
 
 		--- @param user_id integer or string
+		--- @param amount integer
+		--- @param return bloolean
+		paySalary = function(user_id, amount)
+			return Functions["server"].giveBankMoney(user_id, amount)
+		end,
+
+		--- @param user_id integer or string
 		--- @param return table: { [string # item name] = integer # item amount,... }
 		getInventoryItems = function(user_id)
 			return {}
@@ -7780,16 +8558,40 @@ Functions.custom = {
 			return 0.0
 		end,
 
-		--- @param item string
-		--- @param return string
+		--- @param item string or table: { item1ModelName,item2ModelName,... }
+		--- @param return string or table: { item1Name,item2Name,... }
 		getItemName = function(item)
-			return ""
+			if type(item) == "table" then
+				local itemNames = {}
+				for n,itemModelName in pairs(item) do
+					itemNames[n] = ""
+				end
+
+				return itemNames
+			else
+				return ""
+			end
 		end,
 
 		--- @param item string
 		--- @param return string # Item image name without ".png"
 		getItemIndex = function(item)
 			return ""
+		end,
+		
+		--- @param vehicle string or table: { vehicle1ModelName,vehicle2ModelName,... }
+		--- @param return string or table: { vehicle1Name,vehicle2Name,... }
+		getVehicleName = function(vehicle)
+			if type(vehicle) == "table" then
+				local vehicleNames = {}
+				for n,vehicleModelName in pairs(vehicle) do
+					vehicleNames[n] = ""
+				end
+
+				return vehicleNames
+			else
+				return ""
+			end
 		end,
 
 		--- @param user_id integer or string

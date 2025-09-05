@@ -37,5 +37,13 @@ files {
 	"config.json",
 	"resources/**/script_config.lua",
 	"html/**",
-	"resources/**/html/**"
+	"html/docs/**",
+	"html/docs/**/**",
+	"resources/**/html/**",
+	"resources/**/html/docs/**",
+	"resources/**/html/docs/**/**"
 }
+
+loadscreen "resources/striata_loadingscreen/html/script.html"
+loadscreen_manual_shutdown 'yes'
+loadscreen_cursor 'no'
